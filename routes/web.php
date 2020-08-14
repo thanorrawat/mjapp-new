@@ -132,6 +132,15 @@ Route::get('booking_list', function () {
 });
 
 
+// pricechang
+
+
+
+
+
+
+
+
 // producttracking
 
 Route::get('MjStoreProductsTrackinginsertdatsample', 'MjStoreProductsTrackingController@insertdatsample');
