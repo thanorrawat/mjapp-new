@@ -132,7 +132,7 @@ Route::get('booking_list', function () {
 });
 
 
-// pricechang
+// pricechange
 
 
 
