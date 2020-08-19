@@ -116,7 +116,7 @@
 <script src="{{ asset('AdminLTE-3/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ asset('AdminLTE-3/dist/js/adminlte.min.js') }}"></script>
-<script src="{{ url('public/js/app.js') }}"></script>
+
 <script>
   $.ajaxSetup({
     headers: {
@@ -126,6 +126,7 @@
 </script>
 @include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9"])
 @yield('pagejs')
+<script src="{{ url('public/js/app.js') }}"></script>
 </body>
 </html>
 

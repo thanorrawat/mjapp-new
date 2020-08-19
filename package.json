@@ -31,6 +31,7 @@
         "vue-plain-pagination": "^0.3.0",
         "vue-sweetalert2": "^3.0.6",
         "vue-text-highlight": "^2.0.10",
+        "vue2-daterange-picker": "^0.5.1",
         "vuelidate": "^0.7.5"
     }
 }

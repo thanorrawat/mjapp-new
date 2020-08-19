@@ -20,6 +20,7 @@ Vue.component('example-component', require('./components/ExampleComponent.vue'))
 Vue.component('product-search', require('./components/ProductSearch.vue'));
 Vue.component('order-selectcustomer', require('./components/OrderSelectcustomer.vue'));
 Vue.component('edit-order', require('./components/EditOrder.vue'));
+Vue.component('memo-price', require('./components/MemoPriceComponent.vue'));
 
 
 

@@ -116,7 +116,7 @@
 <script src="<?php echo e(asset('AdminLTE-3/plugins/bootstrap/js/bootstrap.bundle.min.js')); ?>"></script>
 <!-- AdminLTE App -->
 <script src="<?php echo e(asset('AdminLTE-3/dist/js/adminlte.min.js')); ?>"></script>
-<script src="<?php echo e(url('public/js/app.js')); ?>"></script>
+
 <script>
   $.ajaxSetup({
     headers: {
@@ -126,6 +126,7 @@
 </script>
 <?php echo $__env->make('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9"], array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 <?php echo $__env->yieldContent('pagejs'); ?>
+<script src="<?php echo e(url('public/js/app.js')); ?>"></script>
 </body>
 </html>
 

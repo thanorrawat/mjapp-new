@@ -34,6 +34,14 @@ Route::post('removeproducttoorder','Api\OrderProducts@removeproducttoorder'); //
 Route::post('editqtyproducttoorder','Api\OrderProducts@editqtyorder'); //แก้ไขจำนวนสินค้าจาก Order
 
 
+//products
+Route::get('products_list','Api\ProductsController@index');
+
+//Customer
+Route::get('customer_list','Api\CustomerController@index');
+
+
+
 //notify
 Route::post('notify/ordersendmanager','Api\sendnotifyController@ordersendmanager'); 
 

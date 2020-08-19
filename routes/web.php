@@ -133,6 +133,7 @@ Route::get('booking_list', function () {
 
 
 // pricechange
+Route::get('memo-changprice', 'Mj\MemoPriceController@index');
 
 
 
