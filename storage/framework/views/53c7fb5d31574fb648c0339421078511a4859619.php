@@ -8,6 +8,7 @@
   <meta name="user-id" content="<?php echo e(Auth::user()->id); ?>">
   <title><?php echo $__env->yieldContent('title'); ?> : <?php echo e($general_setting->site_title); ?></title>
   <link rel="icon" type="image/png" href="<?php echo e(url('public/logo', $general_setting->site_logo)); ?>" />
+  <link rel="stylesheet" href="<?php echo e(asset('node_modules/buefy/dist/buefy.min.css')); ?>"">
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="<?php echo e(asset('AdminLTE-3/plugins/fontawesome-free/css/all.min.css')); ?>">
   <link rel="stylesheet" href="<?php echo e(asset('AdminLTE-3/plugins/font-awesome/css/font-awesome.min.css')); ?>">

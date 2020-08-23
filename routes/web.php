@@ -142,6 +142,7 @@ Route::get('memo-changprice', 'Mj\MemoPriceController@index');
 
 
 
+
 // producttracking
 
 Route::get('MjStoreProductsTrackinginsertdatsample', 'MjStoreProductsTrackingController@insertdatsample');

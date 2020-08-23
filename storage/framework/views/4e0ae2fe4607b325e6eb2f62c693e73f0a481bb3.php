@@ -25,28 +25,11 @@
     <p><?php echo e(__('file.Create Order/Booking')); ?></p></a>
     </li>
 
-    <li class="nav-item has-treeview ">
-      <a href="#" class="nav-link ">
+    <li class="nav-item ">
+      <a href="<?php echo e(url('memo-changprice')); ?>" class="nav-link <?php if(url()->current() == url('memo-changprice')): ?> active <?php endif; ?> ">
         <i class="nav-icon  fas fa-comments-dollar"></i>
-      <p>Memo ขอปรับราคา <i class="right fas fa-angle-left"></i></p></a>
-      
-      <ul class="nav nav-treeview">
-          <li class="nav-item">
-            <a href="<?php echo e(url('memo-changprice')); ?>" class="nav-link ">
-              <i class="far fa-circle nav-icon"></i>
-              <p>รายการขอปรับราคา</p>
-            </a>
-          </li>
-          <li class="nav-item">
-              <a href="#" class="nav-link ">
-                <i class="far fa-circle nav-icon"></i>
-                <p>ขอปรับราคา</p>
-              </a>
-            </li>
-  
-      
-  
-  </ul></li>
+      <p>Memo ขอปรับราคา </p></a>
+
 
 
 

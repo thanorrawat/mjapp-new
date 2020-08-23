@@ -17,6 +17,8 @@
   <link rel="stylesheet" href="<?php echo e(asset('AdminLTE-3/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')); ?>">
     <!-- daterange picker -->
     <link rel="stylesheet" href="<?php echo e(asset('AdminLTE-3/plugins/daterangepicker/daterangepicker.css')); ?>">
+    <link rel="stylesheet" href="https://cdn.materialdesignicons.com/5.3.45/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css">
     
 <?php $__env->stopSection(); ?>
 
@@ -28,7 +30,7 @@
 <?php elseif($pagetype=="edit"): ?>
 <product-search baseurl="<?php echo e($baseurl); ?>"  orderid="<?php echo e($orderid); ?>"  showsearchtype="<?php echo e($searchtype); ?>"  userfullname="<?php echo e(Auth::user()->fullname); ?>" userid="<?php echo e(Auth::user()->id); ?>" ></product-search>
 <?php elseif($pagetype=="memo_changprice"): ?>
-<memo-price baseurl="<?php echo e($baseurl); ?>"  userfullname="<?php echo e(Auth::user()->fullname); ?>" userid="<?php echo e(Auth::user()->id); ?>"></memo-price>
+<memo-price baseurl="<?php echo e($baseurl); ?>"  userfullname="<?php echo e(Auth::user()->fullname); ?>" userid="<?php echo e(Auth::user()->id); ?>" csrf="<?php echo e(csrf_token()); ?>" role_id="<?php echo e(Auth::user()->role_id); ?>"></memo-price>
 <?php endif; ?>   
 </div>
 

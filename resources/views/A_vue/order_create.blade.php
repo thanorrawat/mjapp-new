@@ -17,6 +17,8 @@
   <link rel="stylesheet" href="{{ asset('AdminLTE-3/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
     <!-- daterange picker -->
     <link rel="stylesheet" href="{{ asset('AdminLTE-3/plugins/daterangepicker/daterangepicker.css')}}">
+    <link rel="stylesheet" href="https://cdn.materialdesignicons.com/5.3.45/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css">
     
 @endsection
 
@@ -28,7 +30,7 @@
 @elseif ($pagetype=="edit")
 <product-search baseurl="{{ $baseurl }}"  orderid="{{ $orderid }}"  showsearchtype="{{ $searchtype }}"  userfullname="{{  Auth::user()->fullname }}" userid="{{  Auth::user()->id }}" ></product-search>
 @elseif ($pagetype=="memo_changprice")
-<memo-price baseurl="{{ $baseurl }}"  userfullname="{{  Auth::user()->fullname }}" userid="{{  Auth::user()->id }}"></memo-price>
+<memo-price baseurl="{{ $baseurl }}"  userfullname="{{  Auth::user()->fullname }}" userid="{{  Auth::user()->id }}" csrf="{{ csrf_token() }}" role_id="{{ Auth::user()->role_id }}"></memo-price>
 @endif   
 </div>
 

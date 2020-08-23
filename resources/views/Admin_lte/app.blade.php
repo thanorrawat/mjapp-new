@@ -8,6 +8,7 @@
   <meta name="user-id" content="{{ Auth::user()->id }}">
   <title>@yield('title') : {{$general_setting->site_title}}</title>
   <link rel="icon" type="image/png" href="{{url('public/logo', $general_setting->site_logo)}}" />
+  <link rel="stylesheet" href="{{ asset('node_modules/buefy/dist/buefy.min.css') }}"">
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="{{ asset('AdminLTE-3/plugins/fontawesome-free/css/all.min.css') }}">
   <link rel="stylesheet" href="{{ asset('AdminLTE-3/plugins/font-awesome/css/font-awesome.min.css') }}">

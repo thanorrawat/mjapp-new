@@ -25,11 +25,11 @@
     <p>{{ __('file.Create Order/Booking') }}</p></a>
     </li>
 
-    <li class="nav-item has-treeview ">
-      <a href="#" class="nav-link ">
+    <li class="nav-item ">
+      <a href="{{ url('memo-changprice') }}" class="nav-link @if(url()->current() == url('memo-changprice')) active @endif ">
         <i class="nav-icon  fas fa-comments-dollar"></i>
-      <p>Memo ขอปรับราคา <i class="right fas fa-angle-left"></i></p></a>
-      
+      <p>Memo ขอปรับราคา </p></a>
+{{--       
       <ul class="nav nav-treeview">
           <li class="nav-item">
             <a href="{{ url('memo-changprice') }}" class="nav-link ">
@@ -46,7 +46,7 @@
   
       
   
-  </ul></li>
+  </ul></li> --}}
 
 
 {{-- products --}}

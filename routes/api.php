@@ -40,6 +40,15 @@ Route::get('products_list','Api\ProductsController@index');
 //Customer
 Route::get('customer_list','Api\CustomerController@index');
 
+//checkmemoprice
+Route::post('meoprice_checkprice','Mj\MemoPriceController@memocheckprice');
+Route::post('meoprice_add','Mj\MemoPriceController@addmemoprice');
+Route::get('memoprice_list','Mj\MemoPriceController@datatable');
+Route::post('user_list','Mj\MemoPriceController@userlist');
+
+Route::post('memoprice_view','Mj\MemoPriceController@viewmemo');
+Route::post('memoprice_approve','Mj\MemoPriceController@approve');
+
 
 
 //notify
