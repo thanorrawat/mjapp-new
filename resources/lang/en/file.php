@@ -576,9 +576,12 @@ return [
 	'Booking Number' => 'Booking Number',
 	'Booking' => 'Booking',
 	'Details' => 'Details',
-	
-	
+	'Customer Code' => 'Customer Code',
+	'Price Group' => 'Price Group',
 
+	
+	
+	
 	
 
 

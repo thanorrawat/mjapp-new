@@ -110,7 +110,7 @@ return [
 	'Return' => 'Return',
 	'User' => 'ผู้ใช้งาน',
 	'Email' => 'Email',
-	'Company Name' => 'Company Name',
+	'Company Name' => 'ชื่อบริษัท',
 	'Phone Number' => 'เบอร์โทรศัพท์',
 	'Role' => 'ระดับสิทธิ์การใช้งาน',
 	'UserName' => 'UserName',
@@ -580,6 +580,9 @@ return [
 	'Booking Number' => 'ใบจองเลขที่',
 	'Booking' => 'ใบจอง',
 	'Details' => 'รายละเอียด',
+	'Customer Code' => 'รหัสลูกค้า',
+	'Price Group' => 'กลุ่มราคา',
+
 
 
 

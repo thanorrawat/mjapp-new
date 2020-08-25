@@ -1,10 +1,10 @@
 <template>
-    <div>
+    <div class=" content is-small"  >
 
         <order-selectcustomer :baseurl="baseurl" :orderid="orderid" :orderdtall="orderdtall" ></order-selectcustomer>
 
 <div v-if="orderdt.order_status === 1 || orderdt.order_status === 2 " class="row">
-<div class="col-md-3">
+<div class="col-md-4">
 <div class="card">
               <div class="card-header border-transparent">
           
@@ -46,27 +46,28 @@
 
 <ul class="products-list product-list-in-card pl-2 pr-2">
                   <li  class="item" v-for="(product,index) in products" @click="showProductDt(index)">
-                    <div class="product-img">
+                  <div class="row">
+     <div class="col-3 text-center">
                       <img :src="baseurl+'/public/images/product/'+product.image"  class="img-size-50">
-                    </div>
-                    <div class="product-info">
-                      <a href="javascript:void(0)" class="product-title"><text-highlight :queries="queries">{{ product.code}} - {{ product.name}}</text-highlight>
-                        <span class="badge badge-warning float-right"><strong>STOCK : </strong> {{ product.qty  | numeral('0,0')}}</span> 
-                        <span v-if="historylist_sumsale[product.code]>0" class="badge badge-danger float-right mr-1"> <strong>Sale : </strong> {{ historylist_sumsale[product.code]  | numeral('0,0')}}</span>
+     </div>
+<div class="col-6">
+
+     <a href="javascript:void(0)" class="product-title"><text-highlight :queries="queries">{{ product.code}} - {{ product.name}}</text-highlight>
+     </a><br><text-highlight :queries="queries"> {{ product.product_details }}</text-highlight>
                         
-                        </a>
-                        <div class="row">
-                      <span class="product-description col-md-8">
-                      <text-highlight :queries="queries"> {{ product.product_details }}</text-highlight>
+                        
 
-                      
-                      </span>
-                      <span class="col-md-4 text-right"> <strong>{{categorynamelist[product.category_code] }} </strong></span>
-                        </div>
-                    </div>
 
-                    
-                  </li>
+</div>
+<div class="col-3 text-right">
+                           <span class="badge badge-warning "><strong>STOCK : </strong> {{ product.qty  | numeral('0,0')}}</span> 
+                        <span v-if="historylist_sumsale[product.code]>0" class="badge badge-danger  mr-1"> <strong>Sale : </strong> {{ historylist_sumsale[product.code]  | numeral('0,0')}}</span>
+  <br>   <strong>{{categorynamelist[product.category_code] }} </strong></div>
+                  </div>
+                   
+
+
+</li>
                   <!-- /.item -->             
                 </ul>
                 </div>
@@ -82,8 +83,8 @@
 
 
 </div>
-<div class="col-md-3">
-           <div class="card">
+<div class="col-md-3 ">
+           <div v-if="productshow[0] || productshow.code " class="card">
 <div class="card-body">
      <h4>รายละเอียดสินค้า</h4>
 <div class="row">
@@ -91,7 +92,7 @@
 
      <img :src="baseurl+'/public/images/product/'+productshow.image"  class="img-thumbnail">
 </div>
-  <div class="col-md-7">
+  <div class="col-md-6">
  
       <strong>{{  productshow['name'] }} </strong>
       <div> <strong>Code : </strong>  {{  productshow['code'] }}  </div>
@@ -154,7 +155,21 @@
                   <!-- /.col -->
                 </div>
                 <!-- /.row -->
-     
+     <div class="row mt-1 ">
+<h2  class="text-center"> 
+ราคาขาย : {{  productprice.priceorder  }}</h2>
+<div class="col-12" >
+  <b-message type="is-info" >
+  <strong>ราคาสำหรับ</strong>
+<span v-if="productprice.cuscode"> เฉพาะลูกค้ารหัส {{ productprice.cuscode }}</span>
+
+<span v-if="productprice.typeprice && productprice.typeprice!='SPC' "> Standard {{ productprice.typeprice }}</span>
+<span v-if="productprice.pricetime==3" > ช่วงเวลา :  {{ productprice.daterange }}</span>
+<span v-if="productprice.once_time==1"> เฉพาะครั้งนี้</span>
+</b-message>
+</div>
+
+     </div>
    
 
 </div>
@@ -196,7 +211,7 @@ Keyword :  {{relatekey }}
 </div>
 
 <!-- รายการที่เลือกแล้ว -->
-<div class="col-md-6">
+<div class="col-md-5">
            <div class="card">
 <div class="card-body">
 
@@ -304,7 +319,7 @@ Keyword :  {{relatekey }}
    <h4><i class="fas fa-info-circle"></i></h4>
 <h4>อยู่ระหว่างการรอนุมัติจาก ผู้จัดการ</h4>
 </div>
-
+{{ productprice }}
 
  </div>
 
@@ -396,6 +411,7 @@ editqtyorderdetail:[],
 newtracking_qty:0,
 editqtynew:0,
 orderremark:'',
+productprice:[],
     }
 },
     watch: {
@@ -492,10 +508,9 @@ this.newtracking_qty=this.editqtynew -oldqty
               this.histories= response.data.salehistory; 
               this.historylist_sumsale= response.data.historylist_sumsale; 
               this.historylist_code= response.data.historylist_code; 
-              
-
-               this.showProductDt(0)   
-
+              if(!this.productshow){
+this.showProductDt(0)   
+              }
 
      
  })
@@ -504,13 +519,8 @@ this.newtracking_qty=this.editqtynew -oldqty
   axios.get(this.baseurl+'/api/orderproducts-search?searchtext='+this.relatekey+'&page=1&customer='+this.customercode+'&showsearchtype=2&relate='+this.productshow['id'])
   .then((response)=>{
               this.relate_products=response.data.products; 
-              // this.relate_show=response.data.search; 
-              // this.relate_productscount = response.data.productscount; 
-              // this.relate_productsall = response.data.productsall; 
-              // this.relate_allpage = response.data.allpage; 
               this.relate_queries = response.data.searchhilight; 
-              // this.relate_totalPages= response.data.allpage; 
-              // this.relate_offset= response.data.offset;
+
      
  })
  
@@ -575,7 +585,7 @@ this.changrelatekey(productname);
 
      
  })
-
+this.checkthisprice(); 
  
  }
 ,
@@ -623,7 +633,7 @@ this.changrelatekey(productname);
   
 });
 this.checkstock();   
-  
+ this.showproductsinoreder();
  })
 
 
@@ -679,9 +689,10 @@ axios.post(this.baseurl+'/api/removeproducttoorder',{
   toast: true,
   timer: 2000,
   timerProgressBar: true,
+ 
   
 });
-
+ this.showproductsinoreder();
   this.checkstock();
 
 
@@ -756,7 +767,7 @@ this.showProductinorderdt(index);
 
   $('#editqty').modal('hide')
 this.checkstock();   
-  
+
  })
 
 
@@ -822,6 +833,17 @@ $('#modalloder').modal('hide');
 
 });
 
+     },checkthisprice(){
+         axios.post(this.baseurl+'/api/order_checkprice',{
+productcode : this.productshow.code,
+cuscode : this.customercode,
+typeprice : this.orderdtall.customer.price_group,
+
+         }).then((response)=>{ 
+
+           this.productprice = response.data
+
+         });
      }
 
 ////////////////////////////////
@@ -863,15 +885,19 @@ margin-bottom: 0.5em;
 .description-block{
  font-size: 0.8rem;
 }
-   .text__highlight{background:#fff9dd !important;
-   padding:0;}
-   #relateproducts .item{
+.text__highlight{
+  background:#fff9dd !important;
+   padding:0;
+   }
+#relateproducts .item{
      font-size: 80%;
      border: #ccc 1px solid;
    }
-   #orderlist i:before {
+#orderlist i:before {
     font-size: 80%;
 }
-
+#orderlist td,#orderlist th{
+border-width: thin;
+}
 
 </style>

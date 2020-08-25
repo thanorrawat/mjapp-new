@@ -26,6 +26,9 @@ Route::get('order_customerlist','Api\OrderProducts@customerlist');
 Route::post('order_create','Api\OrderProducts@addorder');
 Route::get('checkstock/{id}','Api\OrderProducts@checkstock');
 Route::get('categorynamelist','Api\OrderProducts@categoryname');
+Route::post('order_checkprice','Mj\MemoPriceController@checkpriceorder');
+
+
 
 Route::post('addproducttoorder','Api\OrderProducts@addproducttoorder'); //เพิ่มสินค้าใน Order
 Route::get('showproductinorder/{id}','Api\OrderProducts@showproductinorder'); //แสดงรายการสินค้า จาก orderid

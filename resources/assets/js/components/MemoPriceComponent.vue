@@ -1,13 +1,13 @@
 <template>
-  
+  <div class="content is-small">
         <div class="row  ">
-            <div class="col-md-6">
+            <div class="col-md-8">
 
   <div class="card card-default">
               <div class="card-header"> <h4> รายการ Memo ขอปรับราคา (รอตรวจสอบ) </h4></div>
 
                     <div class="card-body">
-
+<div >
    <b-table :data="memopriceListnoapprove" 
    
          paginated
@@ -55,7 +55,7 @@
             </b-table-column>
    </b-table>
 
-
+</div>
 
                     </div>
                 </div>
@@ -68,7 +68,7 @@
               <div class="card-header"> <h4> รายการ Memo ขอปรับราคา (ตรวจสอบแล้ว)</h4></div>
 
                     <div class="card-body">
-
+<div >
    <b-table :data="memopriceListapprove" 
    
          paginated
@@ -115,11 +115,12 @@
 
 
                     </div>
+                    </div>
                 </div>
             </div>
     
 
-               <div class="col-md-6">
+               <div class="col-md-4">
                 <div class="card card-default">
                     <div class="card-header"> <h4>สร้าง Memo ขอปรับราคา</h4>
                         </div>
@@ -349,7 +350,8 @@
     </div>
   </div>
 </div> 
-{{ role_id }}
+
+    </div>
     </div>
 </template>
 
@@ -573,7 +575,6 @@ getmemolist(){
    this.total2 = 0;
 let i = 0; 
 let len = this.memopriceList.length;
-this.options = [];
 this.memopriceListnoapprove=[];
 this.memopriceListapprove=[];
 for (; i < len; i++) {
@@ -758,4 +759,11 @@ ul.pagination-list {
 ul.pagination-list li + li {
     margin-top: 0;
 }
+.table-responsive .level {
+
+    margin: 0;
+    justify-content: normal;
+}
+
+
 </style>

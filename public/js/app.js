@@ -48108,7 +48108,7 @@ exports = module.exports = __webpack_require__(13)(false);
 
 
 // module
-exports.push([module.i, "\n.search-box {\r\n    font-size: 18px;\r\n    padding: 0.4em;\r\n    width: 100%;\r\n    -webkit-appearance: none;\r\n    -moz-appearance: none;\r\n    appearance: none;\r\nborder: 1px sloid #ccc;\r\n    background: #fff url('https://image.flaticon.com/icons/svg/1086/1086933.svg') no-repeat center right 24px/32px !important;\r\n    border-radius: 4px;\r\nmargin-bottom: 1em;\n}\n.pagingrow{\r\n\r\nmargin-bottom: 0.5em;\n}\n.searchlist{\r\n    border-bottom: #ccc 1px solid;\n}\n.searchlist:hover{\r\n  background: #ccc;\n}\n.description-block{\r\n font-size: 0.8rem;\n}\n.text__highlight{background:#fff9dd !important;\r\n   padding:0;\n}\n#relateproducts .item{\r\n     font-size: 80%;\r\n     border: #ccc 1px solid;\n}\n#orderlist i:before {\r\n    font-size: 80%;\n}\r\n\r\n\r\n", ""]);
+exports.push([module.i, "\n.search-box {\r\n    font-size: 18px;\r\n    padding: 0.4em;\r\n    width: 100%;\r\n    -webkit-appearance: none;\r\n    -moz-appearance: none;\r\n    appearance: none;\r\nborder: 1px sloid #ccc;\r\n    background: #fff url('https://image.flaticon.com/icons/svg/1086/1086933.svg') no-repeat center right 24px/32px !important;\r\n    border-radius: 4px;\r\nmargin-bottom: 1em;\n}\n.pagingrow{\r\n\r\nmargin-bottom: 0.5em;\n}\n.searchlist{\r\n    border-bottom: #ccc 1px solid;\n}\n.searchlist:hover{\r\n  background: #ccc;\n}\n.description-block{\r\n font-size: 0.8rem;\n}\n.text__highlight{\r\n  background:#fff9dd !important;\r\n   padding:0;\n}\n#relateproducts .item{\r\n     font-size: 80%;\r\n     border: #ccc 1px solid;\n}\n#orderlist i:before {\r\n    font-size: 80%;\n}\n#orderlist td,#orderlist th{\r\nborder-width: thin;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -48164,6 +48164,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_date_pick_dist_vueDatePick_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_vue_date_pick_dist_vueDatePick_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_vue_sweetalert2__ = __webpack_require__(34);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_vue_numeral_filter__ = __webpack_require__(48);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -48561,7 +48576,8 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_6_vue_
       editqtyorderdetail: [],
       newtracking_qty: 0,
       editqtynew: 0,
-      orderremark: ''
+      orderremark: '',
+      productprice: []
     };
   },
 
@@ -48653,8 +48669,9 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_6_vue_
         _this.histories = response.data.salehistory;
         _this.historylist_sumsale = response.data.historylist_sumsale;
         _this.historylist_code = response.data.historylist_code;
-
-        _this.showProductDt(0);
+        if (!_this.productshow) {
+          _this.showProductDt(0);
+        }
       });
     }, relateproduct: function relateproduct() {
       var _this2 = this;
@@ -48662,13 +48679,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_6_vue_
       //ฟังก์ชั่น
       axios.get(this.baseurl + '/api/orderproducts-search?searchtext=' + this.relatekey + '&page=1&customer=' + this.customercode + '&showsearchtype=2&relate=' + this.productshow['id']).then(function (response) {
         _this2.relate_products = response.data.products;
-        // this.relate_show=response.data.search; 
-        // this.relate_productscount = response.data.productscount; 
-        // this.relate_productsall = response.data.productsall; 
-        // this.relate_allpage = response.data.allpage; 
         _this2.relate_queries = response.data.searchhilight;
-        // this.relate_totalPages= response.data.allpage; 
-        // this.relate_offset= response.data.offset;
       });
     },
 
@@ -48724,6 +48735,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_6_vue_
       axios.get(this.baseurl + '/api/checkstock/' + this.productshow['code']).then(function (response) {
         _this4.stocklist = response.data.stocklist;
       });
+      this.checkthisprice();
     },
 
     categoryname: function categoryname() {
@@ -48766,6 +48778,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_6_vue_
 
           });
           _this6.checkstock();
+          _this6.showproductsinoreder();
         });
       }
     },
@@ -48817,7 +48830,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_6_vue_
               timerProgressBar: true
 
             });
-
+            _this8.showproductsinoreder();
             _this8.checkstock();
           });
 
@@ -48934,6 +48947,19 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_6_vue_
         }
 
         //--
+      });
+    },
+    checkthisprice: function checkthisprice() {
+      var _this11 = this;
+
+      axios.post(this.baseurl + '/api/order_checkprice', {
+        productcode: this.productshow.code,
+        cuscode: this.customercode,
+        typeprice: this.orderdtall.customer.price_group
+
+      }).then(function (response) {
+
+        _this11.productprice = response.data;
       });
     }
 
@@ -61630,6 +61656,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
+    { staticClass: " content is-small" },
     [
       _c("order-selectcustomer", {
         attrs: {
@@ -61641,7 +61668,7 @@ var render = function() {
       _vm._v(" "),
       _vm.orderdt.order_status === 1 || _vm.orderdt.order_status === 2
         ? _c("div", { staticClass: "row" }, [
-            _c("div", { staticClass: "col-md-3" }, [
+            _c("div", { staticClass: "col-md-4" }, [
               _c("div", { staticClass: "card" }, [
                 _vm._m(0),
                 _vm._v(" "),
@@ -61784,122 +61811,115 @@ var render = function() {
                               }
                             },
                             [
-                              _c("div", { staticClass: "product-img" }, [
-                                _c("img", {
-                                  staticClass: "img-size-50",
-                                  attrs: {
-                                    src:
-                                      _vm.baseurl +
-                                      "/public/images/product/" +
-                                      product.image
-                                  }
-                                })
-                              ]),
-                              _vm._v(" "),
-                              _c("div", { staticClass: "product-info" }, [
+                              _c("div", { staticClass: "row" }, [
                                 _c(
-                                  "a",
-                                  {
-                                    staticClass: "product-title",
-                                    attrs: { href: "javascript:void(0)" }
-                                  },
+                                  "div",
+                                  { staticClass: "col-3 text-center" },
                                   [
+                                    _c("img", {
+                                      staticClass: "img-size-50",
+                                      attrs: {
+                                        src:
+                                          _vm.baseurl +
+                                          "/public/images/product/" +
+                                          product.image
+                                      }
+                                    })
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  { staticClass: "col-6" },
+                                  [
+                                    _c(
+                                      "a",
+                                      {
+                                        staticClass: "product-title",
+                                        attrs: { href: "javascript:void(0)" }
+                                      },
+                                      [
+                                        _c(
+                                          "text-highlight",
+                                          { attrs: { queries: _vm.queries } },
+                                          [
+                                            _vm._v(
+                                              _vm._s(product.code) +
+                                                " - " +
+                                                _vm._s(product.name)
+                                            )
+                                          ]
+                                        )
+                                      ],
+                                      1
+                                    ),
+                                    _c("br"),
                                     _c(
                                       "text-highlight",
                                       { attrs: { queries: _vm.queries } },
                                       [
                                         _vm._v(
-                                          _vm._s(product.code) +
-                                            " - " +
-                                            _vm._s(product.name)
+                                          " " + _vm._s(product.product_details)
                                         )
                                       ]
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "span",
-                                      {
-                                        staticClass:
-                                          "badge badge-warning float-right"
-                                      },
-                                      [
-                                        _c("strong", [_vm._v("STOCK : ")]),
-                                        _vm._v(
-                                          " " +
-                                            _vm._s(
-                                              _vm._f("numeral")(
-                                                product.qty,
-                                                "0,0"
-                                              )
-                                            )
-                                        )
-                                      ]
-                                    ),
-                                    _vm._v(" "),
-                                    _vm.historylist_sumsale[product.code] > 0
-                                      ? _c(
-                                          "span",
-                                          {
-                                            staticClass:
-                                              "badge badge-danger float-right mr-1"
-                                          },
-                                          [
-                                            _c("strong", [_vm._v("Sale : ")]),
-                                            _vm._v(
-                                              " " +
-                                                _vm._s(
-                                                  _vm._f("numeral")(
-                                                    _vm.historylist_sumsale[
-                                                      product.code
-                                                    ],
-                                                    "0,0"
-                                                  )
-                                                )
-                                            )
-                                          ]
-                                        )
-                                      : _vm._e()
+                                    )
                                   ],
                                   1
                                 ),
                                 _vm._v(" "),
-                                _c("div", { staticClass: "row" }, [
+                                _c("div", { staticClass: "col-3 text-right" }, [
                                   _c(
                                     "span",
-                                    {
-                                      staticClass:
-                                        "product-description col-md-8"
-                                    },
+                                    { staticClass: "badge badge-warning " },
                                     [
-                                      _c(
-                                        "text-highlight",
-                                        { attrs: { queries: _vm.queries } },
+                                      _c("strong", [_vm._v("STOCK : ")]),
+                                      _vm._v(
+                                        " " +
+                                          _vm._s(
+                                            _vm._f("numeral")(
+                                              product.qty,
+                                              "0,0"
+                                            )
+                                          )
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _vm.historylist_sumsale[product.code] > 0
+                                    ? _c(
+                                        "span",
+                                        {
+                                          staticClass:
+                                            "badge badge-danger  mr-1"
+                                        },
                                         [
+                                          _c("strong", [_vm._v("Sale : ")]),
                                           _vm._v(
                                             " " +
-                                              _vm._s(product.product_details)
+                                              _vm._s(
+                                                _vm._f("numeral")(
+                                                  _vm.historylist_sumsale[
+                                                    product.code
+                                                  ],
+                                                  "0,0"
+                                                )
+                                              )
                                           )
                                         ]
                                       )
-                                    ],
-                                    1
-                                  ),
+                                    : _vm._e(),
                                   _vm._v(" "),
-                                  _c(
-                                    "span",
-                                    { staticClass: "col-md-4 text-right" },
-                                    [
-                                      _c("strong", [
-                                        _vm._v(
-                                          _vm._s(
-                                            _vm.categorynamelist[
-                                              product.category_code
-                                            ]
-                                          ) + " "
-                                        )
-                                      ])
-                                    ]
-                                  )
+                                  _c("br"),
+                                  _vm._v(" "),
+                                  _c("strong", [
+                                    _vm._v(
+                                      _vm._s(
+                                        _vm.categorynamelist[
+                                          product.category_code
+                                        ]
+                                      ) + " "
+                                    )
+                                  ])
                                 ])
                               ])
                             ]
@@ -61950,204 +61970,274 @@ var render = function() {
               ])
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "col-md-3" }, [
-              _c("div", { staticClass: "card" }, [
-                _c("div", { staticClass: "card-body" }, [
-                  _c("h4", [_vm._v("รายละเอียดสินค้า")]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "row" }, [
-                    _c("div", { staticClass: "col-md-5" }, [
-                      _c("img", {
-                        staticClass: "img-thumbnail",
-                        attrs: {
-                          src:
-                            _vm.baseurl +
-                            "/public/images/product/" +
-                            _vm.productshow.image
-                        }
-                      })
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-md-7" }, [
-                      _c("strong", [
-                        _vm._v(_vm._s(_vm.productshow["name"]) + " ")
-                      ]),
+            _c("div", { staticClass: "col-md-3 " }, [
+              _vm.productshow[0] || _vm.productshow.code
+                ? _c("div", { staticClass: "card" }, [
+                    _c("div", { staticClass: "card-body" }, [
+                      _c("h4", [_vm._v("รายละเอียดสินค้า")]),
                       _vm._v(" "),
-                      _c("div", [
-                        _c("strong", [_vm._v("Code : ")]),
-                        _vm._v("  " + _vm._s(_vm.productshow["code"]) + "  ")
-                      ]),
-                      _vm._v(" "),
-                      _c("div", [
-                        _c("strong", [_vm._v("หมวดสินค้า : ")]),
-                        _vm._v(
-                          "  " +
-                            _vm._s(
-                              _vm.categorynamelist[
-                                _vm.productshow.category_code
-                              ]
-                            ) +
-                            " "
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("p", { attrs: { id: "productsdetails" } }, [
-                        _vm._v(
-                          "\n " +
-                            _vm._s(_vm.productshow["product_details"]) +
-                            "\n"
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("strong", [_vm._v("ประวัติการขาย : ")]),
-                      _vm._v(
-                        " " +
-                          _vm._s(
-                            _vm._f("numeral")(
-                              _vm.historylist_sumsale[_vm.productshow["code"]],
-                              "0,0"
-                            )
-                          ) +
-                          " ชิ้น\n"
-                      )
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "row mt-2" }, [
-                    _c("div", { staticClass: "col-2 text-right" }, [
-                      _vm._v(" จำนวน")
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-4" }, [
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.addqty,
-                            expression: "addqty"
-                          }
-                        ],
-                        staticClass: "form-control text-right",
-                        attrs: { type: "number", min: "1" },
-                        domProps: { value: _vm.addqty },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
+                      _c("div", { staticClass: "row" }, [
+                        _c("div", { staticClass: "col-md-5" }, [
+                          _c("img", {
+                            staticClass: "img-thumbnail",
+                            attrs: {
+                              src:
+                                _vm.baseurl +
+                                "/public/images/product/" +
+                                _vm.productshow.image
                             }
-                            _vm.addqty = $event.target.value
-                          }
-                        }
-                      })
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col" }, [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-primary btn-flat",
-                          on: {
-                            click: function($event) {
-                              return _vm.addtodorder(_vm.productshow["id"])
-                            }
-                          }
-                        },
-                        [
-                          _c("i", { staticClass: "far fa-plus-square mr-2" }),
-                          _vm._v(
-                            "\n              " +
-                              _vm._s(_vm.buttonlabeladd) +
-                              "\n                "
-                          )
-                        ]
-                      )
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _vm.diffstockadd < 0
-                    ? _c("ul", { staticClass: "nav nav-pills flex-column" }, [
-                        _c(
-                          "li",
-                          {
-                            staticClass: "nav-item active p-1 m-1",
-                            staticStyle: { border: "1px solid red" }
-                          },
-                          [
-                            _c("i", {
-                              staticClass:
-                                "fas fa-exclamation-triangle text-danger"
-                            }),
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-md-6" }, [
+                          _c("strong", [
+                            _vm._v(_vm._s(_vm.productshow["name"]) + " ")
+                          ]),
+                          _vm._v(" "),
+                          _c("div", [
+                            _c("strong", [_vm._v("Code : ")]),
                             _vm._v(
-                              " จำนวนที่ขาด : " +
-                                _vm._s(
-                                  _vm._f("numeral")(
-                                    _vm.diffstockaddnumber,
-                                    "0,0"
-                                  )
-                                ) +
-                                " ชิ้น\n               \n                \n                  "
+                              "  " + _vm._s(_vm.productshow["code"]) + "  "
                             )
-                          ]
-                        )
-                      ])
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "row mt-1" }, [
-                    _c("div", { staticClass: "col border-right" }, [
-                      _c("div", { staticClass: "description-block" }, [
-                        _c("h5", { staticClass: "description-header" }, [
+                          ]),
+                          _vm._v(" "),
+                          _c("div", [
+                            _c("strong", [_vm._v("หมวดสินค้า : ")]),
+                            _vm._v(
+                              "  " +
+                                _vm._s(
+                                  _vm.categorynamelist[
+                                    _vm.productshow.category_code
+                                  ]
+                                ) +
+                                " "
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("p", { attrs: { id: "productsdetails" } }, [
+                            _vm._v(
+                              "\n " +
+                                _vm._s(_vm.productshow["product_details"]) +
+                                "\n"
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("strong", [_vm._v("ประวัติการขาย : ")]),
                           _vm._v(
                             " " +
                               _vm._s(
                                 _vm._f("numeral")(
-                                  _vm.stocklist.sumstock1,
+                                  _vm.historylist_sumsale[
+                                    _vm.productshow["code"]
+                                  ],
                                   "0,0"
                                 )
+                              ) +
+                              " ชิ้น\n"
+                          )
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "row mt-2" }, [
+                        _c("div", { staticClass: "col-2 text-right" }, [
+                          _vm._v(" จำนวน")
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-4" }, [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.addqty,
+                                expression: "addqty"
+                              }
+                            ],
+                            staticClass: "form-control text-right",
+                            attrs: { type: "number", min: "1" },
+                            domProps: { value: _vm.addqty },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.addqty = $event.target.value
+                              }
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col" }, [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-primary btn-flat",
+                              on: {
+                                click: function($event) {
+                                  return _vm.addtodorder(_vm.productshow["id"])
+                                }
+                              }
+                            },
+                            [
+                              _c("i", {
+                                staticClass: "far fa-plus-square mr-2"
+                              }),
+                              _vm._v(
+                                "\n              " +
+                                  _vm._s(_vm.buttonlabeladd) +
+                                  "\n                "
                               )
+                            ]
                           )
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _vm.diffstockadd < 0
+                        ? _c(
+                            "ul",
+                            { staticClass: "nav nav-pills flex-column" },
+                            [
+                              _c(
+                                "li",
+                                {
+                                  staticClass: "nav-item active p-1 m-1",
+                                  staticStyle: { border: "1px solid red" }
+                                },
+                                [
+                                  _c("i", {
+                                    staticClass:
+                                      "fas fa-exclamation-triangle text-danger"
+                                  }),
+                                  _vm._v(
+                                    " จำนวนที่ขาด : " +
+                                      _vm._s(
+                                        _vm._f("numeral")(
+                                          _vm.diffstockaddnumber,
+                                          "0,0"
+                                        )
+                                      ) +
+                                      " ชิ้น\n               \n                \n                  "
+                                  )
+                                ]
+                              )
+                            ]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "row mt-1" }, [
+                        _c("div", { staticClass: "col border-right" }, [
+                          _c("div", { staticClass: "description-block" }, [
+                            _c("h5", { staticClass: "description-header" }, [
+                              _vm._v(
+                                " " +
+                                  _vm._s(
+                                    _vm._f("numeral")(
+                                      _vm.stocklist.sumstock1,
+                                      "0,0"
+                                    )
+                                  )
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("span", { staticClass: "description-text" }, [
+                              _vm._v("Stock เพื่อขาย")
+                            ])
+                          ])
                         ]),
                         _vm._v(" "),
-                        _c("span", { staticClass: "description-text" }, [
-                          _vm._v("Stock เพื่อขาย")
+                        _c("div", { staticClass: "col border-right" }, [
+                          _c("div", { staticClass: "description-block" }, [
+                            _c("h5", { staticClass: "description-header" }, [
+                              _vm._v(
+                                _vm._s(
+                                  _vm._f("numeral")(
+                                    _vm.stocklist.sumstock2,
+                                    "0,0"
+                                  )
+                                )
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("span", { staticClass: "description-text" }, [
+                              _vm._v("Order")
+                            ])
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col" }, [
+                          _c("div", { staticClass: "description-block" }, [
+                            _c("h5", { staticClass: "description-header" }, [
+                              _vm._v(
+                                _vm._s(
+                                  _vm._f("numeral")(
+                                    _vm.stocklist.sumstock3,
+                                    "0,0"
+                                  )
+                                )
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("span", { staticClass: "description-text" }, [
+                              _vm._v("จอง")
+                            ])
+                          ])
                         ])
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col border-right" }, [
-                      _c("div", { staticClass: "description-block" }, [
-                        _c("h5", { staticClass: "description-header" }, [
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "row mt-1 " }, [
+                        _c("h2", { staticClass: "text-center" }, [
                           _vm._v(
-                            _vm._s(
-                              _vm._f("numeral")(_vm.stocklist.sumstock2, "0,0")
-                            )
+                            " \nราคาขาย : " +
+                              _vm._s(_vm.productprice.priceorder)
                           )
                         ]),
                         _vm._v(" "),
-                        _c("span", { staticClass: "description-text" }, [
-                          _vm._v("Order")
-                        ])
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col" }, [
-                      _c("div", { staticClass: "description-block" }, [
-                        _c("h5", { staticClass: "description-header" }, [
-                          _vm._v(
-                            _vm._s(
-                              _vm._f("numeral")(_vm.stocklist.sumstock3, "0,0")
-                            )
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("span", { staticClass: "description-text" }, [
-                          _vm._v("จอง")
-                        ])
+                        _c(
+                          "div",
+                          { staticClass: "col-12" },
+                          [
+                            _c("b-message", { attrs: { type: "is-info" } }, [
+                              _c("strong", [_vm._v("ราคาสำหรับ")]),
+                              _vm._v(" "),
+                              _vm.productprice.cuscode
+                                ? _c("span", [
+                                    _vm._v(
+                                      " เฉพาะลูกค้ารหัส " +
+                                        _vm._s(_vm.productprice.cuscode)
+                                    )
+                                  ])
+                                : _vm._e(),
+                              _vm._v(" "),
+                              _vm.productprice.typeprice &&
+                              _vm.productprice.typeprice != "SPC"
+                                ? _c("span", [
+                                    _vm._v(
+                                      " Standard " +
+                                        _vm._s(_vm.productprice.typeprice)
+                                    )
+                                  ])
+                                : _vm._e(),
+                              _vm._v(" "),
+                              _vm.productprice.pricetime == 3
+                                ? _c("span", [
+                                    _vm._v(
+                                      " ช่วงเวลา :  " +
+                                        _vm._s(_vm.productprice.daterange)
+                                    )
+                                  ])
+                                : _vm._e(),
+                              _vm._v(" "),
+                              _vm.productprice.once_time == 1
+                                ? _c("span", [_vm._v(" เฉพาะครั้งนี้")])
+                                : _vm._e()
+                            ])
+                          ],
+                          1
+                        )
                       ])
                     ])
                   ])
-                ])
-              ]),
+                : _vm._e(),
               _vm._v(" "),
               _c("div", { staticClass: "card" }, [
                 _c("div", { staticClass: "card-body" }, [
@@ -62271,7 +62361,7 @@ var render = function() {
               ])
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "col-md-6" }, [
+            _c("div", { staticClass: "col-md-5" }, [
               _c("div", { staticClass: "card" }, [
                 _c("div", { staticClass: "card-body" }, [
                   _c("h4", [_vm._v("รายการที่เลือก")]),
@@ -62581,7 +62671,8 @@ var render = function() {
               _c("h4", [_vm._v("อยู่ระหว่างการรอนุมัติจาก ผู้จัดการ")])
             ]
           )
-        : _vm._e()
+        : _vm._e(),
+      _vm._v("\n" + _vm._s(_vm.productprice) + "\n\n ")
     ],
     1
   )
@@ -63231,8 +63322,17 @@ var render = function() {
                     _vm._v(" "),
                     _c("div", { staticClass: "col-md-8" }, [
                       _vm._v(
-                        "\n" + _vm._s(_vm.orderdtall.customer["name"]) + "\n"
-                      )
+                        "\n" + _vm._s(_vm.orderdtall.customer["name"]) + "  "
+                      ),
+                      _vm.orderdtall.customer.price_group
+                        ? _c("span", [
+                            _vm._v(
+                              " ( Standard " +
+                                _vm._s(_vm.orderdtall.customer.price_group) +
+                                " ) "
+                            )
+                          ])
+                        : _vm._e()
                     ])
                   ])
                 ])
@@ -63911,7 +64011,7 @@ exports = module.exports = __webpack_require__(13)(false);
 
 
 // module
-exports.push([module.i, "\n#customerlistbox .select2-container {\nwidth: 100% !important;\n}\n/* Datatable CSS */\n.v-datatable-light{\n  width: 100%;\n}\n.tbody-td,.thead-th{\nborder:1px solid #ccc;\npadding:2px\n}\nul.pagination-list {\n    list-style: none;\n    margin-left: 0;\n    margin-top: 0;\n}\nul.pagination-list li + li {\n    margin-top: 0;\n}\n", ""]);
+exports.push([module.i, "\n#customerlistbox .select2-container {\nwidth: 100% !important;\n}\n/* Datatable CSS */\n.v-datatable-light{\n  width: 100%;\n}\n.tbody-td,.thead-th{\nborder:1px solid #ccc;\npadding:2px\n}\nul.pagination-list {\n    list-style: none;\n    margin-left: 0;\n    margin-top: 0;\n}\nul.pagination-list li + li {\n    margin-top: 0;\n}\n.table-responsive .level {\n\n    margin: 0;\n    -webkit-box-pack: normal;\n        -ms-flex-pack: normal;\n            justify-content: normal;\n}\n\n\n", ""]);
 
 // exports
 
@@ -63931,6 +64031,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vue_select_dist_vue_select_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_vue_select_dist_vue_select_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_numeral_filter__ = __webpack_require__(48);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_buefy__ = __webpack_require__(148);
+//
+//
 //
 //
 //
@@ -64482,7 +64584,6 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_5_buef
         _this5.total2 = 0;
         var i = 0;
         var len = _this5.memopriceList.length;
-        _this5.options = [];
         _this5.memopriceListnoapprove = [];
         _this5.memopriceListapprove = [];
         for (; i < len; i++) {
@@ -65021,1231 +65122,1245 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "row  " }, [
-    _c("div", { staticClass: "col-md-6" }, [
-      _c("div", { staticClass: "card card-default" }, [
-        _vm._m(0),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "card-body" },
-          [
-            _c(
-              "b-table",
-              {
-                attrs: {
-                  data: _vm.memopriceListnoapprove,
-                  paginated: "",
-                  "backend-pagination": "",
-                  total: _vm.total,
-                  "per-page": _vm.perPage,
-                  "aria-next-label": "Next page",
-                  "aria-previous-label": "Previous page",
-                  "aria-page-label": "Page",
-                  "aria-current-label": "Current page"
-                },
-                on: { "page-change": _vm.onPageChange }
-              },
-              [
-                _c("b-table-column", {
-                  attrs: { field: "rownumber", label: "#", sortable: "" },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "default",
-                      fn: function(props) {
-                        return [
-                          _vm._v(
-                            "\n                " +
-                              _vm._s(props.row.rownumber) +
-                              "\n  "
-                          )
-                        ]
-                      }
-                    }
-                  ])
-                }),
-                _vm._v(" "),
-                _c("b-table-column", {
-                  attrs: { field: "memonumber", label: "Number", sortable: "" },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "default",
-                      fn: function(props) {
-                        return [
-                          _vm._v(
-                            "\n                " +
-                              _vm._s(props.row.memonumber) +
-                              "\n            "
-                          )
-                        ]
-                      }
-                    }
-                  ])
-                }),
-                _vm._v(" "),
-                _c("b-table-column", {
-                  attrs: {
-                    field: "mmp_productcode",
-                    label: "Product Code",
-                    sortable: ""
-                  },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "default",
-                      fn: function(props) {
-                        return [
-                          _vm._v(
-                            "\n                " +
-                              _vm._s(props.row.mmp_productcode) +
-                              "\n            "
-                          )
-                        ]
-                      }
-                    }
-                  ])
-                }),
-                _vm._v(" "),
-                _c("b-table-column", {
-                  attrs: {
-                    field: "price_now",
-                    label: "ราคาเดิม",
-                    sortable: ""
-                  },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "default",
-                      fn: function(props) {
-                        return [
-                          _vm._v(
-                            "\n                " +
-                              _vm._s(props.row.price_now) +
-                              "\n            "
-                          )
-                        ]
-                      }
-                    }
-                  ])
-                }),
-                _vm._v(" "),
-                _c("b-table-column", {
-                  attrs: {
-                    field: "price_new",
-                    label: "ราคาใหม่",
-                    sortable: ""
-                  },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "default",
-                      fn: function(props) {
-                        return [
-                          _vm._v(
-                            "\n                " +
-                              _vm._s(props.row.price_new) +
-                              "\n            "
-                          )
-                        ]
-                      }
-                    }
-                  ])
-                }),
-                _vm._v(" "),
-                _c("b-table-column", {
-                  attrs: { field: "fullname", label: "ผู้ทำรายการ" },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "default",
-                      fn: function(props) {
-                        return [
-                          _vm._v(
-                            "\n                " +
-                              _vm._s(props.row.fullname) +
-                              "\n            "
-                          )
-                        ]
-                      }
-                    }
-                  ])
-                }),
-                _vm._v(" "),
-                _c("b-table-column", {
-                  attrs: { label: "สถานะ", field: "status", sortable: "" },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "default",
-                      fn: function(props) {
-                        return [
-                          props.row.status == 1
-                            ? _c(
-                                "span",
-                                { staticClass: "badge badge-primary" },
-                                [_vm._v(" รออนุมัติ ")]
-                              )
-                            : _vm._e(),
-                          _vm._v(" "),
-                          props.row.status == 2
-                            ? _c(
-                                "span",
-                                { staticClass: "badge badge-success" },
-                                [_vm._v(" อนุมัติแล้ว ")]
-                              )
-                            : _vm._e(),
-                          _vm._v(" "),
-                          props.row.status == 3
-                            ? _c(
-                                "span",
-                                { staticClass: "badge badge-danger" },
-                                [_vm._v(" ไม่อนุมัติ ")]
-                              )
-                            : _vm._e()
-                        ]
-                      }
-                    }
-                  ])
-                }),
-                _vm._v(" "),
-                _c("b-table-column", {
-                  attrs: { label: "#", field: "id" },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "default",
-                      fn: function(props) {
-                        return [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-sm btn-primary",
-                              attrs: {
-                                "data-toggle": "modal",
-                                "data-target": "#exampleModal"
-                              },
-                              on: {
-                                click: function($event) {
-                                  return _vm.viewmemo(props.row.id)
-                                }
-                              }
-                            },
-                            [_vm._v("\n       view \n        ")]
-                          )
-                        ]
-                      }
-                    }
-                  ])
-                })
-              ],
-              1
-            )
-          ],
-          1
-        )
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "card card-default" }, [
-        _vm._m(1),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "card-body" },
-          [
-            _c(
-              "b-table",
-              {
-                attrs: {
-                  data: _vm.memopriceListapprove,
-                  paginated: "",
-                  "backend-pagination": "",
-                  total: _vm.total2,
-                  "per-page": _vm.perPage,
-                  "aria-next-label": "Next page",
-                  "aria-previous-label": "Previous page",
-                  "aria-page-label": "Page",
-                  "aria-current-label": "Current page"
-                },
-                on: { "page-change": _vm.onPageChange }
-              },
-              [
-                _c("b-table-column", {
-                  attrs: { field: "rownumber", label: "#", sortable: "" },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "default",
-                      fn: function(props) {
-                        return [
-                          _vm._v(
-                            "\n                " +
-                              _vm._s(props.row.rownumber) +
-                              "\n  "
-                          )
-                        ]
-                      }
-                    }
-                  ])
-                }),
-                _vm._v(" "),
-                _c("b-table-column", {
-                  attrs: { field: "memonumber", label: "Number", sortable: "" },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "default",
-                      fn: function(props) {
-                        return [
-                          _vm._v(
-                            "\n                " +
-                              _vm._s(props.row.memonumber) +
-                              "\n            "
-                          )
-                        ]
-                      }
-                    }
-                  ])
-                }),
-                _vm._v(" "),
-                _c("b-table-column", {
-                  attrs: {
-                    field: "mmp_productcode",
-                    label: "Product Code",
-                    sortable: ""
-                  },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "default",
-                      fn: function(props) {
-                        return [
-                          _vm._v(
-                            "\n                " +
-                              _vm._s(props.row.mmp_productcode) +
-                              "\n            "
-                          )
-                        ]
-                      }
-                    }
-                  ])
-                }),
-                _vm._v(" "),
-                _c("b-table-column", {
-                  attrs: {
-                    field: "price_now",
-                    label: "ราคาเดิม",
-                    sortable: ""
-                  },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "default",
-                      fn: function(props) {
-                        return [
-                          _vm._v(
-                            "\n                " +
-                              _vm._s(props.row.price_now) +
-                              "\n            "
-                          )
-                        ]
-                      }
-                    }
-                  ])
-                }),
-                _vm._v(" "),
-                _c("b-table-column", {
-                  attrs: {
-                    field: "price_new",
-                    label: "ราคาใหม่",
-                    sortable: ""
-                  },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "default",
-                      fn: function(props) {
-                        return [
-                          _vm._v(
-                            "\n                " +
-                              _vm._s(props.row.price_new) +
-                              "\n            "
-                          )
-                        ]
-                      }
-                    }
-                  ])
-                }),
-                _vm._v(" "),
-                _c("b-table-column", {
-                  attrs: { label: "สถานะ", field: "status", sortable: "" },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "default",
-                      fn: function(props) {
-                        return [
-                          props.row.status == 1
-                            ? _c(
-                                "span",
-                                { staticClass: "badge badge-primary" },
-                                [_vm._v(" รออนุมัติ ")]
-                              )
-                            : _vm._e(),
-                          _vm._v(" "),
-                          props.row.status == 2
-                            ? _c(
-                                "span",
-                                { staticClass: "badge badge-success" },
-                                [_vm._v(" อนุมัติแล้ว ")]
-                              )
-                            : _vm._e(),
-                          _vm._v(" "),
-                          props.row.status == 3
-                            ? _c(
-                                "span",
-                                { staticClass: "badge badge-danger" },
-                                [_vm._v(" ไม่อนุมัติ ")]
-                              )
-                            : _vm._e()
-                        ]
-                      }
-                    }
-                  ])
-                }),
-                _vm._v(" "),
-                _c("b-table-column", {
-                  attrs: { label: "#", field: "id" },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "default",
-                      fn: function(props) {
-                        return [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-sm btn-primary",
-                              attrs: {
-                                "data-toggle": "modal",
-                                "data-target": "#exampleModal"
-                              },
-                              on: {
-                                click: function($event) {
-                                  return _vm.viewmemo(props.row.id)
-                                }
-                              }
-                            },
-                            [_vm._v("\n       view \n        ")]
-                          )
-                        ]
-                      }
-                    }
-                  ])
-                })
-              ],
-              1
-            )
-          ],
-          1
-        )
-      ])
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "col-md-6" }, [
-      _c("div", { staticClass: "card card-default" }, [
-        _vm._m(2),
-        _vm._v(" "),
-        _c("div", { staticClass: "card-body" }, [
-          _c("div", { staticClass: "row mb-1" }, [
-            _c("label", { staticClass: "col-md-4" }, [_vm._v("สินค้า :")]),
-            _vm._v(" "),
+  return _c("div", { staticClass: "content is-small" }, [
+    _c("div", { staticClass: "row  " }, [
+      _c("div", { staticClass: "col-md-8" }, [
+        _c("div", { staticClass: "card card-default" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
             _c(
               "div",
-              { staticClass: "col-md-8" },
               [
-                _c("v-select", {
-                  attrs: { options: _vm.options },
-                  model: {
-                    value: _vm.selected,
-                    callback: function($$v) {
-                      _vm.selected = $$v
+                _c(
+                  "b-table",
+                  {
+                    attrs: {
+                      data: _vm.memopriceListnoapprove,
+                      paginated: "",
+                      "backend-pagination": "",
+                      total: _vm.total,
+                      "per-page": _vm.perPage,
+                      "aria-next-label": "Next page",
+                      "aria-previous-label": "Previous page",
+                      "aria-page-label": "Page",
+                      "aria-current-label": "Current page"
                     },
-                    expression: "selected"
-                  }
-                })
+                    on: { "page-change": _vm.onPageChange }
+                  },
+                  [
+                    _c("b-table-column", {
+                      attrs: { field: "rownumber", label: "#", sortable: "" },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "default",
+                          fn: function(props) {
+                            return [
+                              _vm._v(
+                                "\n                " +
+                                  _vm._s(props.row.rownumber) +
+                                  "\n  "
+                              )
+                            ]
+                          }
+                        }
+                      ])
+                    }),
+                    _vm._v(" "),
+                    _c("b-table-column", {
+                      attrs: {
+                        field: "memonumber",
+                        label: "Number",
+                        sortable: ""
+                      },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "default",
+                          fn: function(props) {
+                            return [
+                              _vm._v(
+                                "\n                " +
+                                  _vm._s(props.row.memonumber) +
+                                  "\n            "
+                              )
+                            ]
+                          }
+                        }
+                      ])
+                    }),
+                    _vm._v(" "),
+                    _c("b-table-column", {
+                      attrs: {
+                        field: "mmp_productcode",
+                        label: "Product Code",
+                        sortable: ""
+                      },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "default",
+                          fn: function(props) {
+                            return [
+                              _vm._v(
+                                "\n                " +
+                                  _vm._s(props.row.mmp_productcode) +
+                                  "\n            "
+                              )
+                            ]
+                          }
+                        }
+                      ])
+                    }),
+                    _vm._v(" "),
+                    _c("b-table-column", {
+                      attrs: {
+                        field: "price_now",
+                        label: "ราคาเดิม",
+                        sortable: ""
+                      },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "default",
+                          fn: function(props) {
+                            return [
+                              _vm._v(
+                                "\n                " +
+                                  _vm._s(props.row.price_now) +
+                                  "\n            "
+                              )
+                            ]
+                          }
+                        }
+                      ])
+                    }),
+                    _vm._v(" "),
+                    _c("b-table-column", {
+                      attrs: {
+                        field: "price_new",
+                        label: "ราคาใหม่",
+                        sortable: ""
+                      },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "default",
+                          fn: function(props) {
+                            return [
+                              _vm._v(
+                                "\n                " +
+                                  _vm._s(props.row.price_new) +
+                                  "\n            "
+                              )
+                            ]
+                          }
+                        }
+                      ])
+                    }),
+                    _vm._v(" "),
+                    _c("b-table-column", {
+                      attrs: { field: "fullname", label: "ผู้ทำรายการ" },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "default",
+                          fn: function(props) {
+                            return [
+                              _vm._v(
+                                "\n                " +
+                                  _vm._s(props.row.fullname) +
+                                  "\n            "
+                              )
+                            ]
+                          }
+                        }
+                      ])
+                    }),
+                    _vm._v(" "),
+                    _c("b-table-column", {
+                      attrs: { label: "สถานะ", field: "status", sortable: "" },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "default",
+                          fn: function(props) {
+                            return [
+                              props.row.status == 1
+                                ? _c(
+                                    "span",
+                                    { staticClass: "badge badge-primary" },
+                                    [_vm._v(" รออนุมัติ ")]
+                                  )
+                                : _vm._e(),
+                              _vm._v(" "),
+                              props.row.status == 2
+                                ? _c(
+                                    "span",
+                                    { staticClass: "badge badge-success" },
+                                    [_vm._v(" อนุมัติแล้ว ")]
+                                  )
+                                : _vm._e(),
+                              _vm._v(" "),
+                              props.row.status == 3
+                                ? _c(
+                                    "span",
+                                    { staticClass: "badge badge-danger" },
+                                    [_vm._v(" ไม่อนุมัติ ")]
+                                  )
+                                : _vm._e()
+                            ]
+                          }
+                        }
+                      ])
+                    }),
+                    _vm._v(" "),
+                    _c("b-table-column", {
+                      attrs: { label: "#", field: "id" },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "default",
+                          fn: function(props) {
+                            return [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-sm btn-primary",
+                                  attrs: {
+                                    "data-toggle": "modal",
+                                    "data-target": "#exampleModal"
+                                  },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.viewmemo(props.row.id)
+                                    }
+                                  }
+                                },
+                                [_vm._v("\n       view \n        ")]
+                              )
+                            ]
+                          }
+                        }
+                      ])
+                    })
+                  ],
+                  1
+                )
               ],
               1
             )
-          ]),
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "card card-default" }, [
+          _vm._m(1),
           _vm._v(" "),
-          _c("div", { staticClass: "row mb-1" }, [
-            _c("label", { staticClass: "col-md-4" }, [
-              _vm._v("เหตุผลการปรับราคา :")
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-md-8" }, [
-              _c(
-                "select",
-                {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.resonselected,
-                      expression: "resonselected"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { name: "", id: "" },
-                  on: {
-                    change: function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.resonselected = $event.target.multiple
-                        ? $$selectedVal
-                        : $$selectedVal[0]
-                    }
-                  }
-                },
-                _vm._l(_vm.reasons, function(reason) {
-                  return _c("option", { domProps: { value: reason.value } }, [
-                    _vm._v(_vm._s(reason.name))
-                  ])
-                }),
-                0
-              )
-            ])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "row mb-1" }, [
-            _c("label", { staticClass: "col-md-4" }, [_vm._v("ลูกค้า :")]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-md-8" }, [
-              _c("div", { staticClass: "custom-control custom-radio" }, [
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.cutomertype,
-                      expression: "cutomertype"
-                    }
-                  ],
-                  staticClass: "custom-control-input",
-                  attrs: {
-                    type: "radio",
-                    id: "customerRadio1",
-                    name: "customerRadio",
-                    value: "1"
-                  },
-                  domProps: { checked: _vm._q(_vm.cutomertype, "1") },
-                  on: {
-                    change: function($event) {
-                      _vm.cutomertype = "1"
-                    }
-                  }
-                }),
-                _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c(
+              "div",
+              [
                 _c(
-                  "label",
+                  "b-table",
                   {
-                    staticClass: "custom-control-label",
-                    attrs: { for: "customerRadio1" }
-                  },
-                  [_vm._v("ลูกค้าทั้งหมด")]
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "custom-control custom-radio" }, [
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.cutomertype,
-                      expression: "cutomertype"
-                    }
-                  ],
-                  staticClass: "custom-control-input",
-                  attrs: {
-                    type: "radio",
-                    id: "customerRadio2",
-                    name: "customerRadio",
-                    value: "2"
-                  },
-                  domProps: { checked: _vm._q(_vm.cutomertype, "2") },
-                  on: {
-                    change: function($event) {
-                      _vm.cutomertype = "2"
-                    }
-                  }
-                }),
-                _vm._v(" "),
-                _c(
-                  "label",
-                  {
-                    staticClass: "custom-control-label",
-                    attrs: { for: "customerRadio2" }
-                  },
-                  [_vm._v("เลือกลูกค้า")]
-                )
-              ]),
-              _vm._v(" "),
-              _vm.cutomertype == 1
-                ? _c(
-                    "select",
-                    {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.pricetype,
-                          expression: "pricetype"
-                        }
-                      ],
-                      staticClass: "form-control mt-1",
-                      attrs: {
-                        name: "pricetype",
-                        id: "pricetype",
-                        required: ""
-                      },
-                      on: {
-                        change: function($event) {
-                          var $$selectedVal = Array.prototype.filter
-                            .call($event.target.options, function(o) {
-                              return o.selected
-                            })
-                            .map(function(o) {
-                              var val = "_value" in o ? o._value : o.value
-                              return val
-                            })
-                          _vm.pricetype = $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        }
-                      }
+                    attrs: {
+                      data: _vm.memopriceListapprove,
+                      paginated: "",
+                      "backend-pagination": "",
+                      total: _vm.total2,
+                      "per-page": _vm.perPage,
+                      "aria-next-label": "Next page",
+                      "aria-previous-label": "Previous page",
+                      "aria-page-label": "Page",
+                      "aria-current-label": "Current page"
                     },
-                    [
-                      _c("option", { attrs: { value: "" } }, [
-                        _vm._v("ประเภทราคา")
-                      ]),
-                      _vm._v(" "),
-                      _c("option", { attrs: { value: "A" } }, [
-                        _vm._v("Standard A")
-                      ]),
-                      _vm._v(" "),
-                      _c("option", { attrs: { value: "B" } }, [
-                        _vm._v("Standard B")
-                      ]),
-                      _vm._v(" "),
-                      _c("option", { attrs: { value: "C" } }, [
-                        _vm._v("Standard C")
-                      ]),
-                      _vm._v(" "),
-                      _c("option", { attrs: { value: "D" } }, [
-                        _vm._v("Standard D")
+                    on: { "page-change": _vm.onPageChange }
+                  },
+                  [
+                    _c("b-table-column", {
+                      attrs: { field: "rownumber", label: "#", sortable: "" },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "default",
+                          fn: function(props) {
+                            return [
+                              _vm._v(
+                                "\n                " +
+                                  _vm._s(props.row.rownumber) +
+                                  "\n  "
+                              )
+                            ]
+                          }
+                        }
                       ])
-                    ]
-                  )
-                : _vm._e(),
+                    }),
+                    _vm._v(" "),
+                    _c("b-table-column", {
+                      attrs: {
+                        field: "memonumber",
+                        label: "Number",
+                        sortable: ""
+                      },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "default",
+                          fn: function(props) {
+                            return [
+                              _vm._v(
+                                "\n                " +
+                                  _vm._s(props.row.memonumber) +
+                                  "\n            "
+                              )
+                            ]
+                          }
+                        }
+                      ])
+                    }),
+                    _vm._v(" "),
+                    _c("b-table-column", {
+                      attrs: {
+                        field: "mmp_productcode",
+                        label: "Product Code",
+                        sortable: ""
+                      },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "default",
+                          fn: function(props) {
+                            return [
+                              _vm._v(
+                                "\n                " +
+                                  _vm._s(props.row.mmp_productcode) +
+                                  "\n            "
+                              )
+                            ]
+                          }
+                        }
+                      ])
+                    }),
+                    _vm._v(" "),
+                    _c("b-table-column", {
+                      attrs: {
+                        field: "price_now",
+                        label: "ราคาเดิม",
+                        sortable: ""
+                      },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "default",
+                          fn: function(props) {
+                            return [
+                              _vm._v(
+                                "\n                " +
+                                  _vm._s(props.row.price_now) +
+                                  "\n            "
+                              )
+                            ]
+                          }
+                        }
+                      ])
+                    }),
+                    _vm._v(" "),
+                    _c("b-table-column", {
+                      attrs: {
+                        field: "price_new",
+                        label: "ราคาใหม่",
+                        sortable: ""
+                      },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "default",
+                          fn: function(props) {
+                            return [
+                              _vm._v(
+                                "\n                " +
+                                  _vm._s(props.row.price_new) +
+                                  "\n            "
+                              )
+                            ]
+                          }
+                        }
+                      ])
+                    }),
+                    _vm._v(" "),
+                    _c("b-table-column", {
+                      attrs: { label: "สถานะ", field: "status", sortable: "" },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "default",
+                          fn: function(props) {
+                            return [
+                              props.row.status == 1
+                                ? _c(
+                                    "span",
+                                    { staticClass: "badge badge-primary" },
+                                    [_vm._v(" รออนุมัติ ")]
+                                  )
+                                : _vm._e(),
+                              _vm._v(" "),
+                              props.row.status == 2
+                                ? _c(
+                                    "span",
+                                    { staticClass: "badge badge-success" },
+                                    [_vm._v(" อนุมัติแล้ว ")]
+                                  )
+                                : _vm._e(),
+                              _vm._v(" "),
+                              props.row.status == 3
+                                ? _c(
+                                    "span",
+                                    { staticClass: "badge badge-danger" },
+                                    [_vm._v(" ไม่อนุมัติ ")]
+                                  )
+                                : _vm._e()
+                            ]
+                          }
+                        }
+                      ])
+                    }),
+                    _vm._v(" "),
+                    _c("b-table-column", {
+                      attrs: { label: "#", field: "id" },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "default",
+                          fn: function(props) {
+                            return [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-sm btn-primary",
+                                  attrs: {
+                                    "data-toggle": "modal",
+                                    "data-target": "#exampleModal"
+                                  },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.viewmemo(props.row.id)
+                                    }
+                                  }
+                                },
+                                [_vm._v("\n       view \n        ")]
+                              )
+                            ]
+                          }
+                        }
+                      ])
+                    })
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-4" }, [
+        _c("div", { staticClass: "card card-default" }, [
+          _vm._m(2),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "row mb-1" }, [
+              _c("label", { staticClass: "col-md-4" }, [_vm._v("สินค้า :")]),
               _vm._v(" "),
               _c(
                 "div",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.cutomertype == 2,
-                      expression: "cutomertype==2"
-                    }
-                  ],
-                  staticClass: " mt-1 ",
-                  attrs: { id: "customerlistbox" }
-                },
+                { staticClass: "col-md-8" },
                 [
                   _c("v-select", {
-                    attrs: { options: _vm.optionsCustomer },
+                    attrs: { options: _vm.options },
                     model: {
-                      value: _vm.selectedCustomer,
+                      value: _vm.selected,
                       callback: function($$v) {
-                        _vm.selectedCustomer = $$v
+                        _vm.selected = $$v
                       },
-                      expression: "selectedCustomer"
+                      expression: "selected"
                     }
                   })
                 ],
                 1
               )
-            ])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "row mb-1" }, [
-            _c("label", { staticClass: "col-md-4" }, [
-              _vm._v("ช่วงเวลาที่มีผล :")
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "col-md-8" }, [
-              _c("div", { staticClass: "custom-control custom-radio" }, [
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.changepricetime,
-                      expression: "changepricetime"
-                    }
-                  ],
-                  staticClass: "custom-control-input",
-                  attrs: {
-                    type: "radio",
-                    id: "changepricetime1",
-                    name: "changepricetime",
-                    value: "1"
-                  },
-                  domProps: { checked: _vm._q(_vm.changepricetime, "1") },
-                  on: {
-                    change: function($event) {
-                      _vm.changepricetime = "1"
-                    }
-                  }
-                }),
-                _vm._v(" "),
-                _c(
-                  "label",
-                  {
-                    staticClass: "custom-control-label",
-                    attrs: { for: "changepricetime1" }
-                  },
-                  [_vm._v("ถาวร")]
-                )
+            _c("div", { staticClass: "row mb-1" }, [
+              _c("label", { staticClass: "col-md-4" }, [
+                _vm._v("เหตุผลการปรับราคา :")
               ]),
               _vm._v(" "),
-              _c("div", { staticClass: "custom-control custom-radio" }, [
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.changepricetime,
-                      expression: "changepricetime"
-                    }
-                  ],
-                  staticClass: "custom-control-input",
-                  attrs: {
-                    type: "radio",
-                    id: "changepricetime2",
-                    name: "changepricetime",
-                    value: "2"
-                  },
-                  domProps: { checked: _vm._q(_vm.changepricetime, "2") },
-                  on: {
-                    change: function($event) {
-                      _vm.changepricetime = "2"
-                    }
-                  }
-                }),
-                _vm._v(" "),
+              _c("div", { staticClass: "col-md-8" }, [
                 _c(
-                  "label",
+                  "select",
                   {
-                    staticClass: "custom-control-label",
-                    attrs: { for: "changepricetime2" }
-                  },
-                  [_vm._v("เฉพาะครั้งนี้")]
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "custom-control custom-radio" }, [
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.changepricetime,
-                      expression: "changepricetime"
-                    }
-                  ],
-                  staticClass: "custom-control-input",
-                  attrs: {
-                    type: "radio",
-                    id: "changepricetime3",
-                    name: "changepricetime",
-                    value: "3"
-                  },
-                  domProps: { checked: _vm._q(_vm.changepricetime, "3") },
-                  on: {
-                    change: function($event) {
-                      _vm.changepricetime = "3"
-                    }
-                  }
-                }),
-                _vm._v(" "),
-                _c(
-                  "label",
-                  {
-                    staticClass: "custom-control-label",
-                    attrs: { for: "changepricetime3" }
-                  },
-                  [_vm._v("เฉพาะช่วงเวลา")]
-                )
-              ]),
-              _vm._v(" "),
-              _c(
-                "div",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.changepricetime == 3,
-                      expression: "changepricetime==3"
-                    }
-                  ],
-                  staticClass: "form-group"
-                },
-                [
-                  _c("label", [_vm._v("Date range:")]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "input-group" }, [
-                    _vm._m(3),
-                    _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.pricerangedateinput,
-                          expression: "pricerangedateinput"
-                        }
-                      ],
-                      staticClass: "form-control float-right",
-                      attrs: { type: "text", id: "pricerangedate" },
-                      domProps: { value: _vm.pricerangedateinput },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.pricerangedateinput = $event.target.value
-                        }
-                      }
-                    })
-                  ])
-                ]
-              )
-            ])
-          ]),
-          _vm._v(" "),
-          _vm.nowpricevalue && _vm.selected
-            ? _c("div", { attrs: { id: "chamgepricebox" } }, [
-                _c(
-                  "div",
-                  { staticClass: "row mb-1" },
-                  [
-                    _c("label", { staticClass: "col-md-3 text-right" }, [
-                      _vm._v("ราคาปัจจุบัน :")
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-md-3" }, [
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.nowpricevalue,
-                            expression: "nowpricevalue"
-                          }
-                        ],
-                        staticClass: "form-control text-right",
-                        attrs: { type: "number" },
-                        domProps: { value: _vm.nowpricevalue },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.nowpricevalue = $event.target.value
-                          }
-                        }
-                      })
-                    ]),
-                    _vm._v(" "),
-                    _c("label", { staticClass: "col-md-3 text-right" }, [
-                      _vm._v("ราคาใหม่ :")
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-md-3" }, [
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.memonewpricre,
-                            expression: "memonewpricre"
-                          }
-                        ],
-                        staticClass: "form-control text-right",
-                        attrs: { type: "number" },
-                        domProps: { value: _vm.memonewpricre },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.memonewpricre = $event.target.value
-                          }
-                        }
-                      })
-                    ]),
-                    _vm._v(" "),
-                    _c(
-                      "div",
+                    directives: [
                       {
-                        staticClass:
-                          "col-md-12 text-center alert alert-info mt-1"
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.resonselected,
+                        expression: "resonselected"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { name: "", id: "" },
+                    on: {
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.resonselected = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      }
+                    }
+                  },
+                  _vm._l(_vm.reasons, function(reason) {
+                    return _c("option", { domProps: { value: reason.value } }, [
+                      _vm._v(_vm._s(reason.name))
+                    ])
+                  }),
+                  0
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "row mb-1" }, [
+              _c("label", { staticClass: "col-md-4" }, [_vm._v("ลูกค้า :")]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-8" }, [
+                _c("div", { staticClass: "custom-control custom-radio" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.cutomertype,
+                        expression: "cutomertype"
+                      }
+                    ],
+                    staticClass: "custom-control-input",
+                    attrs: {
+                      type: "radio",
+                      id: "customerRadio1",
+                      name: "customerRadio",
+                      value: "1"
+                    },
+                    domProps: { checked: _vm._q(_vm.cutomertype, "1") },
+                    on: {
+                      change: function($event) {
+                        _vm.cutomertype = "1"
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "label",
+                    {
+                      staticClass: "custom-control-label",
+                      attrs: { for: "customerRadio1" }
+                    },
+                    [_vm._v("ลูกค้าทั้งหมด")]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "custom-control custom-radio" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.cutomertype,
+                        expression: "cutomertype"
+                      }
+                    ],
+                    staticClass: "custom-control-input",
+                    attrs: {
+                      type: "radio",
+                      id: "customerRadio2",
+                      name: "customerRadio",
+                      value: "2"
+                    },
+                    domProps: { checked: _vm._q(_vm.cutomertype, "2") },
+                    on: {
+                      change: function($event) {
+                        _vm.cutomertype = "2"
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "label",
+                    {
+                      staticClass: "custom-control-label",
+                      attrs: { for: "customerRadio2" }
+                    },
+                    [_vm._v("เลือกลูกค้า")]
+                  )
+                ]),
+                _vm._v(" "),
+                _vm.cutomertype == 1
+                  ? _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.pricetype,
+                            expression: "pricetype"
+                          }
+                        ],
+                        staticClass: "form-control mt-1",
+                        attrs: {
+                          name: "pricetype",
+                          id: "pricetype",
+                          required: ""
+                        },
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.pricetype = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          }
+                        }
                       },
                       [
-                        _vm._v(
-                          "\n                  \n                  " +
-                            _vm._s(_vm.nowpricename) +
-                            "\n                \n                "
-                        )
+                        _c("option", { attrs: { value: "" } }, [
+                          _vm._v("ประเภทราคา")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "A" } }, [
+                          _vm._v("Standard A")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "B" } }, [
+                          _vm._v("Standard B")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "C" } }, [
+                          _vm._v("Standard C")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "D" } }, [
+                          _vm._v("Standard D")
+                        ])
                       ]
-                    ),
-                    _vm._v(" "),
-                    _c("b-table-column", {
-                      attrs: { field: "fullname", label: "ผู้ทำรายการ" },
-                      scopedSlots: _vm._u(
-                        [
-                          {
-                            key: "default",
-                            fn: function(props) {
-                              return [
-                                _vm._v(
-                                  "\n                " +
-                                    _vm._s(props.row.fullname) +
-                                    "\n            "
-                                )
-                              ]
-                            }
-                          }
-                        ],
-                        null,
-                        false,
-                        504603401
-                      )
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.cutomertype == 2,
+                        expression: "cutomertype==2"
+                      }
+                    ],
+                    staticClass: " mt-1 ",
+                    attrs: { id: "customerlistbox" }
+                  },
+                  [
+                    _c("v-select", {
+                      attrs: { options: _vm.optionsCustomer },
+                      model: {
+                        value: _vm.selectedCustomer,
+                        callback: function($$v) {
+                          _vm.selectedCustomer = $$v
+                        },
+                        expression: "selectedCustomer"
+                      }
                     })
                   ],
                   1
-                ),
-                _vm._v(" "),
-                _c("div", { staticClass: "row mb-1" }, [
-                  _c("label", { staticClass: "col-md-4" }, [
-                    _vm._v("หมายเหตุ :")
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col-md-8" }, [
-                    _c("textarea", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.memoremark,
-                          expression: "memoremark"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      domProps: { value: _vm.memoremark },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.memoremark = $event.target.value
-                        }
-                      }
-                    })
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "text-center m-1" }, [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-primary",
-                      on: { click: _vm.addmemo }
-                    },
-                    [_vm._v("ส่ง Memo")]
-                  )
-                ])
+                )
               ])
-            : _vm._e()
-        ])
-      ])
-    ]),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        staticClass: "modal fade",
-        attrs: {
-          id: "exampleModal",
-          tabindex: "-1",
-          "aria-labelledby": "exampleModalLabel",
-          "aria-hidden": "true"
-        }
-      },
-      [
-        _c("div", { staticClass: "modal-dialog" }, [
-          _c("div", { staticClass: "modal-content" }, [
-            _c("div", { staticClass: "modal-header" }, [
-              _c(
-                "h5",
-                {
-                  staticClass: "modal-title",
-                  attrs: { id: "exampleModalLabel" }
-                },
-                [_vm._v("Memo No. " + _vm._s(_vm.memoviewdata.memonumber))]
-              ),
-              _vm._v(" "),
-              _vm._m(4)
             ]),
             _vm._v(" "),
-            _vm.memoviewdata.productdt
-              ? _c("div", { staticClass: "modal-body" }, [
-                  _c("div", { staticClass: "row" }, [
-                    _c("label", { staticClass: "col-md-4" }, [
-                      _vm._v("สินค้า :")
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-md-8" }, [
-                      _vm._v(
-                        _vm._s(_vm.memoviewdata.productdt[0].code) +
-                          " - " +
-                          _vm._s(_vm.memoviewdata.productdt[0].name) +
-                          " "
-                      )
-                    ])
-                  ]),
+            _c("div", { staticClass: "row mb-1" }, [
+              _c("label", { staticClass: "col-md-4" }, [
+                _vm._v("ช่วงเวลาที่มีผล :")
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-8" }, [
+                _c("div", { staticClass: "custom-control custom-radio" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.changepricetime,
+                        expression: "changepricetime"
+                      }
+                    ],
+                    staticClass: "custom-control-input",
+                    attrs: {
+                      type: "radio",
+                      id: "changepricetime1",
+                      name: "changepricetime",
+                      value: "1"
+                    },
+                    domProps: { checked: _vm._q(_vm.changepricetime, "1") },
+                    on: {
+                      change: function($event) {
+                        _vm.changepricetime = "1"
+                      }
+                    }
+                  }),
                   _vm._v(" "),
-                  _c("div", { staticClass: "row mt-1" }, [
-                    _c("label", { staticClass: "col-md-4" }, [
-                      _vm._v("เหตุผลการปรับราคา :")
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-md-8" }, [
-                      _vm._v(_vm._s(_vm.memoviewdata.reson[0].name))
-                    ])
-                  ]),
+                  _c(
+                    "label",
+                    {
+                      staticClass: "custom-control-label",
+                      attrs: { for: "changepricetime1" }
+                    },
+                    [_vm._v("ถาวร")]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "custom-control custom-radio" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.changepricetime,
+                        expression: "changepricetime"
+                      }
+                    ],
+                    staticClass: "custom-control-input",
+                    attrs: {
+                      type: "radio",
+                      id: "changepricetime2",
+                      name: "changepricetime",
+                      value: "2"
+                    },
+                    domProps: { checked: _vm._q(_vm.changepricetime, "2") },
+                    on: {
+                      change: function($event) {
+                        _vm.changepricetime = "2"
+                      }
+                    }
+                  }),
                   _vm._v(" "),
-                  _c("div", { staticClass: "row mt-1" }, [
-                    _c("label", { staticClass: "col-md-4" }, [
-                      _vm._v("ลูกค้า :")
-                    ]),
+                  _c(
+                    "label",
+                    {
+                      staticClass: "custom-control-label",
+                      attrs: { for: "changepricetime2" }
+                    },
+                    [_vm._v("เฉพาะครั้งนี้")]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "custom-control custom-radio" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.changepricetime,
+                        expression: "changepricetime"
+                      }
+                    ],
+                    staticClass: "custom-control-input",
+                    attrs: {
+                      type: "radio",
+                      id: "changepricetime3",
+                      name: "changepricetime",
+                      value: "3"
+                    },
+                    domProps: { checked: _vm._q(_vm.changepricetime, "3") },
+                    on: {
+                      change: function($event) {
+                        _vm.changepricetime = "3"
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "label",
+                    {
+                      staticClass: "custom-control-label",
+                      attrs: { for: "changepricetime3" }
+                    },
+                    [_vm._v("เฉพาะช่วงเวลา")]
+                  )
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.changepricetime == 3,
+                        expression: "changepricetime==3"
+                      }
+                    ],
+                    staticClass: "form-group"
+                  },
+                  [
+                    _c("label", [_vm._v("Date range:")]),
                     _vm._v(" "),
-                    _vm.memoviewdata.mmp_customertype == 1
-                      ? _c("div", { staticClass: "col-md-8" }, [
+                    _c("div", { staticClass: "input-group" }, [
+                      _vm._m(3),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.pricerangedateinput,
+                            expression: "pricerangedateinput"
+                          }
+                        ],
+                        staticClass: "form-control float-right",
+                        attrs: { type: "text", id: "pricerangedate" },
+                        domProps: { value: _vm.pricerangedateinput },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.pricerangedateinput = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ]
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _vm.nowpricevalue && _vm.selected
+              ? _c("div", { attrs: { id: "chamgepricebox" } }, [
+                  _c(
+                    "div",
+                    { staticClass: "row mb-1" },
+                    [
+                      _c("label", { staticClass: "col-md-3 text-right" }, [
+                        _vm._v("ราคาปัจจุบัน :")
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-3" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.nowpricevalue,
+                              expression: "nowpricevalue"
+                            }
+                          ],
+                          staticClass: "form-control text-right",
+                          attrs: { type: "number" },
+                          domProps: { value: _vm.nowpricevalue },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.nowpricevalue = $event.target.value
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("label", { staticClass: "col-md-3 text-right" }, [
+                        _vm._v("ราคาใหม่ :")
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-3" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.memonewpricre,
+                              expression: "memonewpricre"
+                            }
+                          ],
+                          staticClass: "form-control text-right",
+                          attrs: { type: "number" },
+                          domProps: { value: _vm.memonewpricre },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.memonewpricre = $event.target.value
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "col-md-12 text-center alert alert-info mt-1"
+                        },
+                        [
                           _vm._v(
-                            "ลูกค้าทั้งหมด ( Standard " +
-                              _vm._s(_vm.memoviewdata.mmp_typeprice) +
-                              ")"
+                            "\n                  \n                  " +
+                              _vm._s(_vm.nowpricename) +
+                              "\n                \n                "
                           )
-                        ])
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.memoviewdata.mmp_customertype == 2
-                      ? _c("div", { staticClass: "col-md-8" }, [
-                          _vm._v(
-                            _vm._s(
-                              _vm.memoviewdata.customerdt[0].customercode
-                            ) +
-                              " - " +
-                              _vm._s(_vm.memoviewdata.customerdt[0].name) +
-                              " "
-                          )
-                        ])
-                      : _vm._e()
-                  ]),
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("b-table-column", {
+                        attrs: { field: "fullname", label: "ผู้ทำรายการ" },
+                        scopedSlots: _vm._u(
+                          [
+                            {
+                              key: "default",
+                              fn: function(props) {
+                                return [
+                                  _vm._v(
+                                    "\n                " +
+                                      _vm._s(props.row.fullname) +
+                                      "\n            "
+                                  )
+                                ]
+                              }
+                            }
+                          ],
+                          null,
+                          false,
+                          504603401
+                        )
+                      })
+                    ],
+                    1
+                  ),
                   _vm._v(" "),
-                  _c("div", { staticClass: "row mt-1" }, [
-                    _c("label", { staticClass: "col-md-4" }, [
-                      _vm._v("ช่วงเวลาที่มีผล :")
-                    ]),
-                    _vm._v(" "),
-                    _vm.memoviewdata.mmp_when == 1
-                      ? _c("div", { staticClass: "col-md-8" }, [_vm._v("ถาวร")])
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.memoviewdata.mmp_when == 2
-                      ? _c("div", { staticClass: "col-md-8" }, [
-                          _vm._v("เฉพาะครั้งนี้")
-                        ])
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.memoviewdata.mmp_when == 3
-                      ? _c("div", { staticClass: "col-md-8" }, [
-                          _vm._v(_vm._s(_vm.memoviewdata.mmp_daterange))
-                        ])
-                      : _vm._e()
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "row mt-1" }, [
-                    _c("label", { staticClass: "col-md-3" }, [
-                      _vm._v("ราคาเดิม :")
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-md-3" }, [
-                      _vm._v(_vm._s(_vm.memoviewdata.price_now))
-                    ]),
-                    _vm._v(" "),
-                    _c("label", { staticClass: "col-md-3" }, [
-                      _vm._v("ราคาใหม่ :")
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-md-3" }, [
-                      _vm._v(_vm._s(_vm.memoviewdata.price_new))
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "row mt-1" }, [
+                  _c("div", { staticClass: "row mb-1" }, [
                     _c("label", { staticClass: "col-md-4" }, [
                       _vm._v("หมายเหตุ :")
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "col-md-8" }, [
-                      _vm._v(_vm._s(_vm.memoviewdata.mmp_remark))
+                      _c("textarea", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.memoremark,
+                            expression: "memoremark"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        domProps: { value: _vm.memoremark },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.memoremark = $event.target.value
+                          }
+                        }
+                      })
                     ])
                   ]),
                   _vm._v(" "),
-                  _c("div", { staticClass: "row mt-1" }, [
-                    _c("label", { staticClass: "col-md-4" }, [
-                      _vm._v("ผู้ขออนุมัติ :")
+                  _c("div", { staticClass: "text-center m-1" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        on: { click: _vm.addmemo }
+                      },
+                      [_vm._v("ส่ง Memo")]
+                    )
+                  ])
+                ])
+              : _vm._e()
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "modal fade",
+          attrs: {
+            id: "exampleModal",
+            tabindex: "-1",
+            "aria-labelledby": "exampleModalLabel",
+            "aria-hidden": "true"
+          }
+        },
+        [
+          _c("div", { staticClass: "modal-dialog" }, [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c(
+                  "h5",
+                  {
+                    staticClass: "modal-title",
+                    attrs: { id: "exampleModalLabel" }
+                  },
+                  [_vm._v("Memo No. " + _vm._s(_vm.memoviewdata.memonumber))]
+                ),
+                _vm._v(" "),
+                _vm._m(4)
+              ]),
+              _vm._v(" "),
+              _vm.memoviewdata.productdt
+                ? _c("div", { staticClass: "modal-body" }, [
+                    _c("div", { staticClass: "row" }, [
+                      _c("label", { staticClass: "col-md-4" }, [
+                        _vm._v("สินค้า :")
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-8" }, [
+                        _vm._v(
+                          _vm._s(_vm.memoviewdata.productdt[0].code) +
+                            " - " +
+                            _vm._s(_vm.memoviewdata.productdt[0].name) +
+                            " "
+                        )
+                      ])
                     ]),
                     _vm._v(" "),
-                    _vm.memoviewdata.created_by > 0
-                      ? _c("div", { staticClass: "col-md-8" }, [
-                          _vm._v(
-                            _vm._s(
-                              _vm.userlistnewindex[_vm.memoviewdata.created_by]
-                                .fullname
+                    _c("div", { staticClass: "row mt-1" }, [
+                      _c("label", { staticClass: "col-md-4" }, [
+                        _vm._v("เหตุผลการปรับราคา :")
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-8" }, [
+                        _vm._v(_vm._s(_vm.memoviewdata.reson[0].name))
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "row mt-1" }, [
+                      _c("label", { staticClass: "col-md-4" }, [
+                        _vm._v("ลูกค้า :")
+                      ]),
+                      _vm._v(" "),
+                      _vm.memoviewdata.mmp_customertype == 1
+                        ? _c("div", { staticClass: "col-md-8" }, [
+                            _vm._v(
+                              "ลูกค้าทั้งหมด ( Standard " +
+                                _vm._s(_vm.memoviewdata.mmp_typeprice) +
+                                ")"
                             )
-                          )
-                        ])
-                      : _vm._e()
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "row mt-1" }, [
-                    _c("label", { staticClass: "col-md-4" }, [
-                      _vm._v("ทำรายการเมื่อ :")
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-md-8" }, [
-                      _vm._v(_vm._s(_vm.memoviewdata.created_at))
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "row mt-1" }, [
-                    _c("label", { staticClass: "col-md-4" }, [
-                      _vm._v("สถานะ :")
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-md-8" }, [
-                      _vm.memoviewdata.status == 1
-                        ? _c("span", { staticClass: "badge badge-primary" }, [
-                            _vm._v(" รออนุมัติ ")
                           ])
                         : _vm._e(),
                       _vm._v(" "),
-                      _vm.memoviewdata.status == 2
-                        ? _c("span", { staticClass: "badge badge-success" }, [
-                            _vm._v(" อนุมัติแล้ว ")
-                          ])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.memoviewdata.status == 3
-                        ? _c("span", { staticClass: "badge badge-danger" }, [
-                            _vm._v(" ไม่อนุมัติ ")
+                      _vm.memoviewdata.mmp_customertype == 2
+                        ? _c("div", { staticClass: "col-md-8" }, [
+                            _vm._v(
+                              _vm._s(
+                                _vm.memoviewdata.customerdt[0].customercode
+                              ) +
+                                " - " +
+                                _vm._s(_vm.memoviewdata.customerdt[0].name) +
+                                " "
+                            )
                           ])
                         : _vm._e()
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _vm.memoviewdata.status != 1
-                    ? _c("div", { staticClass: "row mt-1" }, [
-                        _c("label", { staticClass: "col-md-4" }, [
-                          _vm._v("ตรวจสอบเมื่อ :")
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "col-md-8" }, [
-                          _vm._v(_vm._s(_vm.memoviewdata.updated_at))
-                        ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "row mt-1" }, [
+                      _c("label", { staticClass: "col-md-4" }, [
+                        _vm._v("ช่วงเวลาที่มีผล :")
+                      ]),
+                      _vm._v(" "),
+                      _vm.memoviewdata.mmp_when == 1
+                        ? _c("div", { staticClass: "col-md-8" }, [
+                            _vm._v("ถาวร")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.memoviewdata.mmp_when == 2
+                        ? _c("div", { staticClass: "col-md-8" }, [
+                            _vm._v("เฉพาะครั้งนี้")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.memoviewdata.mmp_when == 3
+                        ? _c("div", { staticClass: "col-md-8" }, [
+                            _vm._v(_vm._s(_vm.memoviewdata.mmp_daterange))
+                          ])
+                        : _vm._e()
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "row mt-1" }, [
+                      _c("label", { staticClass: "col-md-3" }, [
+                        _vm._v("ราคาเดิม :")
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-3" }, [
+                        _vm._v(_vm._s(_vm.memoviewdata.price_now))
+                      ]),
+                      _vm._v(" "),
+                      _c("label", { staticClass: "col-md-3" }, [
+                        _vm._v("ราคาใหม่ :")
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-3" }, [
+                        _vm._v(_vm._s(_vm.memoviewdata.price_new))
                       ])
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.memoviewdata.status != 1
-                    ? _c("div", { staticClass: "row mt-1" }, [
-                        _c("label", { staticClass: "col-md-4" }, [
-                          _vm._v("ผู้ตรวจสอบอนุมัติ :")
-                        ]),
-                        _vm._v(" "),
-                        _vm.memoviewdata.approve_by > 0
-                          ? _c("div", { staticClass: "col-md-8" }, [
-                              _vm._v(
-                                _vm._s(
-                                  _vm.userlistnewindex[
-                                    _vm.memoviewdata.approve_by
-                                  ].fullname
-                                )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "row mt-1" }, [
+                      _c("label", { staticClass: "col-md-4" }, [
+                        _vm._v("หมายเหตุ :")
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-8" }, [
+                        _vm._v(_vm._s(_vm.memoviewdata.mmp_remark))
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "row mt-1" }, [
+                      _c("label", { staticClass: "col-md-4" }, [
+                        _vm._v("ผู้ขออนุมัติ :")
+                      ]),
+                      _vm._v(" "),
+                      _vm.memoviewdata.created_by > 0
+                        ? _c("div", { staticClass: "col-md-8" }, [
+                            _vm._v(
+                              _vm._s(
+                                _vm.userlistnewindex[
+                                  _vm.memoviewdata.created_by
+                                ].fullname
                               )
+                            )
+                          ])
+                        : _vm._e()
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "row mt-1" }, [
+                      _c("label", { staticClass: "col-md-4" }, [
+                        _vm._v("ทำรายการเมื่อ :")
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-8" }, [
+                        _vm._v(_vm._s(_vm.memoviewdata.created_at))
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "row mt-1" }, [
+                      _c("label", { staticClass: "col-md-4" }, [
+                        _vm._v("สถานะ :")
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-8" }, [
+                        _vm.memoviewdata.status == 1
+                          ? _c("span", { staticClass: "badge badge-primary" }, [
+                              _vm._v(" รออนุมัติ ")
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.memoviewdata.status == 2
+                          ? _c("span", { staticClass: "badge badge-success" }, [
+                              _vm._v(" อนุมัติแล้ว ")
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.memoviewdata.status == 3
+                          ? _c("span", { staticClass: "badge badge-danger" }, [
+                              _vm._v(" ไม่อนุมัติ ")
                             ])
                           : _vm._e()
                       ])
-                    : _vm._e()
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _c("div", { staticClass: "modal-footer" }, [
-              (_vm.role_id == 2 || _vm.role_id == 6) &&
-              _vm.memoviewdata.status == 1
-                ? _c("span", [
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-success",
-                        attrs: { type: "button" },
-                        on: {
-                          click: function($event) {
-                            return _vm.aprovesubmit("Y")
-                          }
-                        }
-                      },
-                      [_vm._v("อนุมัติ")]
-                    ),
+                    ]),
                     _vm._v(" "),
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-danger",
-                        attrs: { type: "button" },
-                        on: {
-                          click: function($event) {
-                            return _vm.aprovesubmit("N")
-                          }
-                        }
-                      },
-                      [_vm._v("ไม่อนุมัติ")]
-                    )
+                    _vm.memoviewdata.status != 1
+                      ? _c("div", { staticClass: "row mt-1" }, [
+                          _c("label", { staticClass: "col-md-4" }, [
+                            _vm._v("ตรวจสอบเมื่อ :")
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-8" }, [
+                            _vm._v(_vm._s(_vm.memoviewdata.updated_at))
+                          ])
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.memoviewdata.status != 1
+                      ? _c("div", { staticClass: "row mt-1" }, [
+                          _c("label", { staticClass: "col-md-4" }, [
+                            _vm._v("ผู้ตรวจสอบอนุมัติ :")
+                          ]),
+                          _vm._v(" "),
+                          _vm.memoviewdata.approve_by > 0
+                            ? _c("div", { staticClass: "col-md-8" }, [
+                                _vm._v(
+                                  _vm._s(
+                                    _vm.userlistnewindex[
+                                      _vm.memoviewdata.approve_by
+                                    ].fullname
+                                  )
+                                )
+                              ])
+                            : _vm._e()
+                        ])
+                      : _vm._e()
                   ])
                 : _vm._e(),
               _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-secondary",
-                  attrs: { type: "button", "data-dismiss": "modal" }
-                },
-                [_vm._v("Close")]
-              )
+              _c("div", { staticClass: "modal-footer" }, [
+                (_vm.role_id == 2 || _vm.role_id == 6) &&
+                _vm.memoviewdata.status == 1
+                  ? _c("span", [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-success",
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              return _vm.aprovesubmit("Y")
+                            }
+                          }
+                        },
+                        [_vm._v("อนุมัติ")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-danger",
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              return _vm.aprovesubmit("N")
+                            }
+                          }
+                        },
+                        [_vm._v("ไม่อนุมัติ")]
+                      )
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { type: "button", "data-dismiss": "modal" }
+                  },
+                  [_vm._v("Close")]
+                )
+              ])
             ])
           ])
-        ])
-      ]
-    ),
-    _vm._v(" \n" + _vm._s(_vm.role_id) + "\n    ")
+        ]
+      )
+    ])
   ])
 }
 var staticRenderFns = [

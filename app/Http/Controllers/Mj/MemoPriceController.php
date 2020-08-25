@@ -5,6 +5,7 @@ use App\Product;
 use App\Customer;
 use App\User;
 use App\Models\MemoPrice;
+use App\Models\PriceSpecific;
 use Yajra\Datatables\Datatables;
 
 
@@ -107,9 +108,9 @@ if($pricegroup =="D"){
         $mmp_customer='';
         if(!empty($request->productcode) && !empty($request->reson) && !empty($request->when) && !empty($request->price_now)   && !empty($request->price_new)    ){
 
-            if($request->when =='3' && !empty($request->pricerangedate)){
+            if($request->when =='3' && !empty($request->daterange)){
 
-                $rangedate = $request->pricerangedate;
+                $rangedate = $request->daterange;
 $datearr = explode(' - ', $rangedate);
 $datestart =  $datearr[0];
 $dateend=  $datearr[1];
@@ -126,7 +127,7 @@ $dateendarr = explode('/', $dateend);
             }
 
 //ประเภทของราคาที่จะเปลี่ยนเมื่ออนุมัติ
-if($request->customertype=='2' ||  $request->when !='1'){
+if($request->customertype=='2'){
 $typeprice = 'SPC';
 }else{
   $typeprice =   $request->typeprice;
@@ -236,6 +237,19 @@ $addmemonumber->save();
 if($memodt->mmp_customertype==2 || $memodt->mmp_when!=1  ){ /// ถ้าระบุลูกค้า หรือ ระบุเวลา/ครั้งเดียว
 //เพิ่มเป็นราคา specific
 
+$addspecificprice = new PriceSpecific;
+$addspecificprice->productcode=$memodt->mmp_productcode;
+$addspecificprice->memonumber=$memodt->memonumber;
+$addspecificprice->custype=$memodt->mmp_customertype;
+$addspecificprice->cuscode=$memodt->mmp_customer;
+$addspecificprice->typeprice=$memodt->mmp_typeprice;
+$addspecificprice->remark=$memodt->mmp_remark;
+$addspecificprice->pricetime=$memodt->mmp_when;
+$addspecificprice->pricedaterange=$memodt->mmp_daterange;
+$addspecificprice->pricedatestart=$memodt->mmp_datestart;
+$addspecificprice->pricedateend=$memodt->mmp_dateend;
+$addspecificprice->pricevalue=$memodt->price_new;
+$addspecificprice->save();
 
     
 
@@ -293,6 +307,149 @@ if($memodt->mmp_customertype==2 || $memodt->mmp_when!=1  ){ /// ถ้าระ�
 
     }
 
+
+    
+    public function checkpriceorder(Request $request)
+    {
+        $priceorder = '';
+        $cuscode='';
+        $daterange='';
+        $typeprice = '';
+        $once_time ='';
+        $pricetime='';
+        ///check ราคา special
+/// 1. ตามรหัสลูกค้า +  ช่วงเวลา
+        $productprice= PriceSpecific::where('productcode',$request->productcode)
+        ->where('custype','2')
+        ->where('cuscode',$request->cuscode)
+        ->where('pricetime','3')
+        ->whereDate('pricedatestart', '<=', date('Y-m-d'))
+        ->whereDate('pricedateend', '>=', date('Y-m-d'))
+        ->orderBy('id','desc')
+        ->first();
+
+        if(!empty($productprice->pricevalue)){
+$priceorder = $productprice->pricevalue;
+$cuscode = $productprice->cuscode;
+$daterange= $productprice->pricedaterange;
+$typeprice = $productprice->typeprice;
+$pricetime = $productprice->pricetime;
+        }else{
+/// 2. ช่วงเวลา + ประเภททราคา
+$productprice= PriceSpecific::where('productcode',$request->productcode)
+
+->where('typeprice',$request->typeprice)
+->where('pricetime','3')
+->whereDate('pricedatestart', '<=', date('Y-m-d'))
+->whereDate('pricedateend', '>=', date('Y-m-d'))
+->orderBy('id','desc')
+->first();
+
+if(!empty($productprice->pricevalue)){
+    $priceorder = $productprice->pricevalue;
+    $daterange= $productprice->pricedaterange;
+    $typeprice = $productprice->typeprice;
+    $pricetime = $productprice->pricetime;
+            }else{
+
+/// 3. เฉพาะครั้งนี้ + ลูกค้า
+$productprice= PriceSpecific::where('productcode',$request->productcode)
+->where('custype','2')
+->where('cuscode',$request->cuscode)
+->where('pricetime','2')
+->where('once_time','1')
+->orderBy('id','desc')
+->first();
+if(!empty($productprice->pricevalue)){
+
+    $priceorder = $productprice->pricevalue;
+    $once_time = $productprice->once_time;
+    $typeprice = $productprice->typeprice;
+$cuscode = $productprice->cuscode;
+$pricetime = $productprice->pricetime;
+
+            }else{
+
+/// 4. เฉพาะครั้งนี้ + ประเภททราคา
+$productprice= PriceSpecific::where('productcode',$request->productcode)
+
+->where('typeprice',$request->typeprice)
+->where('pricetime','2')
+->where('once_time','1')
+->orderBy('id','desc')
+
+->first();
+if(!empty($productprice->pricevalue)){
+    $priceorder = $productprice->pricevalue;
+    $once_time = $productprice->once_time;
+    $typeprice = $productprice->typeprice;
+    $pricetime = $productprice->pricetime;
+
+
+            }else{
+
+
+
+                /// 4. ราคาเฉพาะลูกค้านี้ เปลี่ยนตลอด
+$productprice= PriceSpecific::where('productcode',$request->productcode)
+->where('custype','2')
+->where('cuscode',$request->cuscode)
+->where('pricetime','1')
+->orderBy('id','desc')
+->first();
+if(!empty($productprice->pricevalue)){
+    $priceorder = $productprice->pricevalue;
+    $cuscode = $productprice->cuscode;
+    $pricetime = $productprice->pricetime;
+    $pricetime = $productprice->pricetime;
+
+
+            }else{
+
+
+
+/// 6. ประเภททราคา
+
+
+$productprice = Product::where('code',$request->productcode)
+->select('name','code','price_a','price_b','price_c','price_d')
+->first();  
+
+if($request->typeprice=="A"){
+    $priceorder =  $productprice->price_a;
+    
+}else if($request->typeprice=="B"){
+    $priceorder =  $productprice->price_b;
+}else if($request->typeprice=="C"){
+    $priceorder =  $productprice->price_c;
+}else if($request->typeprice=="D"){
+    $priceorder =  $productprice->price_d;
+}
+
+$typeprice = $request->typeprice;
+ }
+
+            }
+            }
+        }
+
+        }
+        
+
+
+return response()->json(    [
+    'cuscode' =>  $cuscode,
+    'productcode' => $request->productcode,
+    'priceorder' => $priceorder,
+    'typeprice' => $typeprice,
+    'daterange' => $daterange,
+    'once_time' => $once_time,
+    'pricetime' => $pricetime,
+    
+
+    ]);
+
+    }
 
     /**
      * Show the form for creating a new resource.

@@ -51,7 +51,7 @@
 <div class="col-md-6 row">
 <label class="col-md-4">ลูกค้า :</label>
 <div class="col-md-8">
-{{  orderdtall.customer['name']}}
+{{  orderdtall.customer['name']}}  <span v-if="orderdtall.customer.price_group"> ( Standard {{ orderdtall.customer.price_group }} ) </span> 
 </div>
 
   
