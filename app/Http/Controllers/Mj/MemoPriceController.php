@@ -317,6 +317,7 @@ $addspecificprice->save();
         $typeprice = '';
         $once_time ='';
         $pricetime='';
+        $memonumber='';
         ///check ราคา special
 /// 1. ตามรหัสลูกค้า +  ช่วงเวลา
         $productprice= PriceSpecific::where('productcode',$request->productcode)
@@ -328,12 +329,15 @@ $addspecificprice->save();
         ->orderBy('id','desc')
         ->first();
 
+    
+
         if(!empty($productprice->pricevalue)){
 $priceorder = $productprice->pricevalue;
 $cuscode = $productprice->cuscode;
 $daterange= $productprice->pricedaterange;
 $typeprice = $productprice->typeprice;
 $pricetime = $productprice->pricetime;
+$memonumber =$productprice->memonumber;
         }else{
 /// 2. ช่วงเวลา + ประเภททราคา
 $productprice= PriceSpecific::where('productcode',$request->productcode)
@@ -350,6 +354,7 @@ if(!empty($productprice->pricevalue)){
     $daterange= $productprice->pricedaterange;
     $typeprice = $productprice->typeprice;
     $pricetime = $productprice->pricetime;
+    $memonumber =$productprice->memonumber;
             }else{
 
 /// 3. เฉพาะครั้งนี้ + ลูกค้า
@@ -367,7 +372,7 @@ if(!empty($productprice->pricevalue)){
     $typeprice = $productprice->typeprice;
 $cuscode = $productprice->cuscode;
 $pricetime = $productprice->pricetime;
-
+$memonumber =$productprice->memonumber;
             }else{
 
 /// 4. เฉพาะครั้งนี้ + ประเภททราคา
@@ -384,7 +389,7 @@ if(!empty($productprice->pricevalue)){
     $once_time = $productprice->once_time;
     $typeprice = $productprice->typeprice;
     $pricetime = $productprice->pricetime;
-
+    $memonumber =$productprice->memonumber;
 
             }else{
 
@@ -402,7 +407,7 @@ if(!empty($productprice->pricevalue)){
     $cuscode = $productprice->cuscode;
     $pricetime = $productprice->pricetime;
     $pricetime = $productprice->pricetime;
-
+    $memonumber =$productprice->memonumber;
 
             }else{
 
@@ -445,6 +450,7 @@ return response()->json(    [
     'daterange' => $daterange,
     'once_time' => $once_time,
     'pricetime' => $pricetime,
+    'memonumber' => $memonumber,
     
 
     ]);

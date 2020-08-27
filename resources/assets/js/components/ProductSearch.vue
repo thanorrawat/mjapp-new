@@ -104,29 +104,7 @@
 <strong>ประวัติการขาย : </strong> {{ historylist_sumsale[productshow['code']]  | numeral('0,0')}} ชิ้น
 </div>
 </div>
-<div class="row mt-2">
 
-  <div class="col-2 text-right"> จำนวน</div>
-  <div class="col-4"><input type="number" min="1" class="form-control text-right" v-model="addqty"></div>
-  <div class="col">   <button @click="addtodorder(productshow['id'])" class="btn btn-primary btn-flat">
-               
-                  <i class="far fa-plus-square mr-2"></i>
-              {{ buttonlabeladd }}
-                </button>   </div>
-</div>
-
-              
-<ul v-if="diffstockadd<0" class="nav nav-pills flex-column">
-                  <li class="nav-item active p-1 m-1" style="border:1px solid red;">
-           
-         <i class="fas fa-exclamation-triangle text-danger"></i> จำนวนที่ขาด : {{ diffstockaddnumber | numeral('0,0')  }} ชิ้น
-               
-                
-                  </li>
-          
-            
-     
-                </ul>
     <!-- {{  productshow }}    -->
        <div class="row mt-1">
                   <div class="col border-right">
@@ -159,18 +137,40 @@
 <h2  class="text-center"> 
 ราคาขาย : {{  productprice.priceorder  }}</h2>
 <div class="col-12" >
-  <b-message type="is-info" >
+  <div style="border: 1px solid blue;padding:5px">
   <strong>ราคาสำหรับ</strong>
 <span v-if="productprice.cuscode"> เฉพาะลูกค้ารหัส {{ productprice.cuscode }}</span>
 
 <span v-if="productprice.typeprice && productprice.typeprice!='SPC' "> Standard {{ productprice.typeprice }}</span>
 <span v-if="productprice.pricetime==3" > ช่วงเวลา :  {{ productprice.daterange }}</span>
 <span v-if="productprice.once_time==1"> เฉพาะครั้งนี้</span>
-</b-message>
+</div>
 </div>
 
      </div>
-   
+   <div class="row mt-2">
+
+  <div class="col-2 text-right"> จำนวน</div>
+  <div class="col-4"><input type="number" min="1" class="form-control text-right" v-model="addqty"></div>
+  <div class="col">   <button @click="addtodorder(productshow['id'])" class="btn btn-sm btn-primary btn-flat">
+               
+                  <i class="far fa-plus-square mr-2"></i>
+              {{ buttonlabeladd }}
+                </button>   </div>
+
+
+              
+<ul v-if="diffstockadd<0" class="nav nav-pills flex-column">
+                  <li class="nav-item active p-1 m-1" style="border:1px solid red;">
+           
+         <i class="fas fa-exclamation-triangle text-danger"></i> จำนวนที่ขาด : {{ diffstockaddnumber | numeral('0,0')  }} ชิ้น
+               
+                
+                  </li>
+          
+            
+     
+                </ul></div>
 
 </div>
 </div>
@@ -224,7 +224,9 @@ Keyword :  {{relatekey }}
 <th>ที่</th>
 <th>Image</th>
 <th>รายละเอียดสินค้า</th>
+<th>ราคา</th>
 <th>จำนวน</th>
+<th>รวม</th>
 <th>#</th>
 </tr></thead>
 
@@ -236,12 +238,15 @@ Keyword :  {{relatekey }}
          <br>
          {{productorder.name}}
        </td>
+             <td   class="text-right">{{productorder.orderprice| numeral('0,0') }}
+
+       </td>
        <td   class="text-right">{{productorder.orderqty | numeral('0,0') }}
 
 <i style="font-size:90%" data-toggle="modal" data-target="#editqty" class="fas fa-pencil-alt" @click="editqtyorder(index)"></i>
 
        </td>
-    
+    <td   class="text-right">{{productorder.amount| numeral('0,0') }} </td>
 <td @mouseover="showProductinorderdt(index)" ><i  class="fas fa-backspace  text-danger" @click="removepd(index)"></i></td>
 
 
@@ -249,8 +254,11 @@ Keyword :  {{relatekey }}
      <tr>
 <td></td>
 <td></td>
+<td></td>
 <td class="text-right"><strong>รวม</strong></td>
 <td class="text-right">{{ totalorderqty | numeral('0,0')  }}</td>
+<td class="text-right">{{ ordertotalamount | numeral('0,0')  }}</td>
+
 <td></td>
      </tr>
    </tbody>
@@ -319,7 +327,7 @@ Keyword :  {{relatekey }}
    <h4><i class="fas fa-info-circle"></i></h4>
 <h4>อยู่ระหว่างการรอนุมัติจาก ผู้จัดการ</h4>
 </div>
-{{ productprice }}
+
 
  </div>
 
@@ -348,10 +356,11 @@ Vue.use(VueSweetalert2);
         name: 'product-search',
           props: ['baseurl','orderid','showsearchtype','userid','userfullname'],
         mounted() {
-this.orderdtget();
-this.searchget();
-this.categoryname();
-this.showproductsinoreder();
+this.showproductsinoreder()
+this.orderdtget()
+this.searchget()
+this.categoryname()
+this.addproductpricecode()
 
         },
          components: { vPagination },
@@ -412,6 +421,8 @@ newtracking_qty:0,
 editqtynew:0,
 orderremark:'',
 productprice:[],
+productlistpriceobj:[],
+ordertotalamount:0,
     }
 },
     watch: {
@@ -593,28 +604,23 @@ this.checkthisprice();
   axios.get(this.baseurl+'/api/categorynamelist')
   .then((response)=>{
     this.categorynamelist=response.data; 
-   
  })
-
- 
  },
   addtodorder(productid) {  //ฟังก์ชั่นเพิ่มสินค้า
-
-
-
-     if(this.addqty && this.userid && this.orderid ){
-
-
-  axios.post(this.baseurl+'/api/addproducttoorder',{
+if(this.addqty && this.userid && this.orderid ){
+axios.post(this.baseurl+'/api/addproducttoorder',{
     productid : productid,
     orderid :this.orderid,
     addqty :this.addqty,
-    productscode : this.productshow['code'],
+    price :this.productprice.priceorder,
+ productscode : this.productshow['code'],
     doctype : this.orderdt.doctype,
     orderdetails : this.orderdt,
     stocknow:this.stocklist.sumstock1,
     userfullname:this.userfullname,
     userid:this.userid,
+    memonumber:this.productprice.memonumber,
+    once_time:this.productprice.once_time,
   }
   )
   .then((response)=>{
@@ -632,9 +638,10 @@ this.checkthisprice();
   timerProgressBar: true,
   
 });
-this.checkstock();   
- this.showproductsinoreder();
+
  })
+.then( this.checkstock())
+.then(this.showproductsinoreder())
 
 
      }
@@ -643,12 +650,26 @@ this.checkstock();
 
  
  }
- ,showproductsinoreder(){
+ ,async showproductsinoreder(){
+  
   axios.get(this.baseurl+'/api/showproductinorder/'+this.orderid)
   .then((response)=>{
   this.productlistinorder=response.data; 
-   
- })
+  })
+
+this.ordertotalamountget();
+  /*
+  .then(
+(response)=>{ 
+     for(let i = 0; i < this.productlistinorder.length; i++){
+       let pdcode =  this.productlistinorder[i].productscode;
+       // this.addproductpricecode(pdcode,i)
+      }
+
+     
+})
+ */
+ 
  },removepd(index){
 
    Vue.swal({
@@ -748,6 +769,9 @@ this.showProductinorderdt(index);
     stocknow:this.editqtyorderdetail.stocknow,
     userfullname:this.userfullname,
     userid:this.userid,
+    price:this.productprice.priceorder ,
+     memonumber:this.productprice.memonumber,
+    once_time:this.productprice.once_time,
   }
   )
   .then((response)=>{
@@ -767,7 +791,7 @@ this.showProductinorderdt(index);
 
   $('#editqty').modal('hide')
 this.checkstock();   
-
+ this.showproductsinoreder();
  })
 
 
@@ -841,11 +865,71 @@ typeprice : this.orderdtall.customer.price_group,
 
          }).then((response)=>{ 
 
-           this.productprice = response.data
+this.productprice = response.data
+
+let plen = this.productlistpriceobj.length;  
+
+let pricepdindex = this.productlistpriceobj.findIndex(p=>p.productcode == this.productshow.code)
+if(pricepdindex!='-1'){
+plen = pricepdindex
+}
+       
+this.productlistpriceobj[plen]= response.data
+
+let pdinorderindex = this.productlistinorder.findIndex(po=>po.productscode == this.productshow.code)
+if(pdinorderindex!='-1'){
+
+this.productlistinorder[pdinorderindex].price=response.data.priceorder
+
+}
 
          });
      }
 
+,async addproductpricecode(pdcode,idexorder)   {
+
+  let pdpriceindex = await this.productlistpriceobj.findIndex(p=>p.productcode == pdcode)
+  let oderindex = await this.productlistinorder.findIndex(op=>op.productscode == pdcode)
+
+  if(pdpriceindex=="-1"){
+
+          axios.post(this.baseurl+'/api/order_checkprice',{
+productcode : pdcode,
+cuscode : this.customercode,
+typeprice : this.orderdtall.customer.price_group,
+
+         }).then((response)=>{ 
+          
+this.productlistpriceobj.push(response.data);
+if(oderindex!="-1"){
+this.productlistinorder[oderindex].price =  response.data.priceorder;
+this.productlistinorder[oderindex].amountrow = (+response.data.priceorder)*(+this.productlistinorder[oderindex].orderqty);
+ //this.ordertotalamount = +this.ordertotalamount +(+this.productlistinorder[oderindex].amountrow);
+}
+
+         })
+
+        
+  }else{
+if(oderindex!="-1"){
+this.productlistinorder[oderindex].price =  response.data.priceorder;
+this.productlistinorder[oderindex].amountrow = (+response.data.priceorder)*(+this.productlistinorder[oderindex].orderqty);
+// this.ordertotalamount = +this.ordertotalamount +(+this.productlistinorder[oderindex].amountrow);
+}
+
+  }
+
+     }
+,ordertotalamountget(){
+    axios.get(this.baseurl+'/api/showordertotalamount/'+this.orderid)
+  .then((response)=>{
+      this.ordertotalamount=response.data[0].totalamount
+                        
+ })
+     }
+
+////////////////////////////////
+     
 ////////////////////////////////
      }
      ,

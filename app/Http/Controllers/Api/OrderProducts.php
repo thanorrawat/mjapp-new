@@ -304,6 +304,11 @@ $alertstatus->text ="สินค้ารายการนี้ถูกเ�
 }else{
 
 
+    $amount ="";
+    if(!empty($request->addqty) && !empty($request->price) ){
+    $amount =$request->addqty*$request->price;
+
+    }
 
         //addproduct    
         $MjOrderProducts= new MjOrderProducts;
@@ -311,8 +316,14 @@ $alertstatus->text ="สินค้ารายการนี้ถูกเ�
         $MjOrderProducts->product_id=$request->productid;
         $MjOrderProducts->productscode= $request->productscode;
         $MjOrderProducts->qty= $request->addqty;
+        $MjOrderProducts->price= $request->price;
+        $MjOrderProducts->amount= $amount;
+        
         $MjOrderProducts->stocknow= $request->stocknow;
         $MjOrderProducts->userid= $request->userid;
+        $MjOrderProducts->memonumber= $request->memonumber;
+        $MjOrderProducts->priceoncetime= $request->once_time;
+        
         $MjOrderProducts->save();
 
 
@@ -344,7 +355,7 @@ if($request->doctype==1){
         //select product ใน order
 $productlistinorder = MjOrderProducts::where('order_id',$request->orderid)
 ->leftjoin('products','mj_order_products.productscode','products.code' )
-->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow')
+->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount')
 ->orderBy('pdorderid','asc')
 ->get();
         //response สถานะ
@@ -363,7 +374,7 @@ $productlistinorder = MjOrderProducts::where('order_id',$request->orderid)
 
     $productlistinorder = MjOrderProducts::where('order_id',$id)
 ->leftjoin('products','mj_order_products.productscode','products.code' )
-->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow')
+->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount')
 ->orderBy('pdorderid','asc')
 ->get();
 
@@ -420,7 +431,7 @@ if($request->doctype==1){
 
 $productlistinorder = MjOrderProducts::where('order_id',$request->orderid)
 ->leftjoin('products','mj_order_products.productscode','products.code' )
-->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow')
+->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount')
 ->orderBy('pdorderid','asc')
 ->get();
 
@@ -444,9 +455,14 @@ return response()->json(    [
         $MjOrderProducts= MjOrderProducts::where('id',$request->orderproductid)
         ->first()
         ;
+        $amountrow = $request->price * $request->addqty;
+        $MjOrderProducts->price = $request->price;
 $MjOrderProducts->qty= $request->addqty;
+$MjOrderProducts->amount= $amountrow;
         $MjOrderProducts->stocknow= $request->stocknow;
         $MjOrderProducts->userid= $request->userid;
+        $MjOrderProducts->memonumber= $request->memonumber;
+        $MjOrderProducts->priceoncetime= $request->once_time;
         $MjOrderProducts->save();
 
 
@@ -482,7 +498,7 @@ $docfullname ="";
         }
         $productlistinorder = MjOrderProducts::where('order_id',$request->orderid)
         ->leftjoin('products','mj_order_products.productscode','products.code' )
-        ->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow')
+        ->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount')
         ->orderBy('pdorderid','asc')
         ->get();
         
@@ -495,6 +511,15 @@ $docfullname ="";
     
     }
 
+    public function showordertotalamount($id)
+    {
+
+    $ordertotalamount = MjOrderProducts::where('order_id',$id)
+->selectRaw('SUM(amount) as totalamount')
+->get();
+
+return response()->json($ordertotalamount);
+    }
 
         
 

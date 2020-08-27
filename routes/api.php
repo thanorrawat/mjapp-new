@@ -32,6 +32,7 @@ Route::post('order_checkprice','Mj\MemoPriceController@checkpriceorder');
 
 Route::post('addproducttoorder','Api\OrderProducts@addproducttoorder'); //เพิ่มสินค้าใน Order
 Route::get('showproductinorder/{id}','Api\OrderProducts@showproductinorder'); //แสดงรายการสินค้า จาก orderid
+Route::get('showordertotalamount/{id}','Api\OrderProducts@showordertotalamount'); //แสดงรายการสินค้า จาก orderid
 
 Route::post('removeproducttoorder','Api\OrderProducts@removeproducttoorder'); //ลบสินค้าจาก Order
 Route::post('editqtyproducttoorder','Api\OrderProducts@editqtyorder'); //แก้ไขจำนวนสินค้าจาก Order
