@@ -37,6 +37,9 @@ Route::get('/clear-cache', function() {
 
 
 Route::get('order_view/{token}', 'OrderController@orderview');
+Route::get('so_view/{id}','Api\Socontroller@soview'); //แสดงรายการสินค้า จาก orderid
+
+
 
 Auth::routes();
 
@@ -48,6 +51,49 @@ Route::group(['middleware' => 'auth'], function() {
 
 
 Route::group(['middleware' => ['auth', 'active']], function() {
+
+	// Puechase MJ
+	//readimport file json
+
+	Route::get('/json_import_selling', 'Mj\ImportjsonController@selling');
+	Route::get('/json_import_stock', 'Mj\ImportjsonController@stock');
+	Route::get('/json_import_selling3days', 'Mj\ImportjsonController@selling3');
+	Route::get('/json_import_deliverydays', 'Mj\ImportjsonController@deliverydays');
+	Route::get('/json_import_willorder', 'Mj\ImportjsonController@willorder');
+
+	//purchase state
+	Route::get('purchase/will_order', 'Mj\PurchaseStatController@willorder');
+	Route::get('purchase/will_order_data', 'Mj\PurchaseStatController@willorderdata');
+	Route::get('purchase/will_order_data2', 'Mj\PurchaseStatController@willorderdata2');
+	Route::get('purchase/wrecievedata', 'Mj\PurchaseStatController@wrecievedata');
+	Route::post('purchase/stock_status_post', 'Mj\PurchaseStatController@stock_status_post');
+
+	Route::post('purchase/checkselect', 'Mj\PurchaseStatController@checkforpurchase');
+	Route::get('purchase/show_purchase_items', 'Mj\PurchaseStatController@show_purchase_items');
+	Route::get('purchase/create', 'Mj\PurchasePoController@index');
+	Route::get('numbertotext/{number}', 'Mj\PurchasePoController@numbertotext');
+	Route::post('purchase/updateprchaserow', 'Mj\PurchasePoController@updateprchaserow');
+	Route::get('purchase/checksupplier', 'Mj\SupplierController@checksupplier');
+	Route::get('purchase/genpurchasenumber', 'Mj\PurchasePoController@gennewponumber');
+	Route::post('purchase/updatepurchase', 'Mj\PurchasePoController@updatepurchasesession');
+	
+	
+	Route::get('purchases', 'Mj\PurchasePoController@polist');
+	Route::get('purchases/create', 'Mj\PurchasePoController@create');
+	Route::post('purchase/updatesessionpoitems', 'Mj\PurchasePoController@updatesessionpoitems');
+	Route::post('purchase/creatpo', 'Mj\PurchasePoController@store');
+	Route::post('purchase/creatitems', 'Mj\PurchasePoController@storeitems');
+	Route::post('clearsessionpo', 'Mj\PurchasePoController@clearsessionpo');
+	Route::get('purchase/polistdata', 'Mj\PurchasePoController@purchaselistdata');
+	
+	
+	
+
+
+	///showstatus ข้อมูลสถานะ 
+	Route::get('/showstatus', 'Mj\ShowStausController@index');
+
+
 
 	Route::get('/', 'AppHomeController@index');
 	Route::get('/orderdata', 'AppHomeController@orderData');
@@ -89,9 +135,11 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 // ORDER
 //Route::get('create_order', 'OrderController@index');
 Route::get('create_order', 'VueOrdercontroller@index');
+
 Route::post('create_order_addform', 'VueOrdercontroller@addorder');
 Route::get('order/{id}/edit', 'VueOrdercontroller@edit');
-
+Route::get('order-list', 'VueOrdercontroller@orderlist');
+Route::get('booking-list', 'VueOrdercontroller@bookinglist');
 
 Route::get('order_pdf/{token}', 'OrderController@generate_pdf');
 Route::post('confirmform', 'OrderController@confirmform');
@@ -120,7 +168,6 @@ Route::post('checkstockorder', 'OrderController@checkstockorder');
 Route::get('timelineorder', 'OrderController@createtimelinefromorder');
 
 Route::get('order_timeline/{id}', 'OrderController@ordertimeline');
-
 Route::post('remarkcartupdate', 'OrderController@remarkcartupdate');
 
 
@@ -158,6 +205,15 @@ Route::get('vuejs', function () {
 	return view('vue.index');
 });
 
+
+
+
+
+//Supplier
+
+Route::resource('supplier', 'Mj\SupplierController');
+
+
 /// old route
 
 	Route::get('/old-home', 'HomeController@index');
@@ -184,7 +240,7 @@ Route::get('vuejs', function () {
 	Route::post('importsupplier', 'SupplierController@importSupplier')->name('supplier.import');
 	Route::post('supplier/deletebyselection', 'SupplierController@deleteBySelection');
 	Route::get('supplier/lims_supplier_search', 'SupplierController@limsSupplierSearch')->name('supplier.search');
-	Route::resource('supplier', 'SupplierController');
+	//Route::resource('supplier', 'SupplierController');
 
 	Route::post('importwarehouse', 'WarehouseController@importWarehouse')->name('warehouse.import');
 	Route::post('warehouse/deletebyselection', 'WarehouseController@deleteBySelection');
@@ -281,7 +337,7 @@ Route::get('vuejs', function () {
 	Route::get('purchases/purchase_by_csv', 'PurchaseController@purchaseByCsv');
 	Route::post('importpurchase', 'PurchaseController@importPurchase')->name('purchase.import');
 	Route::post('purchases/deletebyselection', 'PurchaseController@deleteBySelection');
-	Route::resource('purchases', 'PurchaseController');
+	//Route::resource('purchases', 'PurchaseController');
 
 	Route::get('transfers/product_transfer/{id}','TransferController@productTransferData');
 	Route::get('transfers/transfer_by_csv', 'TransferController@transferByCsv');

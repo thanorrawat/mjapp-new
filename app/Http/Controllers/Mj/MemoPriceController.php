@@ -170,7 +170,7 @@ $addmemonumber->save();
        $alertstatus->title ="บันทึกสำเร็จ";
        $alertstatus->text ="ท่านได้ทำการสร้าง Memo เพื่อขออนุมัติเปลี่ยนแปลงราคา สินค้า รหัส ".$request->productcode." เป็นราคา ".$request->price_new." บาท เรียบร้อยแล้ว" ;
 
-       $sMessage ="มีการทำ Memo เพื่อขออนุมัติ การเปลี่ยนแปลงราคา สินค้า รหัส ".$request->productcode." เป็นราคา ".$request->price_new." บาท ท่าานสามารถตรวจสอบและอนุมัติ/ไม่่อนุมัติ ได้ที่ ".url('memo-changprice');
+       $sMessage ="มีการทำ Memo เพื่อขออนุมัติ การเปลี่ยนแปลงราคา สินค้า รหัส ".$request->productcode." เป็นราคา ".$request->price_new." บาท ท่าานสามารถตรวจสอบและอนุมัติ/ไม่อนุมัติ ได้ที่ ".url('memo-changprice');
 
        lineNotifysend(1,$sMessage,'');
        lineNotifysend(2,$sMessage,'');

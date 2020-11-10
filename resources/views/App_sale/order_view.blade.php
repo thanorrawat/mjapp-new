@@ -25,15 +25,15 @@ if(empty($user_sign3) && !empty($data['user_sign3'])){
     <link href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet">
  
    <style>
-         @if(empty($_GET['include']))
-        body,td,th{
+  
+  .oderview,.oderview *,.oderview table,.oderview td,.oderview th{
        /*     font-family: 'Prompt', sans-serif; */
        font-family: 'sarabun','Sarabun', sans-serif;
 font-size: 12px;
 line-height: 1.8
         }
-        @endif
-        h3{
+  
+        .oderview h3{
             font-size: 20px;    
         }
         .border1{
@@ -50,9 +50,9 @@ line-height: 1.8
 </style>
 
 </head>
-<body>
-
-    <div style="width:750px;margin:auto;">
+<body >
+<div class="oderview">
+    <div  style="width:750px;margin:auto;">
     <table style="width:100%">
 
         <tr>
@@ -172,5 +172,6 @@ line-height: 1.8
     
     </tr>
 </table>
+</div>
 </body>
 </html>

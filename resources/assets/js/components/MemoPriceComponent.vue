@@ -64,7 +64,7 @@
 
 
 
-                <div class="card card-default">
+                <div v-if="!homepage" class="card card-default">
               <div class="card-header"> <h4> รายการ Memo ขอปรับราคา (ตรวจสอบแล้ว)</h4></div>
 
                     <div class="card-body">
@@ -377,7 +377,7 @@ import Buefy from 'buefy'
 Vue.use(Buefy)
 
     export default {
-          props: ['userfullname', 'userid','baseurl','csrf','role_id'],
+          props: ['userfullname', 'userid','baseurl','csrf','role_id','homepage'],
  components: {
 
   },

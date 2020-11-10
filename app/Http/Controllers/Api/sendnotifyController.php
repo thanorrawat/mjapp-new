@@ -53,11 +53,11 @@ $MjOrderDetailsupdate->save();
         //แจ้งเตือนทาง line
    
      if($doctype==1){
-     
+        if(url('/')!='http://localhost/mj-app_onweb'){ ///ถ้าไม่ใช่ localhost
      $sMessage = "มีการส่งรายการ Order สินค้า เลขที่ : ".$request->ordernumberfull."  ท่านสามารถตรวจสอบและดำเนินการทำรายการต่อได้ที่ ".url('order/'.$request->ordernumberfull.'/edit');
      lineNotifysend(2,$sMessage ,'');
      $orderid = $request->order_id;
-     
+        }
      ////----------บันทึกTimeline
      
      $pdfFilePath= createtimeline($request->order_id,1,$request->order_id,$request->remark,11); //createtimeline($orderid,$doc_type,$doc_id,$message)
@@ -68,9 +68,10 @@ $mailtdata_message = "มีการทำรายการส่ง Order ส
 $mailtdata_pdfname = $request->ordernumberfull.".pdf";
 
     }elseif($doctype==2){
-     
+        if(url('/')!='http://localhost/mj-app_onweb'){ ///ถ้าไม่ใช่ localhost
          $sMessage = "มีการทำรายการส่ง ใบจองสินค้า เลขที่ : ".$request->bookingnumber."  เพื่อขออนุมัติ ท่านสามารถตรวจสอบและดำเนินการทำรายการต่อได้ที่ ".url('order/'.$request->bookingnumber.'/edit');
          lineNotifysend(2,$sMessage ,'');
+        }
          // บันทึก Time line
          $message1 = "ส่งใบจองสินค้าเลขที่ : ".$request->bookingnumber." เพื่อขออนุมัตการทำรายการต่อ";
          $pdfFilePath= createtimeline($request->order_id,2,$request->order_id,$message1,21); //createtimeline($orderid,$doc_type,$doc_id,$message,$timelinestatus)

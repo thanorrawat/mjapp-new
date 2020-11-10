@@ -31,6 +31,21 @@ class VueOrdercontroller extends Controller
             ;
     }
 
+    public function orderlist()
+    {
+             return view('A_vue.order_list')
+            ->with('pagetype', 'order')
+            ;
+    }
+    public function bookinglist()
+    {
+             return view('A_vue.order_list')
+            ->with('pagetype', 'booking')
+
+            ;
+    }
+
+
 
     public function addorder(Request $request)
     {
@@ -214,8 +229,16 @@ if(!empty($customercode)){
 }else{
 $searchtype = 2 ; ///หน้า search แสดงสินค้าทั้งหมด
 }
-      
-        
+
+
+
+// if(url('/')=='http://localhost/mj-app_onweb'){
+
+//     return url('/');
+// }
+
+
+
         return view('A_vue.order_create')
         ->with('pagetype', 'edit')
         ->with('baseurl', url('/'))
@@ -226,6 +249,7 @@ $searchtype = 2 ; ///หน้า search แสดงสินค้าทั้
         ->with('searchtype', $searchtype)
   
       ;
+
          }
     }
 

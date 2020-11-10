@@ -44,9 +44,13 @@
                 
               </div>
               <div id="app">
-<edit-order baseurl="{{ $baseurl }}"  orderurl="{{ url('order_view', $cartDetails->token) }}" orderid="{{ $orderdt->id }}"></edit-order>
+         @if(($cartDetails->order_status==11|| $cartDetails->order_status==21))       
+<edit-order baseurl="{{ $baseurl }}" role_id="{{ Auth::user()->role_id }}"  orderurl="{{ url('order_view', $cartDetails->token) }}" orderid="{{ $orderdt->id }}" userfullname="{{  Auth::user()->fullname }}" userid="{{  Auth::user()->id }}"></edit-order>
 
-              </div>
+@else
+<edit-order-so baseurl="{{ $baseurl }}" role_id="{{ Auth::user()->role_id }}"  orderurl="{{ url('order_view', $cartDetails->token) }}" orderid="{{ $orderdt->id }}" userfullname="{{  Auth::user()->fullname }}" userid="{{  Auth::user()->id }}"></edit-order-so>
+ @endif
+</div>
               {{-- <div class="table-responsive" id="orderdt"></div> --}}
 
 @if(
@@ -57,11 +61,11 @@
           <form action="{{ url('confirmform') }}" method="post">
             <div class="text-center">
               <hr>
-              <button type="submit" class="btn btn-success"><i class="fa fa-check-square-o" aria-hidden="true"></i> @if($cartDetails->order_status==21) อนุมัติใบจอง  @elseif($cartDetails->order_status==11) อนุมัติ Order @elseif($cartDetails->order_status==22) รับใบจอง @else รับOrder @endif</button>
+              <button type="submit" class="btn btn-success"><i class="fa fa-check-square-o" aria-hidden="true"></i> @if($cartDetails->order_status==21) อนุมัติใบจอง  @elseif($cartDetails->order_status==11) อนุมัติ Order @elseif($cartDetails->order_status==22) รับใบจอง @elseif($cartDetails->order_status==12) รับOrder @endif</button>
               <br>
               <br>
 
-<h4>@if($cartDetails->order_status==22) Click เพื่ออนุมัติใบจอง  @elseif($cartDetails->order_status==12) Click เพื่ออนุมัติ Order @elseif($cartDetails->order_status==21) Click เพื่อรับ ใบจอง @else Click เพื่อรับ Order @endif </h4>
+<h4>@if($cartDetails->order_status==21) Click เพื่ออนุมัติใบจอง  @elseif($cartDetails->order_status==11) Click เพื่ออนุมัติ Order @elseif($cartDetails->order_status==22) Click เพื่อรับ ใบจอง @elseif($cartDetails->order_status==12) Click เพื่อรับ Order @endif </h4>
               
 
               <div style="" id="signimgbox">
@@ -127,7 +131,38 @@
         </div>
     </div>
   </div>
+  @if(
+    (Auth::user()->role_id!=6 && ($cartDetails->order_status==12 || $cartDetails->order_status==22) ) //admin รับ ORDER /ใบจอง
+    ||
+    ((Auth::user()->role_id!=2||Auth::user()->role_id==7)  && ($cartDetails->order_status==11|| $cartDetails->order_status==21) ) //Manager อนุมัติใบจอง
+    )
+  <div class="col-md-12 ">
+    <div class="info-box bg-gradient-warning p-2">
+    
+<div class="w-100 text-center"> <h2><i class="fas fa-hourglass-half"></i></h2>
 
+<h2> {{ __('file.In_progress') }}</h2>
+@if(
+  (Auth::user()->role_id!=6 && ($cartDetails->order_status==12 || $cartDetails->order_status==22) ) //admin รับ ORDER /ใบจอง
+  )
+( {{ __('file.Waiting_to_continue_by_Admin') }} )
+@elseif(
+  ((Auth::user()->role_id!=2||Auth::user()->role_id==7)  && ($cartDetails->order_status==11|| $cartDetails->order_status==21) ) //Manager อนุมัติใบจอง
+  )
+  ( {{ __('file.Waiting_for_Approve_by_Manager') }} )
+  @endif
+ </div>
+     
+    
+      
+
+     
+   
+      <!-- /.info-box-content -->
+    </div>
+    <!-- /.card -->
+  </div>
+  @endif
   <div class="card">
     <div class="card-header">
         <h5>Timeline : </h5>

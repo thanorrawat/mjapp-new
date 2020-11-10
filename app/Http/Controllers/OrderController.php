@@ -82,7 +82,7 @@ return view('App_sale.order2',['customers' => $customers,'cartDetails'=>$cartDet
 
 
                             //สร้าง booking number
-            $beforebookingname = date('ym');
+            $beforebookingname = 'BK'.date('ym');
             $lastbookingnumber= MjOrderDetails::where('bookingnumber','like', $beforebookingname.'%')->orderBy('bookingnumber', 'desc')->first();
            if(!empty($lastbookingnumber->bookingnumber)){
            $oldnumber = substr($lastbookingnumber->bookingnumber, -4);
@@ -90,7 +90,7 @@ return view('App_sale.order2',['customers' => $customers,'cartDetails'=>$cartDet
            }else{
                $newnumber=1;
            }
-           $newbookingnumber = 'BK'.$beforebookingname.sprintf("%04d",$newnumber);
+           $newbookingnumber = $beforebookingname.sprintf("%04d",$newnumber);
            $newstatus = 2;
                 }
       
@@ -482,6 +482,7 @@ if(!empty($request->orderid)){
         $MjOrderProducts= MjOrderProducts::where('order_id',$orderdt->id)
         ->leftjoin('products', 'mj_order_products.product_id', '=', 'products.id')
         ->select(['*','mj_order_products.qty AS orderqty'])
+        ->where('canclepd','<>','1')
         ->get();
 
         if(!empty($orderdt->user_sign2)){ //ถ้ามีการรับ order
@@ -525,6 +526,7 @@ if(!empty($request->orderid)){
             $MjOrderProducts= MjOrderProducts::where('order_id',$orderdt->id)
             ->leftjoin('products', 'mj_order_products.product_id', '=', 'products.id')
             ->select(['*','mj_order_products.qty AS orderqty'])
+            ->where('canclepd','<>','1')
             ->get();
 
             if(!empty($orderdt->user_sign2)){ //ถ้ามีการรับ order
@@ -599,11 +601,11 @@ if(!empty($request->orderid)){
        $orderid =  $request->orderid;
 $MjOrderDetailsupdate = MjOrderDetails::find($orderid);
 if(Auth::user()->role_id==2 || Auth::user()->role_id==7){ //ผู้จัดการ
-if($request->nowstatus==22){
-   $newstatus =  $MjOrderDetailsupdate->order_status = '23'; //อนุมัติ ใบจอง
+if($request->nowstatus==21){
+   $newstatus =  $MjOrderDetailsupdate->order_status = '22'; //อนุมัติ ใบจอง
    $docname = "ใบจอง";
 }else{
-    $newstatus = $MjOrderDetailsupdate->order_status = '13'; //อนุมัติ Order
+    $newstatus = $MjOrderDetailsupdate->order_status = '12'; //อนุมัติ Order
    $docname = "Order";
 
 }
@@ -617,12 +619,12 @@ if($request->nowstatus==22){
         $position ="GM";
     }
 }elseif(Auth::user()->role_id==6){ //Sale Admin
-    if($request->nowstatus==21){
-        $newstatus =   $MjOrderDetailsupdate->order_status = '22'; //รับ ใบจอง
+    if($request->nowstatus==22){
+        $newstatus =   $MjOrderDetailsupdate->order_status = '23'; //รับ ใบจอง
    $docname = "ใบจอง";
 
     }else{
-        $newstatus =  $MjOrderDetailsupdate->order_status = '12'; //รับ Order
+        $newstatus =  $MjOrderDetailsupdate->order_status = '13'; //รับ Order
    $docname = "Order";
 
     }
@@ -643,21 +645,22 @@ $message ="อนุมัติโดย ".Auth::user()->fullname." (".$positio
 createtimeline($orderid,1,$orderid,$message,$newstatus); //createtimeline($orderid,$doc_type,$doc_id,$message)
 
 if(!empty($orderdt->bookingnumber)){
-    $sMessage = $docname." เลขที่ : ".$orderdt->bookingnumber."ได้รับการอนุมัติแล้วโดย ".Auth::user()->fullname." (".$position.") ท่านสามารถตรวจสอบและดำเนินการทำรายการต่อ ได้ที่ ".url('booking',$orderid);
+    $sMessage = $docname." เลขที่ : ".$orderdt->bookingnumber."ได้รับการอนุมัติแล้วโดย ".Auth::user()->fullname." (".$position.") ท่านสามารถตรวจสอบและดำเนินการทำรายการต่อ ได้ที่ ".url('order/'.$orderdt->bookingnumber.'/edit');
 }else{
-    $sMessage = $docname." เลขที่ : ".$orderdt->ordernumberfull."ได้รับการอนุมัติแล้วโดย ".Auth::user()->fullname." (".$position.") ท่านสามารถตรวจสอบและดำเนินการทำรายการต่อ ได้ที่ ".url('order',$orderid);
+    $sMessage = $docname." เลขที่ : ".$orderdt->ordernumberfull."ได้รับการอนุมัติแล้วโดย ".Auth::user()->fullname." (".$position.") ท่านสามารถตรวจสอบและดำเนินการทำรายการต่อ ได้ที่ ".url('order/'.$orderdt->ordernumberfull.'/edit');
 }
 lineNotifysend(1,$sMessage ,'');
+lineNotifysend(2,$sMessage ,'');
 
 }elseif(Auth::user()->role_id==6){ //Sale Admin
 ////----------บันทึกTimeline
-$message ="รับ".$docname." โดย ".Auth::user()->fullname." (".$position.")";
+$message ="รับ ".$docname." โดย ".Auth::user()->fullname." (".$position.")";
 createtimeline($orderid,1,$orderid,$message,$newstatus); //createtimeline($orderid,$doc_type,$doc_id,$message)
 
 if(!empty($orderdt->bookingnumber)){
-    $sMessage = "มีการส่ง".$docname." เลขที่ : ".$orderdt->bookingnumber."  เพื่อขออนุมัติ ท่านสามารถตรวจสอบและดำเนินการทำรายการอนุมัติได้ที่ ".url('booking',$orderid);
+    $sMessage = "มีการรับจอง จาก".$docname." เลขที่ : ".$orderdt->bookingnumber."  ท่านสามารถตรวจสอบได้ที่ ".url('order/'.$orderdt->bookingnumber.'/edit');
 }else{
-    $sMessage = "มีการส่ง".$docname." เลขที่ : ".$orderdt->ordernumberfull."  เพื่อขออนุมัติ ท่านสามารถตรวจสอบและดำเนินการทำรายการอนุมัติได้ที่ ".url('order',$orderid);
+    $sMessage = "มีการรับOrder จาก".$docname." เลขที่ : ".$orderdt->ordernumberfull."  ท่านสามารถตรวจสอบได้ที่ ".url('order/'.$orderdt->ordernumberfull.'/edit');
 }
 
 

@@ -1,4 +1,6 @@
 <aside class="main-sidebar elevation-4 sidebar-light-primary">
+
+  
     <!-- Brand Logo -->
     <a href="<?php echo e(url('/')); ?>" class="brand-link navbar-primary">
       <img src="<?php echo e(url('public/logo', $general_setting->site_logo)); ?>" alt="<?php echo e(url('public/logo', $general_setting->site_logo)); ?>" class="brand-image"
@@ -18,11 +20,38 @@
 <i class="nav-icon fas fa-tachometer-alt"></i>
 <p><?php echo e(__('file.dashboard')); ?></p></a>
 </li>
+<?php if(Auth::user()->role_id!=9): ?>
 
-<li  class="nav-item" >
+
+
+    <li  class="nav-item has-treeview   <?php if(url()->current() == url('create_order') || url()->current() == url('order-list') || url()->current() == url('booking-list') ): ?> menu-open <?php endif; ?>" >
+      <a href="#" class="nav-link <?php if(url()->current() == url('create_order') || url()->current() == url('order-list') || url()->current() == url('booking-list') ): ?>  active <?php endif; ?>">
+        <i class="nav-icon  fas fa-shopping-basket"></i>
+        <p><?php echo e(__('file.Order/Booking')); ?> <i class="right fas fa-angle-left"></i></p></a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+       
     <a href="<?php echo e(url("create_order")); ?>" class="nav-link <?php if(url()->current() == url('create_order')): ?> active <?php endif; ?>">
-    <i class="nav-icon  fas fa-shopping-basket"></i>
-    <p><?php echo e(__('file.Create Order/Booking')); ?></p></a>
+              <i class="far fa-circle nav-icon"></i>
+              <p><?php echo e(__('file.Create Order/Booking')); ?></p></a>
+            </a>
+          </li>
+
+          <li class="nav-item">
+       
+            <a href="<?php echo e(url("order-list")); ?>" class="nav-link <?php if(url()->current() == url('order-list')): ?> active <?php endif; ?>">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p><?php echo e(__('file.Order List')); ?></p></a>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+       
+                    <a href="<?php echo e(url("booking-list")); ?>" class="nav-link <?php if(url()->current() == url('booking-list')): ?> active <?php endif; ?>">
+                              <i class="far fa-circle nav-icon"></i>
+                              <p><?php echo e(__('file.Booking List')); ?></p></a>
+                            </a>
+                          </li>
+        </ul>
     </li>
 
     <li class="nav-item ">
@@ -32,9 +61,8 @@
 
 
 
-
-
-<?php if(Auth::user()->role_id==1  || Auth::user()->role_id==2 || Auth::user()->role_id==6 || Auth::user()->role_id==7   ){  ?>
+<?php endif; ?>
+<?php if(Auth::user()->role_id==1  || Auth::user()->role_id==2 || Auth::user()->role_id==5 || Auth::user()->role_id==7   ){  ?>
 
     <li  class="nav-item has-treeview   <?php if(url()->current() == url('/category') || url()->current() == url('/products') || url()->current() == url('/products/create')): ?> menu-open <?php endif; ?>" >
 
@@ -133,7 +161,8 @@
 
 </ul></li>
 
-<?php } if(Auth::user()->role_id==1 || Auth::user()->role_id==2  || Auth::user()->role_id==7){  ?>
+<?php } 
+if(Auth::user()->role_id==1 || Auth::user()->role_id==2  || Auth::user()->role_id==7 || Auth::user()->role_id==5 ){  ?>
 
 
     
@@ -145,14 +174,14 @@
         
         <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="<?php echo e(route('purchases.index')); ?>" class="nav-link <?php if(url()->current() == url('/purchases') ): ?>  active <?php endif; ?>">
+              <a href="<?php echo e(url('/purchases')); ?>" class="nav-link <?php if(url()->current() == url('/purchases') ): ?>  active <?php endif; ?>">
                 <i class="far fa-circle nav-icon"></i>
                 <p><?php echo e(trans('file.Purchase List')); ?></p>
               </a>
             </li>
 
             <li class="nav-item">
-                <a href="<?php echo e(route('purchases.create')); ?>" class="nav-link <?php if(url()->current() == url('/purchases/create')): ?>  active <?php endif; ?>">
+                <a href="<?php echo e(url('/purchases/create')); ?>" class="nav-link <?php if(url()->current() == url('/purchases/create')): ?>  active <?php endif; ?>">
                   <i class="far fa-circle nav-icon"></i>
                   <p><?php echo e(trans('file.Add Purchase')); ?></p>
                 </a>

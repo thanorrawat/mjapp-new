@@ -3,7 +3,7 @@
     <li>
   
         <time class="cbp_tmtime" datetime="<?php echo e($timeline->timelinedate); ?>"><span>      <?php echo e(date('H:i', strtotime($timeline->timelinedate))); ?></span> <span>      <?php echo e(date('j F, Y', strtotime($timeline->timelinedate))); ?></span></time>
-        <div class="cbp_tmicon" style="background:<?php echo e($timeline->color); ?>;color:#fff"><i class="fa fa-<?php echo e($timeline->icon); ?>"></i></div>
+        <div class="cbp_tmicon" style="background:<?php echo e($timeline->color); ?>;color:#fff"><i class="fas fa-<?php echo e($timeline->icon); ?>"></i></div>
         <div class="cbp_tmlabel"><h2><?php echo e($timeline->timeline_remark); ?></h2>
             <?php if(!empty($timeline->remark)): ?>
             <?php

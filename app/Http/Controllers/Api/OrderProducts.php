@@ -310,6 +310,12 @@ $alertstatus->text ="สินค้ารายการนี้ถูกเ�
 
     }
 
+    if(!empty($request->once_time)){
+        $once_time= $request->once_time;
+    }else{
+        $once_time= 0;
+
+    }
         //addproduct    
         $MjOrderProducts= new MjOrderProducts;
         $MjOrderProducts->order_id= $request->orderid;
@@ -322,7 +328,7 @@ $alertstatus->text ="สินค้ารายการนี้ถูกเ�
         $MjOrderProducts->stocknow= $request->stocknow;
         $MjOrderProducts->userid= $request->userid;
         $MjOrderProducts->memonumber= $request->memonumber;
-        $MjOrderProducts->priceoncetime= $request->once_time;
+        $MjOrderProducts->priceoncetime= $once_time;
         
         $MjOrderProducts->save();
 
@@ -354,8 +360,9 @@ if($request->doctype==1){
 
         //select product ใน order
 $productlistinorder = MjOrderProducts::where('order_id',$request->orderid)
+->where('canclepd','<>','1')
 ->leftjoin('products','mj_order_products.productscode','products.code' )
-->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount')
+->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount,canclepd')
 ->orderBy('pdorderid','asc')
 ->get();
         //response สถานะ
@@ -369,17 +376,6 @@ $productlistinorder = MjOrderProducts::where('order_id',$request->orderid)
             ]);
     }
 
-    public function showproductinorder($id)
-    {
-
-    $productlistinorder = MjOrderProducts::where('order_id',$id)
-->leftjoin('products','mj_order_products.productscode','products.code' )
-->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount')
-->orderBy('pdorderid','asc')
-->get();
-
-return response()->json($productlistinorder);
-    }
 
 
     public function removeproducttoorder(Request $request)
@@ -430,8 +426,9 @@ if($request->doctype==1){
 }
 
 $productlistinorder = MjOrderProducts::where('order_id',$request->orderid)
+->where('canclepd','<>','1')
 ->leftjoin('products','mj_order_products.productscode','products.code' )
-->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount')
+->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount,canclepd')
 ->orderBy('pdorderid','asc')
 ->get();
 
@@ -449,9 +446,7 @@ return response()->json(    [
 
         if(!empty($request->orderproductid) && !empty($request->productid) && !empty($request->orderid) && !empty($request->addqty)  && !empty($request->diffqty) && !empty($request->userfullname) && !empty($request->userid) ){
 
-
-
-                    //edit    
+//edit    
         $MjOrderProducts= MjOrderProducts::where('id',$request->orderproductid)
         ->first()
         ;
@@ -464,8 +459,6 @@ $MjOrderProducts->amount= $amountrow;
         $MjOrderProducts->memonumber= $request->memonumber;
         $MjOrderProducts->priceoncetime= $request->once_time;
         $MjOrderProducts->save();
-
-
 $orderdetails = $request->orderdetails;
 $docfullname ="";
             if($request->doctype==1){
@@ -497,8 +490,9 @@ $docfullname ="";
 
         }
         $productlistinorder = MjOrderProducts::where('order_id',$request->orderid)
+        ->where('canclepd','<>','1')
         ->leftjoin('products','mj_order_products.productscode','products.code' )
-        ->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount')
+        ->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount,canclepd')
         ->orderBy('pdorderid','asc')
         ->get();
         
@@ -515,13 +509,202 @@ $docfullname ="";
     {
 
     $ordertotalamount = MjOrderProducts::where('order_id',$id)
+    ->where('canclepd','<>','1')
 ->selectRaw('SUM(amount) as totalamount')
 ->get();
 
 return response()->json($ordertotalamount);
     }
 
+    
+    
+    public function checklastprice($id)
+    {
+
+$pricetop1 = "";
+$pricetop2 = "";
+$pricetop3 = "";
+        $salehistory = SaleHistory::where('productcode_code',$id)
+        ->groupBy('saleprice')
+        ->orderBy('id','desc')
+        ->limit(3)
+        ->get();
+        if(!empty($salehistory[0]->saleprice)){
+            $pricetop1 = $salehistory[0]->saleprice;
+        }else{
+            $pricetop1 = trans('file.No Data'); 
+        }
+        if(!empty($salehistory[1]->saleprice)){
+            $pricetop2 = $salehistory[1]->saleprice;
+        }
+        if(!empty($salehistory[2]->saleprice)){
+            $pricetop3 = $salehistory[2]->saleprice;
+        }
+
+        return response()->json(
+            [
+                'salehistory' => $salehistory,
+                'pricetop1' => $pricetop1,
+                'pricetop2' => $pricetop2,
+                'pricetop3' => $pricetop3,
+           
+            ]
+            );
+    }
+
+    public function cancleproducttoorder(Request $request)
+    {
+    
         
+        if(!empty($request->orderproductid) && !empty($request->productid) && !empty($request->orderid)  && !empty($request->diffqty) && !empty($request->userfullname) && !empty($request->userid) ){
+
+            //edit    
+                    $MjOrderProducts= MjOrderProducts::where('id',$request->orderproductid)
+                    ->first()
+                    ;
+
+                    
+                    $MjOrderProducts->canclepd= 1;
+                    $MjOrderProducts->save();
+            $orderdetails = $request->orderdetails;
+            $docfullname ="";
+                        if($request->doctype==1){
+                            $docfullname = $orderdetails['ordernumberfull'];
+                            $timelinestatus =  '114' ;//ยกเลิกสินค้า
+                        }elseif($request->doctype==2){
+                            $docfullname = $orderdetails['bookingnumber'];
+                            $timelinestatus =  '214' ;//ยกเลิกสินค้า
+                        
+                        }
+                                //addtracking
+                                
+                                trackingadd($request->productid,$request->productscode,$request->diffqty,$request->doctype,$request->orderid,$docfullname,$timelinestatus,$request->userid,$request->userfullname);
+                                //update จำนวน
+                                updateproductstockforsale($request->productscode,$request->productid);
+                                $alertstatus = (object)[]; 
+                                $alertstatus->icon ="success";
+                                $alertstatus->title ="Completed";
+                                $alertstatus->text ="ยกเลิกสินค้าเรียบร้อย";
+            
+            
+            
+                    }else{
+            
+                        $alertstatus = (object)[]; 
+                        $alertstatus->icon ="error";
+                        $alertstatus->title ="ไม่สำเร็จ";
+                        $alertstatus->text ="เกิดข้อผิดพลาดกรุณาลองอีกครั้งหรือติดต่อผู้ดูแลระบบ ";  
+            
+                    }
+                    $productlistinorder = MjOrderProducts::where('order_id',$request->orderid)
+                    ->where('canclepd','<>','1')
+                    ->leftjoin('products','mj_order_products.productscode','products.code' )
+                    ->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount,canclepd')
+                    ->orderBy('pdorderid','asc')
+                    ->get();
+                    
+                    return response()->json(    [
+                        'alertstatus' => $alertstatus,
+                        'productlistinorder' => $productlistinorder,
+                    'request'=>$request->orderproductid
+                    
+                        ]);
+
+    }
+
+    public function readdcancleproducttoorder(Request $request)
+    {
+    
+        
+        if(!empty($request->orderproductid) && !empty($request->productid) && !empty($request->orderid)  && !empty($request->diffqty) && !empty($request->userfullname) && !empty($request->userid) ){
+
+            //edit    
+                    $MjOrderProducts= MjOrderProducts::where('id',$request->orderproductid)
+                    ->first()
+                    ;
+
+                    
+                    $MjOrderProducts->canclepd= 0;
+                    $MjOrderProducts->save();
+            $orderdetails = $request->orderdetails;
+            $docfullname ="";
+                        if($request->doctype==1){
+                            $docfullname = $orderdetails['ordernumberfull'];
+                            $timelinestatus =  '115' ;//เพิ่มสินค้ายกเลิกกลับคืน
+                        }elseif($request->doctype==2){
+                            $docfullname = $orderdetails['bookingnumber'];
+                            $timelinestatus =  '215' ;//เพิ่มสินค้ายกเลิกกลับคืน
+                        
+                        }
+                                //addtracking
+                                
+                                trackingadd($request->productid,$request->productscode,$request->diffqty,$request->doctype,$request->orderid,$docfullname,$timelinestatus,$request->userid,$request->userfullname);
+                                //update จำนวน
+                                updateproductstockforsale($request->productscode,$request->productid);
+                                $alertstatus = (object)[]; 
+                                $alertstatus->icon ="success";
+                                $alertstatus->title ="Completed";
+                                $alertstatus->text ="เพิ่มสินค้าคืนรายการเรียบร้อย";
+            
+            
+            
+                    }else{
+            
+                        $alertstatus = (object)[]; 
+                        $alertstatus->icon ="error";
+                        $alertstatus->title ="ไม่สำเร็จ";
+                        $alertstatus->text ="เกิดข้อผิดพลาดกรุณาลองอีกครั้งหรือติดต่อผู้ดูแลระบบ ";  
+            
+                    }
+                    $productlistinorder = MjOrderProducts::where('order_id',$request->orderid)
+                    ->where('canclepd','<>','1')
+                    ->leftjoin('products','mj_order_products.productscode','products.code' )
+                    ->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount,canclepd')
+                    ->orderBy('pdorderid','asc')
+                    ->get();
+                    
+                    return response()->json(    [
+                        'alertstatus' => $alertstatus,
+                        'productlistinorder' => $productlistinorder,
+                    'request'=>$request->orderproductid
+                    
+                        ]);
+
+    }
+
+
+
+
+
+
+
+
+    public function showproductinorder($id)
+    {
+
+    $productlistinorder = MjOrderProducts::where('order_id',$id)
+    ->where('canclepd','<>','1')
+->leftjoin('products','mj_order_products.productscode','products.code' )
+->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount,canclepd,qtyso')
+->orderBy('pdorderid','asc')
+->get();
+
+return response()->json($productlistinorder);
+    }
+
+
+    public function showproductcancel($id)
+    {
+
+    $productlistinorder = MjOrderProducts::where('order_id',$id)
+    ->where('canclepd','=','1')
+->leftjoin('products','mj_order_products.productscode','products.code' )
+->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount,canclepd')
+->orderBy('pdorderid','asc')
+->get();
+
+return response()->json($productlistinorder);
+    }
 
     /**
      * Show the form for creating a new resource.

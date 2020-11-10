@@ -573,14 +573,45 @@ return [
 	'Order Type' => 'Order Type',
 	'Add Order' => 'Add Order',
 	'Create Order/Booking' => 'Create Order/Booking',
+	'Order/Booking' => 'Order/Booking',
+	'Order List' => 'Order List',
+	'Booking List' => 'Booking List',
 	'Booking Number' => 'Booking Number',
 	'Booking' => 'Booking',
 	'Details' => 'Details',
 	'Customer Code' => 'Customer Code',
 	'Price Group' => 'Price Group',
+	'Order/Booking Wait for approval' => 'Order/Booking Wait for approval',
+	'Order Wait for approval' => 'Order Wait for approval',
+	'Booking Wait for approval' => 'Booking Wait for approval',
+
+	'Order_Wait_for_continue' => 'Order Wait for continue' ,
+	'Booking_Wait_for_continue' => 'Booking Wait for continue' ,
+
+
+	'View All' => 'View All',
+	'No Data' => 'No Data',
+	'No_Data' => 'No Data',
+	'Last Sale Price' => 'Last Sale Price',
+	'cancel' => 'Cancel',
+	'Re_Add_to_List' => 'Re Add to List',
+	'In_progress' => 'In progress',
+	'Waiting_to_continue_by_Admin' => 'Waiting to continue by Admin',
+	'Waiting_for_Approve_by_Manager' => 'Waiting for Approve by Manager',
+	'Create_So' => 'Create Sale Order',
+	'Receive_Order_First' => 'Receive Order First',
+	'Total_amount_after_discount' => 'Total amount after discount',
+	'Vat_7' => 'Vat 7%',
+	'Total_amount' => 'Total amount',
+	'Createso' => 'Create SO.',
+
+
+
+
+
 
 	
-	
+
 	
 	
 

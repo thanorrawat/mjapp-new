@@ -10,9 +10,10 @@
   <link rel="icon" type="image/png" href="{{url('public/logo', $general_setting->site_logo)}}" />
   <link rel="stylesheet" href="{{ asset('node_modules/buefy/dist/buefy.min.css') }}"">
   <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="{{ asset('AdminLTE-3/plugins/fontawesome-free/css/all.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('AdminLTE-3/plugins/font-awesome/css/font-awesome.min.css') }}">
+ <link rel="stylesheet" href="{{ asset('AdminLTE-3/plugins/fontawesome-free/css/all.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('AdminLTE-3/plugins/font-awesome/css/font-awesome.min.css') }}"> 
 
+ 
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('AdminLTE-3/dist/css/adminlte.min.css') }}">
   <link rel="stylesheet" href="{{ asset('AdminLTE-3/dist/css/custom.css') }}">
@@ -63,15 +64,13 @@
             @hasSection('content')
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title">Card title</h5>
+                {{-- <h5 class="card-title">Card title</h5> --}}
 
-                <p class="card-text">
-                  Some quick example text to build on the card title and make up the bulk of the card's
-                  content.
-                </p>
+                <div class="card-text">
+                  @yield('content')
+                </div>
 
-                <a href="#" class="card-link">Card link</a>
-                <a href="#" class="card-link">Another link</a>
+        
               </div>
             </div>
             @endif

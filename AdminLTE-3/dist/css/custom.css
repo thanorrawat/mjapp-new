@@ -289,3 +289,10 @@ background-color: #EFEFEF;
     margin: 0;
   
 }
+
+.card-header{
+display: block;
+}
+h3.card-title {
+    float: left;
+  font-size: 1.5rem;}

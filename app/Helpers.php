@@ -187,7 +187,7 @@ $MjStoreProductsTracking= new MjStoreProductsTracking;
 $MjStoreProductsTracking->product_id=$pid;
 $MjStoreProductsTracking->product_code=$productscode ;
 $MjStoreProductsTracking->product_qty=$qtynew; //จำนวนใน Order
-$MjStoreProductsTracking->ref_typeid = $ref_typeid; // ประเภท 2 = Order
+$MjStoreProductsTracking->ref_typeid = $ref_typeid; // ประเภท 1 = Order,2=ใบจอง,3 = SO
 $MjStoreProductsTracking->ref_id = $order_id ; //Orderid
 $MjStoreProductsTracking->ref_no= $ordernumberfull; //Order number
 
@@ -229,6 +229,41 @@ elseif($sendordertype==211){  // 2=ย้ายเข้าคลังจอง
             $MjStoreProductsTracking->stocktype_3= $qtynew; //Stock จอง ลด
             $MjStoreProductsTracking->comment ='Edit Qty Product from Booking'; //ลบสินค้าออกจากรายการ Order
             }
+            elseif($sendordertype==114){  // 1=ย้ายออกคลัง order
+                $stocksalechange = -($qtynew);
+                $MjStoreProductsTracking->stocktype_1= $stocksalechange;  // Stock พร้อมขายเพิ่ม
+                $MjStoreProductsTracking->stocktype_2= $qtynew; //เปลี่ยนแปลง Stock Order
+                $MjStoreProductsTracking->comment ='Cancel Product From Order'; //ลบสินค้าออกจากรายการ Order
+                }  
+            elseif($sendordertype==214){  // 2=ย้ายออกคลังจอง
+                $stocksalechange = -($qtynew);
+                $MjStoreProductsTracking->stocktype_1= $stocksalechange;  // Stock พร้อมขายเพิ่ม
+                $MjStoreProductsTracking->stocktype_3= $qtynew; //Stock จอง ลด
+                $MjStoreProductsTracking->comment ='Cancel Product from Booking'; //ลบสินค้าออกจากรายการ Order
+                }
+                elseif($sendordertype==115){  // 1=ย้ายออกคลัง order
+                    $stocksalechange = -($qtynew);
+                    $MjStoreProductsTracking->stocktype_1= $stocksalechange;  // Stock พร้อมขายลด
+                    $MjStoreProductsTracking->stocktype_2= $qtynew; //เปลี่ยนแปลง Stock Order
+                    $MjStoreProductsTracking->comment ='Re Add Cancel Product to Order'; //ลบสินค้าออกจากรายการ Order
+                    }  
+                elseif($sendordertype==215){  // 2=ย้ายออกคลังจอง
+                    $stocksalechange = -($qtynew);
+                    $MjStoreProductsTracking->stocktype_1= $stocksalechange;  // Stock พร้อมขายลด
+                    $MjStoreProductsTracking->stocktype_3= $qtynew; //Stock จอง เพิ่ม
+                    $MjStoreProductsTracking->comment ='Re Add Cancel Product to Booking'; //ลบสินค้าออกจากรายการ Order
+                    }
+                    elseif($sendordertype==311){  // ย้าย ordr ไป so
+                       $MjStoreProductsTracking->stocktype_2= "-".$qtynew;  // Stock Orderลด
+                        $MjStoreProductsTracking->stocktype_4= $qtynew; //Stock SO เพิ่ม
+                        $MjStoreProductsTracking->comment ='Transfer Order to SO'; //
+                        }
+                        elseif($sendordertype==321){  // ย้าย booking ไป so
+                            $MjStoreProductsTracking->stocktype_3= "-".$qtynew;  // Stock Orderลด
+                             $MjStoreProductsTracking->stocktype_4= $qtynew; //Stock SO เพิ่ม
+                             $MjStoreProductsTracking->comment ='Transfer Booking to SO'; //
+                             }
+    
 
 
 $MjStoreProductsTracking->save();

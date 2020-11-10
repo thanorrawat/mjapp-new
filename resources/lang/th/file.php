@@ -41,7 +41,7 @@ return [
 	'qty' => 'จำนวน',
 	'price' => 'Price',
 	'Image' => 'รูป',
-	'Code' => 'Code',
+	'Code' => 'รหัส',
 	'Brand' => 'Brand',
 	'Quantity' => 'Quantity',
 	'Unit' => 'Unit',
@@ -71,13 +71,13 @@ return [
 	'Balance' => 'Balance',
 	'Status' => 'Status',
 	'Payment' => 'Payment',
-	'View' => 'View',
+	'View' => 'แสดง',
 	'Warehouse' => 'Warehouse',
 	'Attach Document' => 'Attach Document',
 	'Select Product' => 'เลือกสินค้า',
 	'Order' => 'Order',
 	'Order Table' => 'Order Table',
-	'Discount' => 'Discount',
+	'Discount' => 'ส่วนลด',
 	'Unit Cost' => 'Unit Cost',
 	'Unit Price' => 'Unit Price',
 	'Net Unit Cost' => 'Net Unit Cost',
@@ -577,11 +577,46 @@ return [
 	'Order Type' => 'ประเภท Order',
 	'Add Order' => 'ทำ Order',
 	'Create Order/Booking' => 'ทำ Order/ใบจอง',
+	'Order/Booking' => 'Order/ใบจอง',
+	'Order List' => 'รายการOrder',
+	'Booking List' => 'รายการใบจอง',
 	'Booking Number' => 'ใบจองเลขที่',
 	'Booking' => 'ใบจอง',
 	'Details' => 'รายละเอียด',
 	'Customer Code' => 'รหัสลูกค้า',
 	'Price Group' => 'กลุ่มราคา',
+
+	'Order/Booking Wait for approval' => 'Order/ใบจอง รออนุมัติ',
+	'Order Wait for approval' => 'Order รออนุมัติ',
+	'Booking Wait for approval' => 'ใบจอง รออนุมัติ',
+	'Order_Wait_for_continue' => 'Order รอทำรายการ', 
+	'Booking_Wait_for_continue' => 'ใบจอง รอทำรายการ' ,
+	'View All' => 'แสดงทั้งหมด',
+	'No Data' => 'ไม่มีข้อมูล',
+	'No_Data' => 'ไม่มีข้อมูล',
+	'Last Sale Price' => 'ราคาล่าสุด',
+	'cancel' => 'ยกเลิก',
+	'Re_Add_to_List' => 'ย้ายกลับเข้ารายการ',
+	'In_progress' => 'อยู่ระหว่างดำเนินการ',
+	'Waiting_to_continue_by_Admin' => 'รอ Admin ทำรายการต่อ',
+	'Waiting_for_Approve_by_Manager' => 'รอการอนุมัติจากผู้จัดการ',
+	'Create_So' => 'จัดทำ Sale Order',
+	'Receive_Order_First' => 'กรุณารับ Order ก่อน',
+	'Total_amount_after_discount' => 'เงินหลังหักส่วนลด',
+	'Vat_7' => 'ภาษีมูลค่าเพิ่ม 7%',
+	'Total_amount' => 'จำนวนเงินทั้งสิ้น',
+	'Createso' => 'จัดทำ SO.',
+
+
+	
+
+	
+
+
+
+
+
+
 
 
 

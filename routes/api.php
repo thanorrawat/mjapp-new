@@ -17,6 +17,10 @@ use Illuminate\Http\Request;
     return $request->user();
 });*/
 
+//แปล
+
+Route::get('LanguageTraslate','Api\LanguageTraslate@index');
+
 Route::resource('orderproducts','Api\OrderProducts');
 //Route::resource('orderproducts-search/','Api\OrderProducts');
 Route::get('orderproducts-search','Api\OrderProducts@search');
@@ -27,15 +31,26 @@ Route::post('order_create','Api\OrderProducts@addorder');
 Route::get('checkstock/{id}','Api\OrderProducts@checkstock');
 Route::get('categorynamelist','Api\OrderProducts@categoryname');
 Route::post('order_checkprice','Mj\MemoPriceController@checkpriceorder');
+Route::get('checklastprice/{id}','Api\OrderProducts@checklastprice');
 
 
 
+//order
 Route::post('addproducttoorder','Api\OrderProducts@addproducttoorder'); //เพิ่มสินค้าใน Order
 Route::get('showproductinorder/{id}','Api\OrderProducts@showproductinorder'); //แสดงรายการสินค้า จาก orderid
+Route::get('showproductcancel/{id}','Api\OrderProducts@showproductcancel'); //แสดงรายการสินค้าที่ถูกยกเลิก
 Route::get('showordertotalamount/{id}','Api\OrderProducts@showordertotalamount'); //แสดงรายการสินค้า จาก orderid
 
 Route::post('removeproducttoorder','Api\OrderProducts@removeproducttoorder'); //ลบสินค้าจาก Order
+Route::post('cancleproducttoorder','Api\OrderProducts@cancleproducttoorder'); //ยกเลิกสินค้าจาก Order
+Route::post('readdcancleproducttoorder','Api\OrderProducts@readdcancleproducttoorder'); //เพิ่มสินค้าที่ถูกยกเลิกกลับ Order
+
 Route::post('editqtyproducttoorder','Api\OrderProducts@editqtyorder'); //แก้ไขจำนวนสินค้าจาก Order
+
+//SO
+Route::post('createso','Api\Socontroller@create'); //เพิ่มสินค้าใน Order
+Route::get('checksoinorder/{id}','Api\Socontroller@listinorder'); //แสดงรายการสินค้า จาก orderid
+
 
 
 //products

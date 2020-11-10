@@ -384,9 +384,10 @@ this.addproductpricecode()
         liDisable: 'disabled',
         button: 'page-link'  ,
 
-      },  orderdt :[],
-        doctypename:null,
-        customerdt : [],
+      },  
+orderdt :[],
+doctypename:null,
+customerdt : [],
 datelabel1 :'วันที่ทำรายการ',
 datelabel2 : 'กำหนดส่ง',
 buttonlabel : 'สร้างใบOrder',
@@ -399,9 +400,7 @@ orderdtall:[],
 productshow:[],
 customercode:'',
 histories:[],
-
 historylist_sumsale:[],
-
 historylist_code:[],
 stocklist:[],
 cat_code:'',
@@ -423,6 +422,7 @@ orderremark:'',
 productprice:[],
 productlistpriceobj:[],
 ordertotalamount:0,
+
     }
 },
     watch: {
@@ -450,7 +450,7 @@ currentPage: function() { //ถ้าค่า currentPage เปลี่ยน
  }else if(this.doctypecheck===2){
 
    this.datelabel1 = 'วันที่จอง';
-  this.datelabel2 = 'วันที่สิ้นสุดการจอง';
+this.datelabel2 = 'วันที่สิ้นสุดการจอง';
  this.buttonlabel ='สร้างใบจอง';
  this.buttonlabeladd ='เพิ่มในใบจอง';
 

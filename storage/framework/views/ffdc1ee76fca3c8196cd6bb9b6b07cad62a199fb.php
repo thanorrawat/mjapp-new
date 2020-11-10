@@ -44,9 +44,13 @@
                 
               </div>
               <div id="app">
-<edit-order baseurl="<?php echo e($baseurl); ?>"  orderurl="<?php echo e(url('order_view', $cartDetails->token)); ?>" orderid="<?php echo e($orderdt->id); ?>"></edit-order>
+         <?php if(($cartDetails->order_status==11|| $cartDetails->order_status==21)): ?>       
+<edit-order baseurl="<?php echo e($baseurl); ?>" role_id="<?php echo e(Auth::user()->role_id); ?>"  orderurl="<?php echo e(url('order_view', $cartDetails->token)); ?>" orderid="<?php echo e($orderdt->id); ?>" userfullname="<?php echo e(Auth::user()->fullname); ?>" userid="<?php echo e(Auth::user()->id); ?>"></edit-order>
 
-              </div>
+<?php else: ?>
+<edit-order-so baseurl="<?php echo e($baseurl); ?>" role_id="<?php echo e(Auth::user()->role_id); ?>"  orderurl="<?php echo e(url('order_view', $cartDetails->token)); ?>" orderid="<?php echo e($orderdt->id); ?>" userfullname="<?php echo e(Auth::user()->fullname); ?>" userid="<?php echo e(Auth::user()->id); ?>"></edit-order-so>
+ <?php endif; ?>
+</div>
               
 
 <?php if(
@@ -57,11 +61,11 @@
           <form action="<?php echo e(url('confirmform')); ?>" method="post">
             <div class="text-center">
               <hr>
-              <button type="submit" class="btn btn-success"><i class="fa fa-check-square-o" aria-hidden="true"></i> <?php if($cartDetails->order_status==21): ?> อนุมัติใบจอง  <?php elseif($cartDetails->order_status==11): ?> อนุมัติ Order <?php elseif($cartDetails->order_status==22): ?> รับใบจอง <?php else: ?> รับOrder <?php endif; ?></button>
+              <button type="submit" class="btn btn-success"><i class="fa fa-check-square-o" aria-hidden="true"></i> <?php if($cartDetails->order_status==21): ?> อนุมัติใบจอง  <?php elseif($cartDetails->order_status==11): ?> อนุมัติ Order <?php elseif($cartDetails->order_status==22): ?> รับใบจอง <?php elseif($cartDetails->order_status==12): ?> รับOrder <?php endif; ?></button>
               <br>
               <br>
 
-<h4><?php if($cartDetails->order_status==22): ?> Click เพื่ออนุมัติใบจอง  <?php elseif($cartDetails->order_status==12): ?> Click เพื่ออนุมัติ Order <?php elseif($cartDetails->order_status==21): ?> Click เพื่อรับ ใบจอง <?php else: ?> Click เพื่อรับ Order <?php endif; ?> </h4>
+<h4><?php if($cartDetails->order_status==21): ?> Click เพื่ออนุมัติใบจอง  <?php elseif($cartDetails->order_status==11): ?> Click เพื่ออนุมัติ Order <?php elseif($cartDetails->order_status==22): ?> Click เพื่อรับ ใบจอง <?php elseif($cartDetails->order_status==12): ?> Click เพื่อรับ Order <?php endif; ?> </h4>
               
 
               <div style="" id="signimgbox">
@@ -128,7 +132,38 @@
         </div>
     </div>
   </div>
+  <?php if(
+    (Auth::user()->role_id!=6 && ($cartDetails->order_status==12 || $cartDetails->order_status==22) ) //admin รับ ORDER /ใบจอง
+    ||
+    ((Auth::user()->role_id!=2||Auth::user()->role_id==7)  && ($cartDetails->order_status==11|| $cartDetails->order_status==21) ) //Manager อนุมัติใบจอง
+    ): ?>
+  <div class="col-md-12 ">
+    <div class="info-box bg-gradient-warning p-2">
+    
+<div class="w-100 text-center"> <h2><i class="fas fa-hourglass-half"></i></h2>
 
+<h2> <?php echo e(__('file.In_progress')); ?></h2>
+<?php if(
+  (Auth::user()->role_id!=6 && ($cartDetails->order_status==12 || $cartDetails->order_status==22) ) //admin รับ ORDER /ใบจอง
+  ): ?>
+( <?php echo e(__('file.Waiting_to_continue_by_Admin')); ?> )
+<?php elseif(
+  ((Auth::user()->role_id!=2||Auth::user()->role_id==7)  && ($cartDetails->order_status==11|| $cartDetails->order_status==21) ) //Manager อนุมัติใบจอง
+  ): ?>
+  ( <?php echo e(__('file.Waiting_for_Approve_by_Manager')); ?> )
+  <?php endif; ?>
+ </div>
+     
+    
+      
+
+     
+   
+      <!-- /.info-box-content -->
+    </div>
+    <!-- /.card -->
+  </div>
+  <?php endif; ?>
   <div class="card">
     <div class="card-header">
         <h5>Timeline : </h5>

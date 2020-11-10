@@ -1,4 +1,6 @@
 <aside class="main-sidebar elevation-4 sidebar-light-primary">
+
+  
     <!-- Brand Logo -->
     <a href="{{url('/')}}" class="brand-link navbar-primary">
       <img src="{{url('public/logo', $general_setting->site_logo)}}" alt="{{url('public/logo', $general_setting->site_logo)}}" class="brand-image"
@@ -18,11 +20,38 @@
 <i class="nav-icon fas fa-tachometer-alt"></i>
 <p>{{ __('file.dashboard') }}</p></a>
 </li>
+@if(Auth::user()->role_id!=9)
 
-<li  class="nav-item" >
+
+
+    <li  class="nav-item has-treeview   @if(url()->current() == url('create_order') || url()->current() == url('order-list') || url()->current() == url('booking-list') ) menu-open @endif" >
+      <a href="#" class="nav-link @if(url()->current() == url('create_order') || url()->current() == url('order-list') || url()->current() == url('booking-list') )  active @endif">
+        <i class="nav-icon  fas fa-shopping-basket"></i>
+        <p>{{ __('file.Order/Booking') }} <i class="right fas fa-angle-left"></i></p></a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+       
     <a href="{{  url("create_order") }}" class="nav-link @if(url()->current() == url('create_order')) active @endif">
-    <i class="nav-icon  fas fa-shopping-basket"></i>
-    <p>{{ __('file.Create Order/Booking') }}</p></a>
+              <i class="far fa-circle nav-icon"></i>
+              <p>{{ __('file.Create Order/Booking') }}</p></a>
+            </a>
+          </li>
+
+          <li class="nav-item">
+       
+            <a href="{{  url("order-list") }}" class="nav-link @if(url()->current() == url('order-list')) active @endif">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>{{ __('file.Order List') }}</p></a>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+       
+                    <a href="{{  url("booking-list") }}" class="nav-link @if(url()->current() == url('booking-list')) active @endif">
+                              <i class="far fa-circle nav-icon"></i>
+                              <p>{{ __('file.Booking List') }}</p></a>
+                            </a>
+                          </li>
+        </ul>
     </li>
 
     <li class="nav-item ">
@@ -48,10 +77,9 @@
   
   </ul></li> --}}
 
-
 {{-- products --}}
-
-<?php if(Auth::user()->role_id==1  || Auth::user()->role_id==2 || Auth::user()->role_id==6 || Auth::user()->role_id==7   ){  ?>
+@endif
+<?php if(Auth::user()->role_id==1  || Auth::user()->role_id==2 || Auth::user()->role_id==5 || Auth::user()->role_id==7   ){  ?>
 
     <li  class="nav-item has-treeview   @if(url()->current() == url('/category') || url()->current() == url('/products') || url()->current() == url('/products/create')) menu-open @endif" >
 
@@ -150,7 +178,8 @@
 
 </ul></li>
 {{--// CUSTomer --}}
-<?php } if(Auth::user()->role_id==1 || Auth::user()->role_id==2  || Auth::user()->role_id==7){  ?>
+<?php } 
+if(Auth::user()->role_id==1 || Auth::user()->role_id==2  || Auth::user()->role_id==7 || Auth::user()->role_id==5 ){  ?>
 
 
     {{-- Purchase --}}
@@ -162,14 +191,14 @@
         
         <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="{{route('purchases.index')}}" class="nav-link @if(url()->current() == url('/purchases') )  active @endif">
+              <a href="{{url('/purchases')}}" class="nav-link @if(url()->current() == url('/purchases') )  active @endif">
                 <i class="far fa-circle nav-icon"></i>
                 <p>{{trans('file.Purchase List')}}</p>
               </a>
             </li>
 
             <li class="nav-item">
-                <a href="{{route('purchases.create')}}" class="nav-link @if(url()->current() == url('/purchases/create'))  active @endif">
+                <a href="{{url('/purchases/create')}}" class="nav-link @if(url()->current() == url('/purchases/create'))  active @endif">
                   <i class="far fa-circle nav-icon"></i>
                   <p>{{trans('file.Add Purchase')}}</p>
                 </a>
