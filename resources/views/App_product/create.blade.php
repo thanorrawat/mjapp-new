@@ -1,4 +1,4 @@
-@extends('layout-theme-gradient-able.app2') 
+@extends('Admin_lte.app')  
 
 @section('title', $titlepage)
 
@@ -19,7 +19,9 @@
 <link href="{{ asset("node_modules/bootstrap-fileinput/css/fileinput.min.css") }}" media="all" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 
-
+<link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet"> 
+<link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet"> 
+<link href="https://cdn.datatables.net/buttons/1.6.1/css/buttons.bootstrap4.min.css" rel="stylesheet"> 
 <style>
 
 /*panel*/
@@ -165,9 +167,9 @@
     <div class="alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('message') }}</div> 
 @endif
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
+                    {{-- <div class="card-header d-flex align-items-center">
                         <h4>{{ $titlepage }}</h4>
-                    </div>
+                    </div> --}}
                     <div class="card-body">
                         <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
 

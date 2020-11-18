@@ -9,6 +9,20 @@
   <link rel="stylesheet" href="{{ asset('AdminLTE-3/plugins/select2/css/select2.min.css')}}">
   <link rel="stylesheet" href="{{ asset('AdminLTE-3/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
 
+
+  <link rel="stylesheet" href="{{ asset('AdminLTE-3/pickadate.js-3.6.2/lib/themes/classic.css') }}" id="theme_base">
+  <link rel="stylesheet" href="{{ asset('AdminLTE-3/pickadate.js-3.6.2/lib/themes/classic.date.css') }}" id="theme_date">
+  <link rel="stylesheet" href="{{ asset('AdminLTE-3/pickadate.js-3.6.2/lib/themes/classic.time.css') }}" id="theme_time">
+
+  <style>.datepicker td, .datepicker th {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 0.85rem;
+}
+
+.datepicker {
+    margin-bottom: 3rem;
+}</style>
 @endsection
 
 @section('content')
@@ -18,7 +32,7 @@
 
   <div class="row clearfix">
     <div class="col-md-12">
-<table style="width: 100%" class="mb-3">
+<table   style="width: 100%" class="mb-3">
   <tr>
     <td style="width: 150px">ผู้จัดจำหน่าย</td>
     <td>
@@ -36,13 +50,14 @@
      
      
     </td>
+    <td style="width: 10px"></td>
     <td style="width: 150px">เลขที่ใบสั่งซื้อ</td>
     <td>{{ Session::get('newponumber') }}</td>
   </tr>
   <tr>
     <td></td>
     <td   id="supp_name"></td>
- 
+ <td></td>
     <td>วันที่</td>
     <td>{{ date("d/m/Y") }}</td>
   </tr>
@@ -50,21 +65,32 @@
     <td></td>
     <td   id="supp_address"></td>
  
-
+<td></td>
     <td>วันที่รับของ</td>
-    <td></td>
+    <td><input type="text" id="recievedate" class="form-control" value="{{ Session::get('recievedate')??'' }}"></td>
   </tr>
   <tr>
     <td  >โทร.</td>
     <td id="supp_tel"></td>
+    <td></td>
     <td>เครดิต</td>
     <td id="supp_credit"></td>
   </tr>
   <tr>
     <td  >หมายเหตุ</td>
+    <td> <input class="form-control" id="poremark" type="text" value="{{ Session::get('poremark')??'' }}""></td>
     <td></td>
     <td>ขนส่งโดย</td>
-    <td></td>
+    <td>
+      <select name="shipby" id="shipby" class="form-control">
+        <option value="">เลือกการขนส่ง</option>
+        <option   @if(!empty(Session::get('shipby')) && Session::get('shipby')=="ship")
+          selected  @endif value="ship">{{ __('file.ship') }}</option>
+        <option @if(!empty(Session::get('shipby')) && Session::get('shipby')=="car")
+        selected  @endif value="car">{{ __('file.car') }}</option>
+        <option @if(!empty(Session::get('shipby')) && Session::get('shipby')=="airplane")
+        selected  @endif value="airplane">{{ __('file.airplane') }}</option>
+      </select></td>
   </tr>
 
 
@@ -191,23 +217,20 @@ $costrow = 0;
 @endsection
 
 @section('pagejs')
+
+
+
+
 <!-- DataTables -->
 <script src="{{ asset('AdminLTE-3/plugins/datatables/jquery.dataTables.min.js')}}"></script>
 <script src="{{ asset('AdminLTE-3/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
-<script src="{{ asset('AdminLTE-3/plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
-<script src="{{ asset('AdminLTE-3/plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
-<script src="{{ asset('AdminLTE-3/plugins/datatables-buttons/js/buttons.html5.js')}}"></script>
-<script src="{{ asset('AdminLTE-3/plugins/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
+
 
 
 <!-- Select2 -->
 <script src="{{ asset('AdminLTE-3/plugins/select2/js/select2.full.min.js')}}"></script>
 
 <script>
-
-
-
-
 var countqty = $('.qty').length;
 for(var i=0;i<= countqty;i++){
   var willorderid =  $('.qty_'+i).attr( "data-willid" );
@@ -313,8 +336,10 @@ console.log(`.willitem${index}: ${willid} : ${code} : ${name} : ${qty} : ${price
 
 
 
-   function updateprchasedt(discount){  
-$.post( "{{ url('purchase/updatepurchase') }}", {  csrf: "{{ csrf_token() }}",discount:discount})
+   function updateprchasedt(discount,recievedate,poremark,shipby){  
+
+   // console.log(discount+'/'+recievedate+'/'+shipby);
+$.post( "{{ url('purchase/updatepurchase') }}", {  csrf: "{{ csrf_token() }}",discount:discount,recievedate:recievedate,poremark:poremark,shipby:shipby})
 
 }
 
@@ -340,10 +365,15 @@ $('#supplierlist').on('change keyUp', function () {
 });
 
 
-$('body').on('change keyUp', '#discount', function () { 
+$('body').on('change keyUp blur', '#discount,#recievedate,#poremark,#shipby', function () { 
   discountall()
   var discount = $('#discount').val();
-  updateprchasedt(discount);
+  var recievedate = $('#recievedate').val();
+  var poremark= $('#poremark').val();
+  var shipby= $('#shipby').val();
+  //console.log(discount+'/zzzz'+recievedate+'/'+shipby);
+  updateprchasedt(discount,recievedate,poremark,shipby);
+
 });
 
 $('body').on('change', '.qty,.price', function () { 
@@ -380,6 +410,9 @@ var po_discount=  $('#discount').val();
 var po_afterdiscount=  $('#afterdiscount').val();
 var po_vat=  $('#vat7').val();
 var po_grand_total=  $('#total_amount').val();
+var poremark = $('#poremark').val();
+var shipby = $('#shipby').val();
+var recievedate = $('#recievedate').val();
 
  var po_items =  $('.willitem').length;
 
@@ -391,7 +424,10 @@ var po_grand_total=  $('#total_amount').val();
    po_discount: po_discount,
    po_afterdiscount:po_afterdiscount,
    po_vat:po_vat,
-   po_grand_total:po_grand_total
+   po_grand_total:po_grand_total,
+   poremark:poremark,
+   shipby:shipby,
+   recievedate:recievedate
 
 })
    .done(function( data ) {
@@ -435,4 +471,10 @@ window.location.replace("{{ url('purchases') }}");
 
 </script>
 
+<script src="{{ asset('AdminLTE-3/pickadate.js-3.6.2/lib/picker.js')}}"></script>
+<script src="{{ asset('AdminLTE-3/pickadate.js-3.6.2/lib/picker.date.js')}}"></script>
+<script src="{{ asset('AdminLTE-3/pickadate.js-3.6.2/lib/picker.time.js')}}"></script>
+<script>//Date range picker
+  $('#recievedate').pickadate({format: 'dd/mm/yyyy',})
+  </script>
 @endsection

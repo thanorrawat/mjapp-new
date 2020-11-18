@@ -1,4 +1,4 @@
-@extends('layout-theme-gradient-able.app2') 
+@extends('Admin_lte.app')  
 @section('title',  __('file.product'))
 @section('pagecss')
 <link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet"> 
@@ -24,7 +24,7 @@
 @endif
 
 <section>
-    <div class="container-fluid">
+    <div class="container-fluid mb-2">
         @if(in_array("products-add", $all_permission))
             <a href="{{route('products.create')}}" class="btn btn-info"><i class="dripicons-plus"></i> {{__('file.add_product')}}</a>
             <a href="#" data-toggle="modal" data-target="#importProduct" class="btn btn-primary"><i class="dripicons-copy"></i> {{__('file.import_product')}}</a>

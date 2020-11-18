@@ -35,7 +35,7 @@ return [
 	'date' => 'Date',
 	'reference' => 'Reference',
 	'customer' => 'ลูกค้า',
-	'status' => 'Status',
+	'status' => 'สถานะ',
 	'grand total' => 'Grand Total',
 	'Product Details' => 'รายละเอียด',
 	'qty' => 'จำนวน',
@@ -607,9 +607,15 @@ return [
 	'Total_amount' => 'จำนวนเงินทั้งสิ้น',
 	'Createso' => 'จัดทำ SO.',
 
+	'ship' => 'เรือ',
+	'car' => 'รถ',
+	'airplane' => 'เครื่องบิน',
+	
+	'postatus_1' => 'ส่ง PO',
+	'postatus_2' => 'เสร็จสิ้น',
+
 
 	
-
 	
 
 

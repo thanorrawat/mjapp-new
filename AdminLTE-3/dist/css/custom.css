@@ -1,13 +1,10 @@
-.statusbutton{
+.statusbutton {
     color: #fff;
-font-weight: 400;
+    font-weight: 400;
 }
-* ==========================================
-* CUSTOM UTIL CLASSES
-* ==========================================
-*
-*/
-.datepicker td, .datepicker th {
+
+*==========================================* CUSTOM UTIL CLASSES *==========================================* */ .datepicker td,
+.datepicker th {
     width: 2.5rem;
     height: 2.5rem;
     font-size: 0.85rem;
@@ -236,17 +233,17 @@ font-weight: 400;
 .bg-info {
     background-color: #2CA8FF !important;
 }
-                                    
 
-.btn-default{
-background-color: #EFEFEF;
+.btn-default {
+    background-color: #EFEFEF;
 }
-.signature-pad{
+
+.signature-pad {
     margin-left: auto;
     margin-right: auto;
 }
 
-#loadingDiv{
+#loadingDiv {
     position: fixed;
     left: 50%;
     top: 40%;
@@ -254,45 +251,62 @@ background-color: #EFEFEF;
     height: 100px;
     margin-left: -50px;
     z-index: 999999999;
-
 }
 
 .loader {
-  border: 16px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 16px solid #3498db;
-  width: 120px;
-  height: 120px;
-  -webkit-animation: spin 2s linear infinite; /* Safari */
-  animation: spin 2s linear infinite;
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite;
+    /* Safari */
+    animation: spin 2s linear infinite;
 }
 
+
 /* Safari */
+
 @-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .select2-container--default .select2-selection--single .select2-selection__rendered {
     margin-top: -9px;
 }
+
 .content li+li {
     margin-top: 0;
 }
+
 .content ul {
     list-style: none;
     margin: 0;
-  
 }
 
-.card-header{
-display: block;
+.card-header {
+    display: block;
 }
+
 h3.card-title {
     float: left;
-  font-size: 1.5rem;}
+    font-size: 1.5rem;
+}
+
+.dataTables_length {
+    margin-top: 10px;
+}

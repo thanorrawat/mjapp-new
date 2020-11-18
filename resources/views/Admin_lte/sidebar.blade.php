@@ -1,6 +1,5 @@
 <aside class="main-sidebar elevation-4 sidebar-light-primary">
 
-  
     <!-- Brand Logo -->
     <a href="{{url('/')}}" class="brand-link navbar-primary">
       <img src="{{url('public/logo', $general_setting->site_logo)}}" alt="{{url('public/logo', $general_setting->site_logo)}}" class="brand-image"

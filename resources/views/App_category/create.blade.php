@@ -1,4 +1,4 @@
-@extends('layout-theme-gradient-able.app2') 
+@extends('Admin_lte.app')  
 @section('title',  __('file.category'))
 @section('pagecss')
     <!-- table sorter stylesheet-->
@@ -18,7 +18,7 @@
 @endif
 
 <section>
-    <div class="container-fluid">
+    <div class="container-fluid mb-2">
         <!-- Trigger the modal with a button -->
         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#createModal"><i class="dripicons-plus"></i> {{trans("file.Add Category")}}</button>&nbsp;
         <button class="btn btn-primary" data-toggle="modal" data-target="#importCategory"><i class="dripicons-copy"></i> {{trans('file.Import Category')}}</button>

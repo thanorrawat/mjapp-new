@@ -57,7 +57,6 @@ for($i=0;$i<12;$i++){
     public function willorderdata2(Request $request)
     {
 
-
       if($_GET['csrf']==csrf_token()) {
          $allcheckarr=[];
         $willorder=Willorder::selectRaw('willorders.id AS id,willor_productcode,willor_stock,willor_po,willor_so,willor_diff,willor_order,name,willor_max2')

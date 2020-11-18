@@ -335,11 +335,15 @@ Session::put('poitem',$poitemarr );
 
     {
 
+     
+  Session::put('recievedate',$request->recievedate);
+  Session::put('poremark',$request->poremark);
+  Session::put('podiscount',$request->discount);
+  Session::put('shipby',$request->shipby);
 
-    Session::put('podiscount',$request->discount);
-    return Session::get('podiscount');
-
-
+  
+    return Session::get('recievedate').'/'.Session::get('poremark').'/'.Session::get('podiscount');
+  
     }
     
 
@@ -490,6 +494,15 @@ Session::put('poitem',$poitemarr );
          }
             
          
+         
+         if(!empty($request->recievedate)){
+            $recievedatearr = explode("/",$request->recievedate);
+            $recievedate = $recievedatearr[2].'-'.$recievedatearr[1].'-'.$recievedatearr[0];  
+         }else{
+            $recievedate = '';  
+
+         }
+         
 
 
          $adddata = new PurchasePo;
@@ -509,9 +522,16 @@ Session::put('poitem',$poitemarr );
          $adddata->po_date= NOW();
          $adddata->created_at = NOW();
          $adddata->user_id = Auth::id();
+         $adddata->poremark = $request->poremark;
+         $adddata->shipby= $request->shipby;
+         $adddata->recieve_date= $recievedate;
+
          $adddata->save();
      
-
+         Session::put('recievedate','');
+         Session::put('poremark','');
+         Session::put('podiscount','');
+         Session::put('shipby','');
 
 
 
@@ -544,7 +564,7 @@ if(!empty($request->purchaseid)){
     $adddataitem->poitems_unit=$request->unit_name;
      
     $adddataitem->poitems_price=$request->price;
-    $adddataitem->poitems_amount=$request->price;
+    $adddataitem->poitems_amount=$request->total;
     $adddataitem->save();
 
 
@@ -636,10 +656,66 @@ if(!empty($request->purchaseid)){
   return Datatables::of($purchaselist)
    ->addColumn('supplierdt', function ($purchaselist) {
 return $purchaselist->supplier_name; })
+
+
+->addColumn('ponumber', function ($purchaselist) {
+    return "<a  class=' popopup' data-toggle='modal' data-target='#poview' data-ponumber='".$purchaselist->ponumber."' href='".url('purchase/view')."/".$purchaselist->id."'>".$purchaselist->ponumber."</a>"; 
+})
+
+
 ->addColumn('view', function ($purchaselist) {
-    return "<a href='".url('purchase/view')."/".$purchaselist->id."'>view</a>"; })
+    
+    
+    $return = "<a  class='btn btn-info popopup' data-toggle='modal' data-target='#poview' data-ponumber='".$purchaselist->ponumber."' href='".url('purchase/view')."/".$purchaselist->id."'>view</a>"; 
+    
+    if($purchaselist->po_status==1){
+
+$return .="<form style='display:inline'  id='frompo-".$purchaselist->id."' method='POST' action='".url('purchasesendtosupplier')."' > <input type='hidden' name='_token' value='".csrf_token()."'  /><input type='hidden' name='poid' value='".$purchaselist->id."'  /> 
+<button type='button' data-poid='".$purchaselist->id."' class='btn btn-warning sendpotosupplier'><i class='fa fa-paper-plane'> ส่ง PO</i></button> <form>";
+
+}
+return $return;
+})
+    ->editColumn('po_status', function ($purchaselist) {
+
+        if($purchaselist->po_status==1){
+
+            $return ="<form style='display:inline'  id='frompo-".$purchaselist->id."' method='POST' action='".url('purchasesendtosupplier')."' > <input type='hidden' name='_token' value='".csrf_token()."'  /><input type='hidden' name='poid' value='".$purchaselist->id."'  /> 
+            <button type='button' data-poid='".$purchaselist->id."' class='btn btn-warning sendpotosupplier'><i class='fa fa-paper-plane'> </i>".__('file.postatus_'.$purchaselist->po_status)."</button> <form>";
+            
+            }else{
+                $return ="<button class='btn btn-success'><i class='fas fa-check'></i>".__('file.postatus_'.$purchaselist->po_status)."</button>"; 
+            }
+
+            //$return .=__('file.postatus_'.$purchaselist->po_status); 
+        return $return;}
+        
+        )
+
+
 ->escapeColumns([]) /// ทำให้แสดง html ในตาราง
 ->make();
       }
     }
+
+
+    public function purchasesendtosupplier(Request $request)
+    {
+
+     
+
+        $posend = PurchasePo::find($request->poid);
+        $posend->po_status=2;
+        $posend->save();
+
+              PurchasePoItems::where('item_po_id',$request->poid)
+                ->update(['item_status' => 2]);
+
+
+
+        return redirect('purchases');
+    }
+    
+
+    
 }

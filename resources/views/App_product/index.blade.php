@@ -1,9 +1,10 @@
-@extends('layout-theme-gradient-able.app2') 
+@extends('Admin_lte.app')  
 @section('title',  __('file.product'))
 @section('pagecss')
-<link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet"> 
-<link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet"> 
-<link href="https://cdn.datatables.net/buttons/1.6.1/css/buttons.bootstrap4.min.css" rel="stylesheet"> 
+
+<link rel="stylesheet" type="text/css" href="<?php echo asset('public/vendor/datatable/dataTables.bootstrap4.min.css') ?>">
+<link rel="stylesheet" type="text/css" href="<?php echo asset('public/vendor/datatable/buttons.bootstrap4.min.css') ?>">
+
 
 @endsection
 @section('content')
@@ -25,18 +26,18 @@
 @endif
 
 <section>
-    <div class="container-fluid">
+    {{-- <div class="container-fluid mb-2">
         @if(in_array("products-add", $all_permission))
             <a href="{{route('products.create')}}" class="btn btn-info"><i class="dripicons-plus"></i> {{__('file.add_product')}}</a>
             <a href="#" data-toggle="modal" data-target="#importProduct" class="btn btn-primary"><i class="dripicons-copy"></i> {{__('file.import_product')}}</a>
         @endif
-    </div>
+    </div> --}}
     <div class="table-responsive">
       
         <table id="product-data-table" class="table" style="width: 100%">
             <thead>
                 <tr>
-                    {{-- <th >#</th> --}}
+             
                     <th>{{trans('file.Image')}}</th>
                     <th>{{trans('file.name')}}</th>
                     <th>{{trans('file.Code')}}</th>
@@ -44,10 +45,7 @@
                     <th>{{trans('file.category')}}</th>
                     <th>{{trans('file.Product Details')}}</th>
                     <th class="not-exported">{{trans('file.action')}}</th>
-                      {{--<th>{{trans('file.Quantity')}}</th>
-                    <th>{{trans('file.Unit')}}</th>
-                    <th>{{trans('file.Price')}}</th>
-                     --}}
+
                 </tr>
             </thead>
             
@@ -110,31 +108,38 @@
 
 @endsection
 @section('pagejs')
-<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.flash.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
+
+
+<!-- DataTables -->
+<script src="{{ asset('public/vendor/datatable/jquery.dataTables.min.js')}}"></script>
+<script src="{{ asset('public/vendor/datatable/dataTables.bootstrap4.min.js')}}"></script>
+
+<script src="{{ asset('public/vendor/datatable/dataTables.buttons.min.js')}}"></script>
+
+<script src="{{ asset('public/vendor/datatable/buttons.bootstrap4.min.js')}}"></script>
+<script src="{{ asset('public/vendor/datatable/buttons.colVis.min.js')}}"></script>
+<script src="{{ asset('public/vendor/datatable/buttons.html5.min.js')}}"></script>
+<script src="{{ asset('public/vendor/datatable/buttons.print.min.js')}}"></script>
+<script src="{{ asset('public/vendor/datatable/pdfmake.min.js')}}"></script>
+
+
+
+
+
 <script>
 $('#product-data-table').DataTable({
 
     processing: true,
         serverSide: true,
-      //  ajax: '{{ url("products/product-data?csrf=".csrf_token()) }}',
         "ajax":{
 
 "url": "{{ url("products/product-data") }}",
-//"dataType": "json",
 "type": "GET",
 "data":{ csrf: "{{ csrf_token() }}"}
 
 },
         columns: [
-           // { data: 'id', name: 'products.id' },
-            { data: 'image', name: 'products.image' },
+                   { data: 'image', name: 'products.image' },
             { data: 'name', name: 'products.name' },
             { data: 'code', name: 'products.code' },
             { data: 'cate_type', name: 'categories.cate_type' },
@@ -143,16 +148,14 @@ $('#product-data-table').DataTable({
             { data: 'action', name: 'action' }
         ],
         dom: 'Blfrtip',
-        buttons: [
+         buttons: [
             'copy', 'csv', 'excel', 'print'
-        ]
+    ]
     });
     $(document).on("click", ".productpopup", function(){
   
         let productid = $(this).attr( "data-productid" );
          
-//alert("productid")
-      //  $('#product-details .modal-body').html(productid)
       $('#product-details .modal-body').load('{{ url("products/details") }}/'+productid);       
 
     });

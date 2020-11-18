@@ -605,6 +605,17 @@ return [
 	'Total_amount' => 'Total amount',
 	'Createso' => 'Create SO.',
 
+	'ship' => 'Ship',
+	'car' => 'Car',
+	'airplane' => 'Airplane',
+
+	'postatus_1' => 'Send PO',
+	'postatus_2' => 'Send PO Complete',
+
+
+	
+
+
 
 
 

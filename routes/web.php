@@ -85,10 +85,24 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::post('purchase/creatitems', 'Mj\PurchasePoController@storeitems');
 	Route::post('clearsessionpo', 'Mj\PurchasePoController@clearsessionpo');
 	Route::get('purchase/polistdata', 'Mj\PurchasePoController@purchaselistdata');
+	Route::post('purchasesendtosupplier', 'Mj\PurchasePoController@purchasesendtosupplier');
 	
 	
-	
+	////purchaselist
 
+	Route::get('purchase/form', function () {
+		return view('A_purchase.form');
+	});
+	Route::get('purchase/po-view/{ponumber}', 'Mj\PurchaseFormController@formposhow');
+
+
+	///supplier admin.
+	Route::get('polistforcheckdata', 'Mj\SuppllerAdminController@polistforcheck');
+	Route::post('polistupdate', 'Mj\SuppllerAdminController@polistupdate');
+
+
+
+	
 
 	///showstatus ข้อมูลสถานะ 
 	Route::get('/showstatus', 'Mj\ShowStausController@index');

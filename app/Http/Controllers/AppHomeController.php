@@ -327,13 +327,17 @@ $whereraw = "order_status = 11";
     //  $statuspprove ='12';
 
      $whereraw = "order_status = 12 OR  order_status = 13";
-                }else{
+    }else if(!empty($_GET['approved'])){
+
+        $whereraw = "order_status = '".$_GET['approved']."'";
+
+                        }else{
 // $statuspprovecondition ='>';
 //  $statuspprove ='0';
 $whereraw = "order_status >0";
                 }
 
-            $orderlist = MjOrderDetails::leftjoin('status_names','mj_order_details.order_status','status_names.st_id')
+ $orderlist = MjOrderDetails::leftjoin('status_names','mj_order_details.order_status','status_names.st_id')
 ->where('ordernumberfull', '<>', '0') 
 ->whereRaw($whereraw)
 
@@ -353,6 +357,9 @@ $whereraw = "order_status >0";
             // $statuspprovecondition ='=';
             //  $statuspprove ='22';
      $whereraw = "order_status = 22 OR  order_status = 23";
+    }else if(!empty($_GET['approved'])){
+
+        $whereraw = "order_status = '".$_GET['approved']."'";
 
                         }else{
         // $statuspprovecondition ='>';

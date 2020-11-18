@@ -1,4 +1,4 @@
-@extends('layout-theme-gradient-able.app2') 
+@extends('Admin_lte.app')  
 @section('title',  __('file.Update Product'))
 
 @section('contentnoblock')
