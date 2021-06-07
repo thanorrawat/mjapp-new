@@ -337,35 +337,33 @@ Keyword :  {{relatekey }}
 
 
 <script>
-import Vue from 'vue';
-import TextHighlight from 'vue-text-highlight';
-import vPagination from 'vue-plain-pagination'
-import Select2 from 'v-select2-component';
-import DatePick from 'vue-date-pick';
-import 'vue-date-pick/dist/vueDatePick.css';
-import VueSweetalert2 from 'vue-sweetalert2';
-import vueNumeralFilterInstaller from 'vue-numeral-filter';
+  import Vue from 'vue';
+  import TextHighlight from 'vue-text-highlight';
+  import vPagination from 'vue-plain-pagination'
+  import Select2 from 'v-select2-component';
+  import DatePick from 'vue-date-pick';
+  import 'vue-date-pick/dist/vueDatePick.css';
+  import VueSweetalert2 from 'vue-sweetalert2';
+  import vueNumeralFilterInstaller from 'vue-numeral-filter';
  
-Vue.use(vueNumeralFilterInstaller, { locale: 'en-gb' })
-Vue.use(VueSweetalert2);
-
- Vue.component('text-highlight', TextHighlight);
- Vue.component('date-pick', DatePick);
-Vue.use(VueSweetalert2);
-    export default {
-        name: 'product-search',
-          props: ['baseurl','orderid','showsearchtype','userid','userfullname'],
-        mounted() {
-this.showproductsinoreder()
-this.orderdtget()
-this.searchget()
-this.categoryname()
-this.addproductpricecode()
-
-        },
-         components: { vPagination },
-        data(){
-    return{
+  Vue.use(vueNumeralFilterInstaller, { locale: 'en-gb' })
+  Vue.use(VueSweetalert2);
+  Vue.component('text-highlight', TextHighlight);
+  Vue.component('date-pick', DatePick);
+  Vue.use(VueSweetalert2);
+  export default {
+    name: 'product-search',
+    props: ['baseurl','orderid','showsearchtype','userid','userfullname'],
+    mounted() {
+      this.showproductsinoreder()
+      this.orderdtget()
+      this.searchget()
+      this.categoryname()
+      this.addproductpricecode()
+      },
+    components: { vPagination },
+    data(){
+      return{
         searchtext :'',
         show:'',
         productscount:'',
@@ -383,13 +381,12 @@ this.addproductpricecode()
         liActive: 'active',
         liDisable: 'disabled',
         button: 'page-link'  ,
-
-      },  
-orderdt :[],
-doctypename:null,
-customerdt : [],
-datelabel1 :'วันที่ทำรายการ',
-datelabel2 : 'กำหนดส่ง',
+        },  
+        orderdt :[],
+        doctypename:null,
+        customerdt : [],
+        datelabel1 :'วันที่ทำรายการ',
+        datelabel2 : 'กำหนดส่ง',
 buttonlabel : 'สร้างใบOrder',
 buttonlabeladd : 'เพิ่มในOrder',
 newdate:null,

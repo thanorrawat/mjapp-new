@@ -126,9 +126,7 @@ var today = new Date();
 var dd = String(today.getDate()).padStart(2, '0');
 var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
 var yyyy = today.getFullYear();
-
 var today = dd + '/' + mm + '/' + yyyy;
-
 var today2 =today;
 
 
@@ -136,7 +134,6 @@ var today2 =today;
 
 import Vue from 'vue';
 import Select2 from 'v-select2-component';
-
 import DatePick from 'vue-date-pick';
 import 'vue-date-pick/dist/vueDatePick.css';
 
@@ -145,48 +142,42 @@ import VueSweetalert2 from 'vue-sweetalert2';
 Vue.use(VueSweetalert2);
 
 export default {
-   name: 'order-selectcustomer',
+  name: 'order-selectcustomer',
   props: ['userfullname', 'userid','baseurl','orderid','orderdtall'],
- components: {Select2,DatePick},
-         mounted() {
-this.customerData();
-this.changedate();
+  components: {Select2,DatePick},
+  mounted() {
+  this.customerData();
+  this.changedate();
 
         },
     data() {
-        return {
-csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-userId : document.querySelector("meta[name='user-id']").getAttribute('content'),
-  customerlist :[],
-  thisdate : today,
-  selectdate: today2,
-  errors: [],
-  doctype : 1,
-  selectcustomer: null,
-  ordertype:1,
-  datelabel1 :'วันที่ทำรายการ',
-  datelabel2 : 'กำหนดส่ง',
-  buttonlabel : 'สร้างใบOrder',
-newdate:null,
-newselectdate:null,
-userfullnamedata:null,
-        }
+      return {
+        csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        userId : document.querySelector("meta[name='user-id']").getAttribute('content'),
+        customerlist :[],
+        thisdate : today,
+        selectdate: today2,
+        errors: [],
+        doctype : 1,
+        selectcustomer: null,
+        ordertype:1,
+        datelabel1 :'วันที่ทำรายการ',
+        datelabel2 : 'กำหนดส่ง',
+        buttonlabel : 'สร้างใบOrder',
+        newdate:null,
+        newselectdate:null,
+        userfullnamedata:null,
+            }
     },
     methods: {
-       customerData(){
-         axios.get(this.baseurl+'/api/order_customerlist')
-  .then((response)=>{
-            this.customerlist = response.data.customerlist; 
-             
- })
-
-
-
-
-        }
-        ,checkForm: function (e) {
+    customerData(){
+    axios.get(this.baseurl+'/api/order_customerlist')
+    .then((response)=>{
+      this.customerlist = response.data.customerlist; 
+    })
+    },checkForm: function (e) {
       if (this.selectdate   && this.selectcustomer && this.userfullname ) {
-   return true;
+      return true;
 
     
     /* 

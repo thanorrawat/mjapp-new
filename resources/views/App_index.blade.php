@@ -1,4 +1,4 @@
-@extends('layout-theme-gradient-able.app')
+@extends('Admin_lte.app') 
 @section('title',  __('file.dashboard'))
 @section('contentnoblock')
 <!-- this portion is for demo only -->

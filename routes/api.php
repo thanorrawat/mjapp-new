@@ -18,7 +18,7 @@ use Illuminate\Http\Request;
 });*/
 
 //แปล
-Route::group(['middleware' => 'auth'], function() {
+//Route::group(['middleware' => 'auth'], function() {
 Route::get('LanguageTraslate','Api\LanguageTraslate@index');
 
 Route::resource('orderproducts','Api\OrderProducts');
@@ -57,7 +57,7 @@ Route::get('checksoinorder/{id}','Api\Socontroller@listinorder'); //แสดง
 Route::get('products_list','Api\ProductsController@index');
 
 //Customer
-Route::get('customer_list','Api\CustomerController@index');
+Route::get('customer_list','express\exCustomerController@customerData');
 
 //checkmemoprice
 Route::post('meoprice_checkprice','Mj\MemoPriceController@memocheckprice');
@@ -75,7 +75,7 @@ Route::post('notify/ordersendmanager','Api\sendnotifyController@ordersendmanager
 
 
 
-});
+//});
 
 
 

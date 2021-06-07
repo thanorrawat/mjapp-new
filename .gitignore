@@ -1,4 +1,9 @@
 node_modules
 .env
-node_modules
-node_modules
+storage/*
+storage/logs/*
+.vscode/sftp.json
+.gitignore
+config/database.php
+storage/framework/cache/*
+storage/logs/laravel.log

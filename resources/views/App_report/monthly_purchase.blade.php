@@ -1,4 +1,5 @@
-@extends('layout-theme-gradient-able.app') 
+@extends('Admin_lte.app') 
+
 @section('title',  __('file.Monthly Purchase Report'))
 @section('contentnoblock')
 <section>

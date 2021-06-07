@@ -1,10 +1,7 @@
 @extends('Admin_lte.app')  
 @section('title',  __('file.product'))
 @section('pagecss')
-
-<link rel="stylesheet" type="text/css" href="<?php echo asset('public/vendor/datatable/dataTables.bootstrap4.min.css') ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo asset('public/vendor/datatable/buttons.bootstrap4.min.css') ?>">
-
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.23/b-1.6.5/b-html5-1.6.5/b-print-1.6.5/fc-3.3.2/fh-3.1.7/r-2.2.7/datatables.min.css"/>
 
 @endsection
 @section('content')
@@ -38,13 +35,15 @@
             <thead>
                 <tr>
              
-                    <th>{{trans('file.Image')}}</th>
-                    <th>{{trans('file.name')}}</th>
                     <th>{{trans('file.Code')}}</th>
+                    <th>{{trans('file.name')}}</th>
+                     <th>Product Name</th>
+                    
                    <th>{{trans('file.Product Type')}}</th>
-                    <th>{{trans('file.category')}}</th>
+                   <th>{{trans('file.Product Type')}}</th>
+                    {{-- <th>{{trans('file.category')}}</th>
                     <th>{{trans('file.Product Details')}}</th>
-                    <th class="not-exported">{{trans('file.action')}}</th>
+                    <th class="not-exported">{{trans('file.action')}}</th> --}}
 
                 </tr>
             </thead>
@@ -111,61 +110,50 @@
 
 
 <!-- DataTables -->
-<script src="{{ asset('public/vendor/datatable/jquery.dataTables.min.js')}}"></script>
-<script src="{{ asset('public/vendor/datatable/dataTables.bootstrap4.min.js')}}"></script>
-
-<script src="{{ asset('public/vendor/datatable/dataTables.buttons.min.js')}}"></script>
-
-<script src="{{ asset('public/vendor/datatable/buttons.bootstrap4.min.js')}}"></script>
-<script src="{{ asset('public/vendor/datatable/buttons.colVis.min.js')}}"></script>
-<script src="{{ asset('public/vendor/datatable/buttons.html5.min.js')}}"></script>
-<script src="{{ asset('public/vendor/datatable/buttons.print.min.js')}}"></script>
-<script src="{{ asset('public/vendor/datatable/pdfmake.min.js')}}"></script>
-
-
-
-
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.23/b-1.6.5/b-html5-1.6.5/b-print-1.6.5/fc-3.3.2/fh-3.1.7/r-2.2.7/datatables.min.js"></script>
 
 <script>
-$('#product-data-table').DataTable({
+    $('#product-data-table').DataTable({
 
-    processing: true,
+        processing: true,
         serverSide: true,
         "ajax":{
 
-"url": "{{ url("products/product-data") }}",
-"type": "GET",
-"data":{ csrf: "{{ csrf_token() }}"}
+            "url": "{{ url("products/product-data") }}",
+            "type": "GET",
+            "data":{ csrf: "{{ csrf_token() }}"}
 
-},
+        },
         columns: [
-                   { data: 'image', name: 'products.image' },
-            { data: 'name', name: 'products.name' },
-            { data: 'code', name: 'products.code' },
-            { data: 'cate_type', name: 'categories.cate_type' },
-            { data: 'category', name: 'categories.name' },
-            { data: 'details', name: 'products.product_details' },
-            { data: 'action', name: 'action' }
+            { data: 'stkcod', name: 'stkcod' },
+            { data: 'stkdes', name: 'stkdes' },
+            { data: 'stkdes2', name: 'stkdes2' },
+            { data: 'stcatgory', name: 'stcatgory' },
+            { data: 'stcatgory2', name: 'stcatgory2' },
+
         ],
         dom: 'Blfrtip',
-         buttons: [
+        buttons: [
             'copy', 'csv', 'excel', 'print'
-    ]
+        ],
+        "lengthMenu": [[10, 25, 50,100, -1], [10, 25, 50,100, "All"]]
     });
+
     $(document).on("click", ".productpopup", function(){
-  
         let productid = $(this).attr( "data-productid" );
-         
-      $('#product-details .modal-body').load('{{ url("products/details") }}/'+productid);       
+        $('#product-details .modal-body').load('{{ url("products/details") }}/'+productid);       
 
     });
+
     $("#print-btn").on("click", function(){
-          var divToPrint=document.getElementById('product-details');
-          var newWin=window.open('','Print-Window');
-          newWin.document.open();
-          newWin.document.write('<link rel="stylesheet" href="<?php echo asset('public/vendor/bootstrap/css/bootstrap.min.css') ?>" type="text/css"><style type="text/css">@media print {.modal-dialog { max-width: 1000px;} }</style><body onload="window.print()">'+divToPrint.innerHTML+'</body>');
-          newWin.document.close();
-          setTimeout(function(){newWin.close();},10);
+        var divToPrint=document.getElementById('product-details');
+        var newWin=window.open('','Print-Window');
+        newWin.document.open();
+        newWin.document.write('<link rel="stylesheet" href="<?php echo asset('public/vendor/bootstrap/css/bootstrap.min.css') ?>" type="text/css"><style type="text/css">@media print {.modal-dialog { max-width: 1000px;} }</style><body onload="window.print()">'+divToPrint.innerHTML+'</body>');
+        newWin.document.close();
+        setTimeout(function(){newWin.close();},10);
     });
     
 </script>

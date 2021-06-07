@@ -1,4 +1,5 @@
-@extends('layout-theme-gradient-able.app') 
+@extends('Admin_lte.app') 
+
 @section('title',  __('file.Product Quantity Alert')) @section('content')
 
 <section class="forms">

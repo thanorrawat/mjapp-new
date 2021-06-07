@@ -14,6 +14,7 @@ use App\Models\MjOrderDetails;
 use App\Models\MjOrderProducts;
 use App\Models\SaleHistory;
 use App\Category;
+use App\express\customerModel;
 
 use Auth;
 class OrderProducts extends Controller
@@ -210,9 +211,9 @@ $productsall = Product::whereRaw($wheresearch)
     public function customerlist(Request $request)
     {
      
-        $customerlist= Customer::select(DB::raw('id,name AS text '))
-        ->where('is_active','1')
-        ->orderBy('name','ASC')
+        $customerlist= customerModel::on('report')
+        ->selectRaw('indexrow AS id,cusnam AS text')
+        ->orderBy('cusnam','ASC')
         ->get();
 
         return response()->json(['customerlist' => $customerlist]);

@@ -1,4 +1,4 @@
-@extends('layout-theme-gradient-able.app') 
+@extends('Admin_lte.app') 
 @section('title',  __('file.product'))
 @section('content')
 @if(session()->has('create_message'))

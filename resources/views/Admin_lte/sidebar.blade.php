@@ -82,11 +82,15 @@
 
     <li  class="nav-item has-treeview   @if(url()->current() == url('/category') || url()->current() == url('/products') || url()->current() == url('/products/create')) menu-open @endif" >
 
-        <a href="#" class="nav-link @if(url()->current() == url('/category') || url()->current() == url('/products') || url()->current() == url('/products/create'))  active @endif">
+        <a href="{{route('products.index')}}" class="nav-link @if(url()->current() == url('/category') || url()->current() == url('/products') || url()->current() == url('/products/create'))  active @endif">
         <i class="nav-icon fas fa-boxes"></i>
-        <p>{{__('file.product')}} <i class="right fas fa-angle-left"></i></p></a>
+        <p>{{__('file.product')}} 
+          
+          {{-- <i class="right fas fa-angle-left"></i> --}}
         
-        <ul class="nav nav-treeview">
+        </p></a>
+        
+        {{-- <ul class="nav nav-treeview">
             <li class="nav-item">
               <a href="{{route('category.index')}}" class="nav-link @if(url()->current() == url('/category'))  active @endif">
                 <i class="far fa-circle nav-icon"></i>
@@ -108,7 +112,7 @@
               </li>
 
 
-          </ul>
+          </ul> --}}
  </li>
 
                   
@@ -116,7 +120,7 @@
         <?php } if(Auth::user()->role_id==1){  ?>
 
 {{-- Sales --}}
-
+{{-- 
 <li  class="nav-item has-treeview @if(url()->current() == url('/sales')||url()->current() == url('/sales/create')  )  menu-open @endif" >
     <a href="#" class="nav-link  @if(url()->current() == url('/sales')||url()->current() == url('/sales/create')) active @endif">
     <i class="nav-icon fas fa-shopping-cart"></i>
@@ -138,7 +142,7 @@
 
 
     </ul>
-</li>
+</li> --}}
         
 {{-- //Sales --}}
 <?php } if(Auth::user()->role_id==1 || Auth::user()->role_id==2 || Auth::user()->role_id==6 || Auth::user()->role_id==7 ){  ?>
@@ -150,11 +154,13 @@
 
 
 <li  class="nav-item has-treeview @if(url()->current() == route('customer.index')|| url()->current() == route('customer.create')|| url()->current() == route('customer_group.index') )  menu-open @endif" >
-    <a href="#" class="nav-link @if(url()->current() == route('customer.index')|| url()->current() == route('customer.create')|| url()->current() == route('customer_group.index') ) active @endif">
+    <a href="{{ route('customer.index')}}" class="nav-link @if(url()->current() == route('customer.index')|| url()->current() == route('customer.create')|| url()->current() == route('customer_group.index') ) active @endif">
     <i class="nav-icon far fa-user-circle"></i>
-    <p>{{trans('file.customer')}} <i class="right fas fa-angle-left"></i></p></a>
+    <p>{{trans('file.customer')}} 
+      {{-- <i class="right fas fa-angle-left"></i> --}}
+    </p></a>
     
-    <ul class="nav nav-treeview">
+    {{-- <ul class="nav nav-treeview">
         <li class="nav-item">
           <a href="{{route('customer.index')}}" class="nav-link @if(url()->current() == route('customer.index') ) active @endif">
             <i class="far fa-circle nav-icon"></i>
@@ -175,7 +181,8 @@
             </a>
           </li>
 
-</ul></li>
+</ul> --}}
+</li>
 {{--// CUSTomer --}}
 <?php } 
 if(Auth::user()->role_id==1 || Auth::user()->role_id==2  || Auth::user()->role_id==7 || Auth::user()->role_id==5 ){  ?>

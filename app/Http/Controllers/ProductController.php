@@ -24,6 +24,7 @@ use App\Variant;
 use App\ProductVariant;
 use Yajra\Datatables\Datatables;
 use App\Models\MjStoreProductsTracking;
+use App\express\productModel;
 
 class ProductController extends Controller
 {
@@ -48,89 +49,73 @@ class ProductController extends Controller
     public function productData(Request $request)
     {
 
-      if($_GET['csrf']==csrf_token()) {
-        $products = DB::table('products')
-        ->leftjoin('categories', 'products.category_id', '=', 'categories.id')
-        ->leftjoin('brands', 'products.brand_id', '=', 'brands.id')
-      ->where('products.is_active', true)
-        ->select(['*','products.image AS image','products.id AS id','products.name AS name'
-        ,'products.code AS code'
-        ,'categories.name AS category'
-        ,'products.product_details AS details'
-        ,'categories.cate_type AS cate_type'
+        if($_GET['csrf']==csrf_token()) {
 
-        
-        
-        ]);
+            $products = productModel::on('report')
+            ->selectRaw('stkcod, stkdes, stkdes2, stkgrp, (SELECT typdes FROM mj_istab  WHERE tabtyp="22" AND  typcod = stkgrp ) AS stcatgory, (SELECT typdes2 FROM mj_istab  WHERE tabtyp="22" AND  typcod = stkgrp ) AS stcatgory2 ')
+            ->where('stktyp',0)
+            ->get();
 
-        return Datatables::of($products)
-        ->addColumn('action', function ($products) {
-            $products_id =  $products->id;
+            return Datatables::of($products)
+            // ->addColumn('action', function ($products) {
+            //     $products_id =  $products->id;
+                
+            //     $actioncol= ' <a href="'.route('products.edit', ['id' => $products_id]).'" class="btn btn-out btn-sm btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit</a>'.\Form::open(["route" => ["products.destroy", $products->id], "method" => "DELETE","class"=>"d-inline"]).' <button type="submit" class="btn btn btn-out btn-sm btn-danger" onclick="return confirm(\''.trans("file.confirm delete").'\');"><i class="fa fa-trash"></i> '.trans("file.delete").'</button> '.\Form::close();
+
+
+            // return  $actioncol;
+
+            // })
+
+            // ->addColumn('select', function ($products) {
+            //     $selectcol= '<button class="add-to-cart  btn btn-out  btn-warning" id="add-to-cart_'.$products->id.'" type="button" data-productid="'.$products->id.'" data-code="'.$products->code.'" data-price="'.$products->price.'" data-stock="'.$products->qty.'" data-addqty="1"><i class="fa fa-shopping-basket" aria-hidden="true"></i></button>';
+            //     return  $selectcol;
+
+            // })
+
             
-            $actioncol= ' <a href="'.route('products.edit', ['id' => $products_id]).'" class="btn btn-out btn-sm btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit</a>'.\Form::open(["route" => ["products.destroy", $products->id], "method" => "DELETE","class"=>"d-inline"]).' <button type="submit" class="btn btn btn-out btn-sm btn-danger" onclick="return confirm(\''.trans("file.confirm delete").'\');"><i class="fa fa-trash"></i> '.trans("file.delete").'</button> '.\Form::close();
+            // ->addColumn('selecteditorder', function ($products) {
+            //     $selectcol= '<button class="add-to-order  btn btn-out  btn-warning" id="add-to-order_'.$products->id.'" type="button" data-productid="'.$products->id.'" data-code="'.$products->code.'" data-price="'.$products->price.'" data-stock="'.$products->qty.'" data-addqty="1"><i class="fa fa-shopping-basket" aria-hidden="true"></i></button>';
+            //     return  $selectcol;
+                
+            //             })
 
-
-           return  $actioncol;
-
-        })
-
-        ->addColumn('select', function ($products) {
-$selectcol= '<button class="add-to-cart  btn btn-out  btn-warning" id="add-to-cart_'.$products->id.'" type="button" data-productid="'.$products->id.'" data-code="'.$products->code.'" data-price="'.$products->price.'" data-stock="'.$products->qty.'" data-addqty="1"><i class="fa fa-shopping-basket" aria-hidden="true"></i></button>';
-return  $selectcol;
-
-        })
-
-        
-        ->addColumn('selecteditorder', function ($products) {
-            $selectcol= '<button class="add-to-order  btn btn-out  btn-warning" id="add-to-order_'.$products->id.'" type="button" data-productid="'.$products->id.'" data-code="'.$products->code.'" data-price="'.$products->price.'" data-stock="'.$products->qty.'" data-addqty="1"><i class="fa fa-shopping-basket" aria-hidden="true"></i></button>';
-            return  $selectcol;
+            // ->addColumn('namenew', function ($products) {
             
-                    })
+            //     return  $products->name.'<br><strong>CODE : </strong>'.$products->code.'<br><strong>Type : </strong>'.$products->cate_type;
+            // })
 
-        ->addColumn('namenew', function ($products) {
-             
-          
-return  $products->name.'<br><strong>CODE : </strong>'.$products->code.'<br><strong>Type : </strong>'.$products->cate_type;
-        })
-
-        ->addColumn('detailsnew', function ($products) {
-                       
-            return  $products->product_details.'<br><strong>Type : </strong>'.$products->cate_type;
-                    })
-      ->addColumn('orderqty', function ($products) {
-        return  '<input min="1" class="text-right addorderqty" data-product="'.$products->id.'" style="width:50px" type="number" name="qty_'.$products->id.'" id="qty_'.$products->id.'" value="1">';
-                                })
+            // ->addColumn('detailsnew', function ($products) {
                         
+            //     return  $products->product_details.'<br><strong>Type : </strong>'.$products->cate_type;
+            //             })
+            // ->addColumn('orderqty', function ($products) {
+            //     return  '<input min="1" class="text-right addorderqty" data-product="'.$products->id.'" style="width:50px" type="number" name="qty_'.$products->id.'" id="qty_'.$products->id.'" value="1">';
+            //                         })
 
-        ->editColumn('image', function ($products) {
-            $product_image = explode(",", $products->image);
-              $product_image = htmlspecialchars($product_image[0]);
-         if(empty($product_image)){
-            $product_image="zummXD2dvAtI.png";
-         }
-           return '<a data-toggle="modal" data-target="#product-details" href="#" data-productid="'.$products->id.'"  class="productpopup"><img src="'.url('public/images/product', $product_image).'"  width="80" >';
-            
-        })
+            // ->editColumn('image', function ($products) {
+            //     $product_image = explode(",", $products->image);
+            //     $product_image = htmlspecialchars($product_image[0]);
+            // if(empty($product_image)){
+            //     $product_image="zummXD2dvAtI.png";
+            // }
+            // return '<a data-toggle="modal" data-target="#product-details" href="#" data-productid="'.$products->id.'"  class="productpopup"><img src="'.url('public/images/product', $product_image).'"  width="80" >';
+                
+            // })
 
-        ->editColumn('name', function ($products) {
+            // ->editColumn('name', function ($products) {
 
-           return '<a target="_blank"  href="'.url("products/".$products->id."/edit").'" >'.$products->name.'</a>';
-            
-        })
-        ->editColumn('code', function ($products) {
+            // return '<a target="_blank"  href="'.url("products/".$products->id."/edit").'" >'.$products->name.'</a>';
+                
+            // })
+            // ->editColumn('code', function ($products) {
 
-            return '<a target="_blank"  href="'.url("productstracking/".$products->id).'" >'.$products->code.'</a>';
-             
-         })
- 
+            //     return '<a target="_blank"  href="'.url("productstracking/".$products->id).'" >'.$products->code.'</a>';
+                
+            // })
 
-       
-
-
-
-      
-        ->escapeColumns([]) /// ทำให้แสดง html ในตาราง
-        ->make();
+            ->escapeColumns([]) /// ทำให้แสดง html ในตาราง
+            ->make();
       }
     }
     

@@ -1,4 +1,4 @@
-@extends('layout-theme-gradient-able.app') 
+@extends('Admin_lte.app') 
 @section('title',  __('file.Import Purchase By CSV'))
 @section('contentnoblock')
 @if(session()->has('message'))

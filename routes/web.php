@@ -1,6 +1,8 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -31,7 +33,7 @@ Route::group(['middleware' => 'auth'], function() {
 Route::group(['middleware' => ['auth', 'active']], function() {
 
 
-
+Route::get('order_customerlist','Api\OrderProducts@customerlist');
 	// Email related routes
 Route::get('mail/send', 'MailController@send');
 

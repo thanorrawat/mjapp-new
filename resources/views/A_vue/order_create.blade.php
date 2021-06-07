@@ -26,12 +26,12 @@
 
 <div id="app">
   @if ($pagetype=="add")
-<order-selectcustomer baseurl="{{ $baseurl }}"  userfullname="{{  Auth::user()->fullname }}" userid="{{  Auth::user()->id }}"></order-selectcustomer>
-@elseif ($pagetype=="edit")
-<product-search baseurl="{{ $baseurl }}"  orderid="{{ $orderid }}"  showsearchtype="{{ $searchtype }}"  userfullname="{{  Auth::user()->fullname }}" userid="{{  Auth::user()->id }}" ></product-search>
-@elseif ($pagetype=="memo_changprice")
-<memo-price baseurl="{{ $baseurl }}"  userfullname="{{  Auth::user()->fullname }}" userid="{{  Auth::user()->id }}" csrf="{{ csrf_token() }}" role_id="{{ Auth::user()->role_id }}"></memo-price>
-@endif   
+    <order-selectcustomer baseurl="{{ $baseurl }}"  userfullname="{{  Auth::user()->fullname }}" userid="{{  Auth::user()->id }}"></order-selectcustomer>
+  @elseif ($pagetype=="edit")
+    <product-search baseurl="{{ $baseurl }}"  orderid="{{ $orderid }}"  showsearchtype="{{ $searchtype }}"  userfullname="{{  Auth::user()->fullname }}" userid="{{  Auth::user()->id }}" ></product-search>
+  @elseif ($pagetype=="memo_changprice")
+    <memo-price baseurl="{{ $baseurl }}"  userfullname="{{  Auth::user()->fullname }}" userid="{{  Auth::user()->id }}" csrf="{{ csrf_token() }}" role_id="{{ Auth::user()->role_id }}"></memo-price>
+  @endif   
 </div>
 
 @endsection

@@ -14,6 +14,7 @@ use App\Models\MjOrderProducts;
 use Auth;
 Use Alert;
 use App\Models\SaleHistory;
+use App\express\customerModel;
 class VueOrdercontroller extends Controller
 {
     /**
@@ -53,42 +54,47 @@ class VueOrdercontroller extends Controller
 if(!empty($request->selectcustomer) && !empty($request->doctype)){
 
         $customer_id =  $request->selectcustomer;  
-          $newordernumber="0";
-          $newordernumberfull="0";
-          $newbookingnumber ="0";
-          if($request->doctype==1){ // สร้าง Order
-             
-          $beforeordername = date('ym');
-              $lastornumber= MjOrderDetails::where('ordernumber','like', $beforeordername.'%')->orderBy('id', 'desc')->first();
-              if(!empty($lastornumber->ordernumber)){
-              $oldnumber = substr($lastornumber->ordernumber, -4);
-              $newnumber=$oldnumber+1;
-              }else{
-                  $newnumber=1;
-              }
-               $newordernumber = $beforeordername.sprintf("%04d",$newnumber);
-          $docnumber =  $newordernumberfull = 'OD'.$newordernumber;
-           $newstatus = 1;
-          }elseif($request->doctype==2){ // สร้าง ใบจอง
+        $newordernumber="0";
+        $newordernumberfull="0";
+        $newbookingnumber ="0";
+        if($request->doctype==1){ // สร้าง Order
 
+            $beforeordername = date('ym');
+                $lastornumber= MjOrderDetails::where('ordernumber','like', $beforeordername.'%')->orderBy('id', 'desc')->first();
+                if(!empty($lastornumber->ordernumber)){
+                    $oldnumber = substr($lastornumber->ordernumber, -4);
+                    $newnumber=$oldnumber+1;
+                }else{
+                    $newnumber=1;
+                }
+                $newordernumber = $beforeordername.sprintf("%04d",$newnumber);
+                $docnumber =  $newordernumberfull = 'OD'.$newordernumber;
+                $newstatus = 1;
 
+        }elseif($request->doctype==2){ // สร้าง ใบจอง
                       //สร้าง booking number
-      $beforebookingname = "BK".date('ym');
-      $lastbookingnumber= MjOrderDetails::where('bookingnumber','like', $beforebookingname.'%')->orderBy('id', 'desc')->first();
-     if(!empty($lastbookingnumber->bookingnumber)){
-     $oldnumber = substr($lastbookingnumber->bookingnumber, -4);
-     $newnumber=$oldnumber+1;
-     }else{
-         $newnumber=1;
-     }
-     $docnumber =   $newbookingnumber = $beforebookingname.sprintf("%04d",$newnumber);
-     $newstatus = 2;
-          }
+            $beforebookingname = "BK".date('ym');
+            $lastbookingnumber= MjOrderDetails::where('bookingnumber','like', $beforebookingname.'%')->orderBy('id', 'desc')->first();
+            if(!empty($lastbookingnumber->bookingnumber)){
+            $oldnumber = substr($lastbookingnumber->bookingnumber, -4);
+            $newnumber=$oldnumber+1;
+            }else{
+                $newnumber=1;
+            }
+            $docnumber =   $newbookingnumber = $beforebookingname.sprintf("%04d",$newnumber);
+            $newstatus = 2;
+        }
 
 
 
-     $customerdt = Customer::where('id', $customer_id)->first();
-     $customer_name = $customerdt->name;
+        $customerdt = customerModel::on('report')
+        ->where('indexrow', $customer_id)
+        ->first();
+        if($customerdt->prenam){
+            $customer_name = $customerdt->prenam.''.$customerdt->cusnam;
+        }else{
+            $customer_name = $customerdt->cusnam;
+        }
 
 
         $MjOrderDetails = new MjOrderDetails;
@@ -215,8 +221,10 @@ if(!empty($request->selectcustomer) && !empty($request->doctype)){
          }else{
             // return view('App_sale.order',['customers' => $customers,'cartDetails'=>$cartDetails,'orderid'=>$orderid]);
 
-            $customerdt = Customer::where('id', $orderdt->customer_id)->first();
-            $customercode  = $customerdt->customercode;
+            $customerdt = customerModel::on('report')
+            ->where('indexrow', $orderdt->customer_id)
+            ->first();
+            $customercode  = $customerdt->cuscod;
 if(!empty($customercode)){
     $salehistorycount = SaleHistory::where('customer_code',$customercode)
     ->count();
