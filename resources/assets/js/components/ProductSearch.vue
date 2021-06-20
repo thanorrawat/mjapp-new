@@ -82,77 +82,71 @@
 
 </div>
 <div class="col-md-3 ">
-           <div v-if="productshow[0] || productshow.stkcod " class="card">
-<div class="card-body">
-     <h4>รายละเอียดสินค้า</h4>
-<div class="row">
-  <div class="col-md-5">
+  <div v-if="productshow[0] || productshow.stkcod " class="card">
+    <div class="card-body">
+      <h4>รายละเอียดสินค้า</h4>
+      <div class="row">
+        <div class="col-md-5">
+          <img v-if="productshow.image" :src="baseurl+'/public/images/product/'+productshow.image"  class="img-thumbnail" :alt="productshow.stkdes">
+          <img v-else :src="baseurl+'/public/images/product/zummXD2dvAtI.png'"  class="img-thumbnail" :alt="productshow.stkdes">
+        </div>
+        <div class="col-md-6">
+          <strong>{{  productshow.stkdes }} </strong>
+          <div> <strong>Code : </strong>  {{  productshow.stkcod }}  </div>
+          <div> <strong>หมวดสินค้า : </strong>  {{categorynamelist[productshow.stkgrp] }} </div>
+          <p id="productsdetails">
+            <!-- <strong>Product Details : </strong> -->
+            {{  productshow['product_details'] }}
+          </p>
+          <strong>ประวัติการขาย : </strong> {{ historylist_sumsale[productshow.stkcod]  | numeral('0,0')}} ชิ้น
+        </div>
+      </div>
 
-     <img v-if="productshow.image" :src="baseurl+'/public/images/product/'+productshow.image"  class="img-thumbnail">
-     <img v-else :src="baseurl+'/public/images/product/zummXD2dvAtI.png'"  class="img-thumbnail">
-
-     
-</div>
-  <div class="col-md-6">
- 
-      <strong>{{  productshow.stkdes }} </strong>
-      <div> <strong>Code : </strong>  {{  productshow.stkcod }}  </div>
-      <div> <strong>หมวดสินค้า : </strong>  {{categorynamelist[productshow.stkgrp] }} </div>
-<p id="productsdetails">
-<!-- <strong>Product Details : </strong> -->
- {{  productshow['product_details'] }}
-</p>
-<strong>ประวัติการขาย : </strong> {{ historylist_sumsale[productshow.stkcod]  | numeral('0,0')}} ชิ้น
-</div>
-</div>
-
-    <!-- {{  productshow }}    -->
-       <div class="row mt-1">
-                  <div class="col border-right">
-                    <div class="description-block">
-                      <h5 class="description-header">
-                         {{  stocklist.sumstock1 | numeral('0,0') }}
-                         
-                         </h5>
-                      <span class="description-text">Stock เพื่อขาย</span>
-                    </div>
-                    <!-- /.description-block -->
-                  </div>
-                  <!-- /.col -->
-                  <div class="col border-right">
-                    <div class="description-block">
-                      <h5 class="description-header">{{  stocklist.sumstock2 | numeral('0,0') }}</h5>
-                      <span class="description-text">Order</span>
-                    </div>
-                    <!-- /.description-block -->
-                  </div>
-                  <!-- /.col -->
-                  <div class="col">
-                    <div class="description-block">
-                      <h5 class="description-header">{{  stocklist.sumstock3 | numeral('0,0') }}</h5>
-                      <span class="description-text">จอง</span>
-                    </div>
-                    <!-- /.description-block -->
-                  </div>
-                  <!-- /.col -->
-                </div>
-                <!-- /.row -->
-     <div class="row mt-1 ">
-<h2  class="text-center"> 
-ราคาขาย : {{  productprice.priceorder  }}</h2>
-<div class="col-12" >
-  <div style="border: 1px solid blue;padding:5px">
-  <strong>ราคาสำหรับ</strong>
-<span v-if="productprice.cuscode"> เฉพาะลูกค้ารหัส {{ productprice.cuscode }}</span>
-
-<span v-if="productprice.typeprice && productprice.typeprice!='SPC' "> Standard {{ productprice.typeprice }}</span>
-<span v-if="productprice.pricetime==3" > ช่วงเวลา :  {{ productprice.daterange }}</span>
-<span v-if="productprice.once_time==1"> เฉพาะครั้งนี้</span>
-</div>
-</div>
-
-     </div>
-   <div class="row mt-2">
+      <!-- {{  productshow }}    -->
+      <div class="row mt-1">
+        <div class="col border-right">
+          <div class="description-block">
+            <h5 class="description-header">
+                {{  stocklist.sumstock1 | numeral('0,0') }}
+            </h5>
+            <span class="description-text">Stock เพื่อขาย</span>
+          </div>
+          <!-- /.description-block -->
+        </div>
+        <!-- /.col -->
+        <div class="col border-right">
+          <div class="description-block">
+            <h5 class="description-header">{{  stocklist.sumstock2 | numeral('0,0') }}</h5>
+            <span class="description-text">Order</span>
+          </div>
+          <!-- /.description-block -->
+        </div>
+        <!-- /.col -->
+        <div class="col">
+          <div class="description-block">
+            <h5 class="description-header">{{  stocklist.sumstock3 | numeral('0,0') }}</h5>
+            <span class="description-text">จอง</span>
+          </div>
+          <!-- /.description-block -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+      <div class="row mt-1 ">
+      <h2  class="text-center"> 
+        ราคาขาย : {{  productprice.priceorder  }}
+      </h2>
+      <div class="col-12" >
+        <div style="border: 1px solid blue;padding:5px">
+          <strong>ราคาสำหรับ</strong>
+            <span v-if="productprice.cuscode"> เฉพาะลูกค้ารหัส {{ productprice.cuscode }}</span>
+            <span v-if="productprice.typeprice && productprice.typeprice!='SPC' "> Standard {{ productprice.typeprice }}</span>
+            <span v-if="productprice.pricetime==3" > ช่วงเวลา :  {{ productprice.daterange }}</span>
+            <span v-if="productprice.once_time==1"> เฉพาะครั้งนี้</span>
+        </div>
+      </div>
+    </div>
+  <div class="row mt-2">
 
   <div class="col-2 text-right"> จำนวน</div>
   <div class="col-4"><input type="number" min="1" class="form-control text-right" v-model="addqty"></div>
@@ -236,38 +230,43 @@ Keyword :  {{relatekey }}
 <th>#</th>
 </tr></thead>
 
-   <tbody>
-     <tr v-for="(productorder,index) in productlistinorder" >
-       <td>{{(index+1)}}</td>
-       <td  ><img :src="baseurl+'/public/images/product/'+productorder.image"  class="img-size-50"  ></td>
-       <td @click="showProductinorderdt(index)">   <strong >{{productorder.productscode}}</strong>
-         <br>
-         {{productorder.name}}
-       </td>
-             <td   class="text-right">{{productorder.orderprice| numeral('0,0') }}
+    <tbody>
+      <tr v-for="(productorder,index) in productlistinorder" >
+        <td>
+          {{(index+1)}}
+        </td>
+        <td  >
+          <img v-if="productorder.image" :src="baseurl+'/public/images/product/'+productorder.image"  class="img-size-50"  :alt="productorder.name">
+          <img v-else :src="baseurl+'/public/images/product/zummXD2dvAtI.png'"  class="img-size-50"  :alt="productorder.name">
+        </td>
+        <td @click="showProductinorderdt(index)">   <strong >{{productorder.productscode}}</strong>
+          <br>
+          {{productorder.name}}
+        </td>
+        <td   class="text-right">
+          {{productorder.orderprice| numeral('0,0') }}
+        </td>
+        <td   class="text-right">{{productorder.orderqty | numeral('0,0') }}
+          <i style="font-size:90%" data-toggle="modal" data-target="#editqty" class="fas fa-pencil-alt" @click="editqtyorder(index)"></i>
+        </td>
+        <td   class="text-right">
+          {{productorder.amount| numeral('0,0') }} 
+        </td>
+        <td @mouseover="showProductinorderdt(index)" >
+          <i  class="fas fa-backspace  text-danger" @click="removepd(index)"></i>
+        </td>
+      </tr>
+      <tr>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td class="text-right"><strong>รวม</strong></td>
+  <td class="text-right">{{ totalorderqty | numeral('0,0')  }}</td>
+  <td class="text-right">{{ ordertotalamount | numeral('0,0')  }}</td>
 
-       </td>
-       <td   class="text-right">{{productorder.orderqty | numeral('0,0') }}
-
-<i style="font-size:90%" data-toggle="modal" data-target="#editqty" class="fas fa-pencil-alt" @click="editqtyorder(index)"></i>
-
-       </td>
-    <td   class="text-right">{{productorder.amount| numeral('0,0') }} </td>
-<td @mouseover="showProductinorderdt(index)" ><i  class="fas fa-backspace  text-danger" @click="removepd(index)"></i></td>
-
-
-     </tr>
-     <tr>
-<td></td>
-<td></td>
-<td></td>
-<td class="text-right"><strong>รวม</strong></td>
-<td class="text-right">{{ totalorderqty | numeral('0,0')  }}</td>
-<td class="text-right">{{ ordertotalamount | numeral('0,0')  }}</td>
-
-<td></td>
-     </tr>
-   </tbody>
+  <td></td>
+      </tr>
+    </tbody>
 </table>
 <div v-if="productlistinorder.length > 0"class="approveblock">
 <h4>หมายเหตุ</h4>

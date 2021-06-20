@@ -49782,7 +49782,6 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 //
 //
 //
-//
 
 
 
@@ -64648,7 +64647,8 @@ var render = function() {
                                   src:
                                     _vm.baseurl +
                                     "/public/images/product/" +
-                                    _vm.productshow.image
+                                    _vm.productshow.image,
+                                  alt: _vm.productshow.stkdes
                                 }
                               })
                             : _c("img", {
@@ -64656,7 +64656,8 @@ var render = function() {
                                 attrs: {
                                   src:
                                     _vm.baseurl +
-                                    "/public/images/product/zummXD2dvAtI.png"
+                                    "/public/images/product/zummXD2dvAtI.png",
+                                  alt: _vm.productshow.stkdes
                                 }
                               })
                         ]),
@@ -64684,9 +64685,9 @@ var render = function() {
                           _vm._v(" "),
                           _c("p", { attrs: { id: "productsdetails" } }, [
                             _vm._v(
-                              "\n " +
+                              "\n            " +
                                 _vm._s(_vm.productshow["product_details"]) +
-                                "\n"
+                                "\n          "
                             )
                           ]),
                           _vm._v(" "),
@@ -64701,7 +64702,7 @@ var render = function() {
                                   "0,0"
                                 )
                               ) +
-                              " ชิ้น\n"
+                              " ชิ้น\n        "
                           )
                         ])
                       ]),
@@ -64711,14 +64712,14 @@ var render = function() {
                           _c("div", { staticClass: "description-block" }, [
                             _c("h5", { staticClass: "description-header" }, [
                               _vm._v(
-                                "\n                         " +
+                                "\n                " +
                                   _vm._s(
                                     _vm._f("numeral")(
                                       _vm.stocklist.sumstock1,
                                       "0,0"
                                     )
                                   ) +
-                                  "\n                         \n                         "
+                                  "\n            "
                               )
                             ]),
                             _vm._v(" "),
@@ -64770,8 +64771,9 @@ var render = function() {
                       _c("div", { staticClass: "row mt-1 " }, [
                         _c("h2", { staticClass: "text-center" }, [
                           _vm._v(
-                            " \nราคาขาย : " +
-                              _vm._s(_vm.productprice.priceorder)
+                            " \n        ราคาขาย : " +
+                              _vm._s(_vm.productprice.priceorder) +
+                              "\n      "
                           )
                         ]),
                         _vm._v(" "),
@@ -65068,18 +65070,35 @@ var render = function() {
                             index
                           ) {
                             return _c("tr", [
-                              _c("td", [_vm._v(_vm._s(index + 1))]),
+                              _c("td", [
+                                _vm._v(
+                                  "\n          " +
+                                    _vm._s(index + 1) +
+                                    "\n        "
+                                )
+                              ]),
                               _vm._v(" "),
                               _c("td", [
-                                _c("img", {
-                                  staticClass: "img-size-50",
-                                  attrs: {
-                                    src:
-                                      _vm.baseurl +
-                                      "/public/images/product/" +
-                                      productorder.image
-                                  }
-                                })
+                                productorder.image
+                                  ? _c("img", {
+                                      staticClass: "img-size-50",
+                                      attrs: {
+                                        src:
+                                          _vm.baseurl +
+                                          "/public/images/product/" +
+                                          productorder.image,
+                                        alt: productorder.name
+                                      }
+                                    })
+                                  : _c("img", {
+                                      staticClass: "img-size-50",
+                                      attrs: {
+                                        src:
+                                          _vm.baseurl +
+                                          "/public/images/product/zummXD2dvAtI.png",
+                                        alt: productorder.name
+                                      }
+                                    })
                               ]),
                               _vm._v(" "),
                               _c(
@@ -65098,21 +65117,23 @@ var render = function() {
                                   _vm._v(" "),
                                   _c("br"),
                                   _vm._v(
-                                    "\n         " +
+                                    "\n          " +
                                       _vm._s(productorder.name) +
-                                      "\n       "
+                                      "\n        "
                                   )
                                 ]
                               ),
                               _vm._v(" "),
                               _c("td", { staticClass: "text-right" }, [
                                 _vm._v(
-                                  _vm._s(
-                                    _vm._f("numeral")(
-                                      productorder.orderprice,
-                                      "0,0"
-                                    )
-                                  ) + "\n\n       "
+                                  "\n          " +
+                                    _vm._s(
+                                      _vm._f("numeral")(
+                                        productorder.orderprice,
+                                        "0,0"
+                                      )
+                                    ) +
+                                    "\n        "
                                 )
                               ]),
                               _vm._v(" "),
@@ -65123,7 +65144,7 @@ var render = function() {
                                       productorder.orderqty,
                                       "0,0"
                                     )
-                                  ) + "\n\n"
+                                  ) + "\n          "
                                 ),
                                 _c("i", {
                                   staticClass: "fas fa-pencil-alt",
@@ -65142,12 +65163,14 @@ var render = function() {
                               _vm._v(" "),
                               _c("td", { staticClass: "text-right" }, [
                                 _vm._v(
-                                  _vm._s(
-                                    _vm._f("numeral")(
-                                      productorder.amount,
-                                      "0,0"
-                                    )
-                                  ) + " "
+                                  "\n          " +
+                                    _vm._s(
+                                      _vm._f("numeral")(
+                                        productorder.amount,
+                                        "0,0"
+                                      )
+                                    ) +
+                                    " \n        "
                                 )
                               ]),
                               _vm._v(" "),

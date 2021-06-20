@@ -7,3 +7,4 @@ storage/logs/*
 config/database.php
 storage/framework/cache/*
 storage/logs/laravel.log
+storage/framework/cache/
