@@ -15,8 +15,9 @@ use App\Models\MjOrderProducts;
 use App\Models\SaleHistory;
 use App\Category;
 use App\express\customerModel;
-
+use App\express\productModel;
 use Auth;
+use App\express\stockModel;
 class OrderProducts extends Controller
 {
     /**
@@ -65,19 +66,17 @@ $offset = ($request->page-1)*$limitnumber;
 
             $searcharr= explode(" ", TRIM($search));
             $searchhilight[] = $searcharr[0];
-            $wheresearch = "(( name LIKE '%".trim($searcharr[0])."%' ";
-            $wherecode = "code LIKE '%".trim($searcharr[0])."%' ";
-            $wheredt= "product_details LIKE '%".trim($searcharr[0])."%' ";
+            $wheresearch = "(( stkdes LIKE '%".trim($searcharr[0])."%' ";
+            $wherecode = "stkcod LIKE '%".trim($searcharr[0])."%' ";
+            $wheredt= "stkdes LIKE '%".trim($searcharr[0])."%' ";
 
             if(count($searcharr)>1){
 
                 for($i=1;$i<count($searcharr);$i++){
                     if(!empty($searcharr[$i])){
                         $searchhilight[] = $searcharr[$i];
-                        $wheresearch .= "AND name LIKE '%".trim($searcharr[$i])."%' ";
-            $wheredt.= "AND product_details LIKE '%".trim($searcharr[$i])."%' ";
-
-
+                        $wheresearch .= "AND stkdes LIKE '%".trim($searcharr[$i])."%' ";
+                        $wheredt.= "AND stkdes LIKE '%".trim($searcharr[$i])."%' ";
                     }
 
                 }
@@ -85,122 +84,90 @@ $offset = ($request->page-1)*$limitnumber;
             }
             $wheresearch .= ") OR ($wherecode) OR ($wheredt))";
             if(!empty($request->relate)){
-                $wheresearch .= " AND qty > 0 AND id <> '".$request->relate."'";
+               // $wheresearch .= " AND qty > 0 AND id <> '".$request->relate."'";
+                //$wheresearch .= " stkcod <> '".$request->relate."'";
             }
 
-if($request->showsearchtype==1){
-  
-    
-   
-    $products = Product::whereRaw($wheresearch)
-    ->offset($offset)
-    ->limit($limitnumber)
-    ->whereIn('code', $historylist_code)
-   ->orderByRaw("FIELD(code,'".$historylist_codeconvert."')")
-    ->get();
-    
-
-//print_r($historylist_codeconvert);
-
-$productsall = Product::whereRaw($wheresearch)
-->whereIn('code', $historylist_code)
-->count();    
-// $categoryall =[];
-// $categoryall = DB::table('products')
-// ->groupBy('category_code')
-// ->select('category_code')
-// ->get();  
-
-        }elseif($request->showsearchtype==2){
-
-
-            $salehistory=[];
- $products = Product::whereRaw($wheresearch)
-->offset($offset)
-->limit($limitnumber)
-->get();
-
-$productsall = Product::whereRaw($wheresearch)
-->count();    
-// $categoryall =[];
-// //->whereRaw($request->$wheresearch)
-// $categoryall = DB::table('products')
-// ->groupBy('category_code')
-// ->select('category_code')
-// ->get();  
-
-
-
-        }
-
-        }else{
             if($request->showsearchtype==1){
 
+                $products = productModel::on('report')
+                ->whereRaw($wheresearch)
+                ->offset($offset)
+                ->limit($limitnumber)
+                ->whereIn('stkcod', $historylist_code)
+                ->orderByRaw("FIELD(stkcod,'".$historylist_codeconvert."')")
+                ->get();
+                
 
-       
+
+                $productsall = productModel::on('report')
+                ->whereRaw($wheresearch)
+                ->whereIn('stkcod', $historylist_code)
+                ->count();    
 
 
-            $products = Product::limit($limitnumber)
+            }elseif($request->showsearchtype==2){
+
+
+                $salehistory=[];
+                $products = productModel::on('report')
+                ->whereRaw($wheresearch)
+                ->offset($offset)
+                ->limit($limitnumber)
+                ->get();
+
+                $productsall = productModel::on('report')
+                ->whereRaw($wheresearch)
+                ->count();    
+
+            }
+
+        }else{
+            if($request->showsearchtype==1){ 
+
+            $products = productModel::on('report')
+            ->limit($limitnumber)
             ->offset($offset)
-            ->whereIn('code', $historylist_code)
-   ->orderByRaw("FIELD(code,'".$historylist_codeconvert."')")
-
+            ->whereIn('stkcod', $historylist_code)
+            ->orderByRaw("FIELD(stkcod,'".$historylist_codeconvert."')")
             ->get();
 
-            
-
-
-
-            $productsall = Product::whereIn('code', $historylist_code)->count();  
-            $searchhilight[] = '';
-            $categoryall = DB::table('products')
-->groupBy('category_code')
-->select('category_code')
-->get();  
-
-
-        }else if($request->showsearchtype==2){
-
-
-            $salehistory=[];
-
-            $products = Product::limit($limitnumber)
-            ->offset($offset)
-            ->get();
-
-            $productsall = Product::count();  
+    
+            $productsall = productModel::on('report')
+            ->whereIn('stkcod', $historylist_code)->count();  
             $searchhilight[] = '';
 
-// $categoryall = DB::table('products')
-// ->groupBy('category_code')
-// ->select('category_code')
-// ->get();  
-       
-
-        }
-  
+            $categoryall = productModel::on('report')
+            ->groupBy('stkgrp')
+            ->select('stkgrp')
+            ->get();  
 
 
+            }else if($request->showsearchtype==2){
 
 
-//return response()->json($categories);
+                $salehistory=[];
+
+                $products = productModel::on('report')
+                ->limit($limitnumber)
+                ->offset($offset)
+                ->get();
+
+                $productsall = Product::count();  
+                $searchhilight[] = '';
+
+
+            }
     }
-   
-    // $categorcodearr=[];
-    // foreach ($categoryall as $categoryrow) {
-    //     $categorcodearr[] = $categoryrow->category_code;
-    //   }
-    //   $categories = DB::table('categories')->whereIn('code',$categorcodearr)->get();
-      if($request->showsearchtype==1){
-  $productsCount = count($salehistory);
-      }else{
-        $productsCount = count($products);       
-      }
-  $allpage =  ceil($productsall/$limitnumber) ;
 
+        if($request->showsearchtype==1){
+            $productsCount = count($salehistory);
+        }else{
+            $productsCount = count($products);       
+        }
+        $allpage =  ceil($productsall/$limitnumber) ;
 
-
-  return response()->json(['salehistory'=>$salehistory,'products' => $products, 'search' => $search,'productscount'=>$productsCount,'productsall'=>$productsall,'searchhilight'=>$searchhilight,'allpage'=>$allpage,'offset'=>$offset,'historylist_sumsale'=>$historylist_sumsale,'historylist_code'=>$historylist_code]); //'grouped'=>$categories,'categoryselect'=>$categorcodearr,
+        return response()->json(['salehistory'=>$salehistory,'products' => $products, 'search' => $search,'productscount'=>$productsCount,'productsall'=>$productsall,'searchhilight'=>$searchhilight,'allpage'=>$allpage,'offset'=>$offset,'historylist_sumsale'=>$historylist_sumsale,'historylist_code'=>$historylist_code]); //'grouped'=>$categories,'categoryselect'=>$categorcodearr,
     }
 
 
@@ -231,7 +198,8 @@ $productsall = Product::whereRaw($wheresearch)
             $doctypename = "ใบจอง";
         }
 
-        $customer = Customer::where('id',$orderdetrails->customer_id)
+        $customer = customerModel::on('report')
+        ->where('indexrow',$orderdetrails->customer_id)
         ->first();
 
         return response()->json(
@@ -250,14 +218,39 @@ $productsall = Product::whereRaw($wheresearch)
         $stocklist=[];
    
         $showstockbyproduct = MjStoreProductsTracking::where('product_code',$id)
-        ->selectRaw('SUM(stocktype_1) as sumstock1,SUM(stocktype_2) as sumstock2,SUM(stocktype_3) as sumstock3,SUM(stocktype_4) as sumstock4')
+        ->selectRaw('SUM(stocktype_2) as sumstock2,SUM(stocktype_3) as sumstock3,SUM(stocktype_4) as sumstock4')
         ->groupBy('product_code')
         ->first();
 
-        $stocklist['sumstock1'] =  $showstockbyproduct->sumstock1;
-        $stocklist['sumstock2'] =  $showstockbyproduct->sumstock2;
-        $stocklist['sumstock3'] =  $showstockbyproduct->sumstock3;
-        $stocklist['sumstock4'] =  $showstockbyproduct->sumstock4;
+        $expressStock = stockModel::on('report')
+        ->where('stkcod',$id)
+        ->groupBy('stkcod')
+        ->get();
+
+        $stocklist['sumstock1'] =  $expressStock->sum('locbal');
+
+        if(!empty($showstockbyproduct->sumstock2)){
+            $stocklist['sumstock2'] =  $showstockbyproduct->sumstock2;
+
+        }else{
+            $stocklist['sumstock2'] =  0;
+
+        }
+        if(!empty($showstockbyproduct->sumstock3)){
+            $stocklist['sumstock3'] =  $showstockbyproduct->sumstock3;
+
+        }else{
+            $stocklist['sumstock3'] =  0;
+
+        }
+
+        if(!empty($showstockbyproduct->sumstock4)){
+            $stocklist['sumstock4'] =  $showstockbyproduct->sumstock4;
+
+        }else{
+            $stocklist['sumstock4'] =  0;
+
+        }
 
 
 
@@ -288,93 +281,89 @@ $productsall = Product::whereRaw($wheresearch)
     public function addproducttoorder(Request $request)
     {
 
-
         if(!empty($request->productid) && !empty($request->orderid) && !empty($request->addqty)  && !empty($request->userfullname) && !empty($request->userid) ){
 
-
             //check สินค้าซ้ำ
-
+            $alertstatus = (object)[]; 
+            $alertstatus->icon ="error";
+            $alertstatus->title = $request->productid;
+            $alertstatus->text = $request->productscode;
+                    
             $chekpdinorder = MjOrderProducts::where('product_id',$request->productid)
             ->where('order_id', $request->orderid)->count();
-if($chekpdinorder>0){
-/////ซำ้
-$alertstatus = (object)[]; 
-$alertstatus->icon ="error";
-$alertstatus->title ="สินค้าซ้ำ";
-$alertstatus->text ="สินค้ารายการนี้ถูกเลือกไว้แล้ว";
-}else{
 
+            if($chekpdinorder>0){
+            /////ซำ้
+                $alertstatus = (object)[]; 
+                $alertstatus->icon ="error";
+                $alertstatus->title ="สินค้าซ้ำ";
+                $alertstatus->text ="สินค้ารายการนี้ถูกเลือกไว้แล้ว";
 
-    $amount ="";
-    if(!empty($request->addqty) && !empty($request->price) ){
-    $amount =$request->addqty*$request->price;
+            }else{
 
-    }
+                $amount ="";
+                if(!empty($request->addqty) && !empty($request->price) ){
+                    $amount =$request->addqty*$request->price;
 
-    if(!empty($request->once_time)){
-        $once_time= $request->once_time;
-    }else{
-        $once_time= 0;
+                }
 
-    }
-        //addproduct    
-        $MjOrderProducts= new MjOrderProducts;
-        $MjOrderProducts->order_id= $request->orderid;
-        $MjOrderProducts->product_id=$request->productid;
-        $MjOrderProducts->productscode= $request->productscode;
-        $MjOrderProducts->qty= $request->addqty;
-        $MjOrderProducts->price= $request->price;
-        $MjOrderProducts->amount= $amount;
-        
-        $MjOrderProducts->stocknow= $request->stocknow;
-        $MjOrderProducts->userid= $request->userid;
-        $MjOrderProducts->memonumber= $request->memonumber;
-        $MjOrderProducts->priceoncetime= $once_time;
-        
-        $MjOrderProducts->save();
+                if(!empty($request->once_time)){
+                    $once_time= $request->once_time;
+                }else{
+                    $once_time= 0;
 
+                }
+                //addproduct    
+                $MjOrderProducts= new MjOrderProducts;
+                $MjOrderProducts->order_id= $request->orderid;
+                $MjOrderProducts->product_id=$request->productid;
+                $MjOrderProducts->productscode= $request->productscode;
+                $MjOrderProducts->qty= $request->addqty;
+                $MjOrderProducts->price= $request->price;
+                $MjOrderProducts->amount= $amount;
+                
+                $MjOrderProducts->stocknow= $request->stocknow;
+                $MjOrderProducts->userid= $request->userid;
+                $MjOrderProducts->memonumber= $request->memonumber;
+                $MjOrderProducts->priceoncetime= $once_time;
+                
+                $MjOrderProducts->save();
 
-$orderdetails = $request->orderdetails;
-$docfullname ="";
-if($request->doctype==1){
-    $docfullname = $orderdetails['ordernumberfull'];
-    $timelinestatus =  '111' ;//เพิ่มสินค้า
-}elseif($request->doctype==2){
-    $docfullname = $orderdetails['bookingnumber'];
-    $timelinestatus =  '211' ;//เพิ่มสินค้า
+                $orderdetails = $request->orderdetails;
+                $docfullname ="";
+                if($request->doctype==1){
+                    $docfullname = $orderdetails['ordernumberfull'];
+                    $timelinestatus =  '111' ;//เพิ่มสินค้า
+                }elseif($request->doctype==2){
+                    $docfullname = $orderdetails['bookingnumber'];
+                    $timelinestatus =  '211' ;//เพิ่มสินค้า
+                }
+                //addtracking
+                trackingadd($request->productid,$request->productscode,$request->addqty,$request->doctype,$request->orderid,$docfullname,$timelinestatus,$request->userid,$request->userfullname);
+                //update จำนวน
+                updateproductstockforsale($request->productscode,$request->productid);
+                $alertstatus = (object)[]; 
+                $alertstatus->icon ="success";
+                $alertstatus->title ="Completed";
+                $alertstatus->text ="เพิ่มสินค้าเรียบร้อย";
 
-}
-        //addtracking
-       
-
-        trackingadd($request->productid,$request->productscode,$request->addqty,$request->doctype,$request->orderid,$docfullname,$timelinestatus,$request->userid,$request->userfullname);
-        //update จำนวน
-        updateproductstockforsale($request->productscode,$request->productid);
-        $alertstatus = (object)[]; 
-        $alertstatus->icon ="success";
-        $alertstatus->title ="Completed";
-        $alertstatus->text ="เพิ่มสินค้าเรียบร้อย";
-
-
-}
+            }
         }
 
-        //select product ใน order
-$productlistinorder = MjOrderProducts::where('order_id',$request->orderid)
-->where('canclepd','<>','1')
-->leftjoin('products','mj_order_products.productscode','products.code' )
-->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount,canclepd')
-->orderBy('pdorderid','asc')
-->get();
-        //response สถานะ
-      $orderid=  $request->orderid;
-      $productid=  $request->productid;
+                //select product ใน order
+        $productlistinorder = MjOrderProducts::where('order_id',$request->orderid)
+        ->where('canclepd','<>','1')
+        ->leftjoin('products','mj_order_products.productscode','products.code' )
+        ->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount,canclepd')
+        ->orderBy('pdorderid','asc')
+        ->get();
+            //response สถานะ
+        $orderid=  $request->orderid;
+        $productid=  $request->productid;
         return response()->json(    [
             'alertstatus' => $alertstatus,
             'productlistinorder' => $productlistinorder,
-            
-
-            ]);
+        ]);
     }
 
 

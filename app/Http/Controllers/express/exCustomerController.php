@@ -34,4 +34,11 @@ class exCustomerController extends Controller
             ->escapeColumns([]) /// ทำให้แสดง html ในตาราง
             ->make();
     }
+
+    public function customerDataMemo(Request $request)
+    {
+        return customerModel::on('report')
+        ->select('cuscod','cusnam')
+        ->get();
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Mj;
 use App\Product;
 use App\Customer;
+use App\express\productModel;
 use App\User;
 use App\Models\MemoPrice;
 use App\Models\PriceSpecific;
@@ -34,32 +35,32 @@ class MemoPriceController extends Controller
     public function memocheckprice(Request $request)
     {
         $productprcienow='';
-      if(!empty($request->productcode) && $request->customertype==1 && !empty($request->pricetype)  ){
+        if(!empty($request->productcode) && $request->customertype==1 && !empty($request->pricetype)  ){
 
-$productprcie = Product::where('code',$request->productcode)
-->select('name','code','price_a','price_b','price_c','price_d')
-->first();  
+            $productprcie = Product::where('code',$request->productcode)
+            ->select('name','code','price_a','price_b','price_c','price_d')
+            ->first();  
 
-if($request->pricetype=="A"){
-    $productprcienow = $productprcie->price_a;
-}else
-if($request->pricetype=="B"){
-    $productprcienow = $productprcie->price_b;
-}else
-if($request->pricetype=="C"){
-    $productprcienow = $productprcie->price_c;
-}else
-if($request->pricetype=="D"){
-    $productprcienow = $productprcie->price_d;
-}
+            if($request->pricetype=="A"){
+                $productprcienow = $productprcie->price_a;
+            }else
+            if($request->pricetype=="B"){
+                $productprcienow = $productprcie->price_b;
+            }else
+            if($request->pricetype=="C"){
+                $productprcienow = $productprcie->price_c;
+            }else
+            if($request->pricetype=="D"){
+                $productprcienow = $productprcie->price_d;
+            }
 
-return response()->json([
-    'pricename' => "Standard ".$request->pricetype,
-    'pricenow' => $productprcienow,
-]);
+            return response()->json([
+                'pricename' => "Standard ".$request->pricetype,
+                'pricenow' => $productprcienow,
+            ]);
 
 
-      }elseif(!empty($request->productcode)  && $request->customertype==2 && !empty($request->customercode)  ){
+        }elseif(!empty($request->productcode)  && $request->customertype==2 && !empty($request->customercode)  ){
 
         $productprcie = Product::where('code',$request->productcode)
         ->select('name','code','price_a','price_b','price_c','price_d')
@@ -68,20 +69,25 @@ return response()->json([
         $cpricegroup  = Customer::where('customercode',$request->customercode)
         ->select('price_group')
         ->first();  
-$pricegroup = $cpricegroup->price_group;
+        if($cpricegroup){
+            $pricegroup = $cpricegroup->price_group;
 
-if($pricegroup =="A"){
-    $productprcienow = $productprcie->price_a;
-}else
-if($pricegroup =="B"){
-    $productprcienow = $productprcie->price_b;
-}else
-if($pricegroup =="C"){
-    $productprcienow = $productprcie->price_c;
-}else
-if($pricegroup =="D"){
-    $productprcienow = $productprcie->price_d;
-}
+        }else{
+            $pricegroup ="B";
+        }
+
+        if($pricegroup =="A"){
+            $productprcienow = $productprcie->price_a;
+        }else
+        if($pricegroup =="B"){
+            $productprcienow = $productprcie->price_b;
+        }else
+        if($pricegroup =="C"){
+            $productprcienow = $productprcie->price_c;
+        }else
+        if($pricegroup =="D"){
+            $productprcienow = $productprcie->price_d;
+        }
 
 
         return response()->json([
@@ -318,7 +324,7 @@ $addspecificprice->save();
         $once_time ='';
         $pricetime='';
         $memonumber='';
-        ///check ราคา special
+///check ราคา special
 /// 1. ตามรหัสลูกค้า +  ช่วงเวลา
         $productprice= PriceSpecific::where('productcode',$request->productcode)
         ->where('custype','2')
@@ -332,22 +338,22 @@ $addspecificprice->save();
     
 
         if(!empty($productprice->pricevalue)){
-$priceorder = $productprice->pricevalue;
-$cuscode = $productprice->cuscode;
-$daterange= $productprice->pricedaterange;
-$typeprice = $productprice->typeprice;
-$pricetime = $productprice->pricetime;
-$memonumber =$productprice->memonumber;
+            $priceorder = $productprice->pricevalue;
+            $cuscode = $productprice->cuscode;
+            $daterange= $productprice->pricedaterange;
+            $typeprice = $productprice->typeprice;
+            $pricetime = $productprice->pricetime;
+            $memonumber =$productprice->memonumber;
         }else{
-/// 2. ช่วงเวลา + ประเภททราคา
-$productprice= PriceSpecific::where('productcode',$request->productcode)
+            /// 2. ช่วงเวลา + ประเภททราคา
+            $productprice= PriceSpecific::where('productcode',$request->productcode)
 
-->where('typeprice',$request->typeprice)
-->where('pricetime','3')
-->whereDate('pricedatestart', '<=', date('Y-m-d'))
-->whereDate('pricedateend', '>=', date('Y-m-d'))
-->orderBy('id','desc')
-->first();
+            ->where('typeprice',$request->typeprice)
+            ->where('pricetime','3')
+            ->whereDate('pricedatestart', '<=', date('Y-m-d'))
+            ->whereDate('pricedateend', '>=', date('Y-m-d'))
+            ->orderBy('id','desc')
+            ->first();
 
 if(!empty($productprice->pricevalue)){
     $priceorder = $productprice->pricevalue;
@@ -403,6 +409,7 @@ $productprice= PriceSpecific::where('productcode',$request->productcode)
 ->orderBy('id','desc')
 ->first();
 if(!empty($productprice->pricevalue)){
+
     $priceorder = $productprice->pricevalue;
     $cuscode = $productprice->cuscode;
     $pricetime = $productprice->pricetime;
@@ -413,34 +420,42 @@ if(!empty($productprice->pricevalue)){
 
 
 
-/// 6. ประเภททราคา
+            /// 6. ประเภททราคา
 
 
-$productprice = Product::where('code',$request->productcode)
-->select('name','code','price_a','price_b','price_c','price_d')
-->first();  
+            $productprice = productModel::on('report')
+            ->where('stkcod',$request->productcode)
+            ->selectRaw('stkdes AS name, stkcod AS code, sellpr1 AS price_a, sellpr2 AS price_b, sellpr3 AS price_c, sellpr1 AS price_d')
+            ->first();  
 
-if($request->typeprice=="A"){
-    $priceorder =  $productprice->price_a;
-    
-}else if($request->typeprice=="B"){
-    $priceorder =  $productprice->price_b;
-}else if($request->typeprice=="C"){
-    $priceorder =  $productprice->price_c;
-}else if($request->typeprice=="D"){
-    $priceorder =  $productprice->price_d;
+            if($request->typeprice=="A"){
+                $priceorder =  $productprice->price_a;
+                
+            }else if($request->typeprice=="B"){
+                $priceorder =  $productprice->price_b;
+            }else if($request->typeprice=="C"){
+                $priceorder =  $productprice->price_c;
+            }else if($request->typeprice=="D"){
+                $priceorder =  $productprice->price_d;
+            }
+
+            $typeprice = $request->typeprice;
+            }
+
+        }
+    }
 }
 
-$typeprice = $request->typeprice;
- }
-
-            }
-            }
-        }
-
-        }
+}
         
+if(empty($priceorder)){
+    $productprice = productModel::on('report')
+    ->where('stkcod',$request->productcode)
+    ->selectRaw('stkdes AS name, stkcod AS code, sellpr1 AS price_a, sellpr2 AS price_b, sellpr3 AS price_c, sellpr1 AS price_d')
+    ->first();  
+    $priceorder =  $productprice->price_a;
 
+}
 
 return response()->json(    [
     'cuscode' =>  $cuscode,

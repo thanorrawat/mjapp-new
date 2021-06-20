@@ -21,19 +21,19 @@
               <!-- /.card-header -->
               <div class="card-body ">
                   
-<div class="row"><div class="col-md-6 ">
+                  <div class="row"><div class="col-md-6 ">
 
-<div class="mb-1" v-if="historylist_code.length>0">
-<div  class="icheck-warning d-inline">
-<input type="radio" id="listsearchtype_1" name="listsearchtype" value="1" v-model="showsearchtype"  required>
-<label for="listsearchtype_1">จากประวัติการขาย</label></div>
+                  <div class="mb-1" v-if="historylist_code.length>0">
+                  <div  class="icheck-warning d-inline">
+                  <input type="radio" id="listsearchtype_1" name="listsearchtype" value="1" v-model="showsearchtype"  required>
+                  <label for="listsearchtype_1">จากประวัติการขาย</label></div>
 
-<div class="icheck-warning  d-inline">
-<input type="radio" id="listsearchtype_2" name="listsearchtype" value="2" v-model="showsearchtype"   required>
-<label for="listsearchtype_2"> ทั้งหมด  </label>  </div>
-</div>
+                  <div class="icheck-warning  d-inline">
+                  <input type="radio" id="listsearchtype_2" name="listsearchtype" value="2" v-model="showsearchtype"   required>
+                  <label for="listsearchtype_2"> ทั้งหมด  </label>  </div>
+                  </div>
 
-</div></div>
+                  </div></div>
 
                   <div class="input-group mb-3">
                   <input type="text" class="form-control" v-model="searchtext" @input="searchget">
@@ -44,33 +44,31 @@
 
                 <div id="showsearchall"  class="table-responsive">
 
-<ul class="products-list product-list-in-card pl-2 pr-2">
-                  <li  class="item" v-for="(product,index) in products" @click="showProductDt(index)">
+              <ul class="products-list product-list-in-card pl-2 pr-2">
+                <li  class="item" v-for="(product,index) in products" @click="showProductDt(index)" :key=index>
                   <div class="row">
-     <div class="col-3 text-center">
-                      <img :src="baseurl+'/public/images/product/'+product.image"  class="img-size-50">
-     </div>
-<div class="col-6">
+                    <div class="col-3 text-center">
+                      <img v-if="product.image" :src="baseurl+'/public/images/product/'+product.image"  class="img-size-50">
 
-     <a href="javascript:void(0)" class="product-title"><text-highlight :queries="queries">{{ product.code}} - {{ product.name}}</text-highlight>
-     </a><br><text-highlight :queries="queries"> {{ product.product_details }}</text-highlight>
-                        
-                        
+                      <img v-else :src="baseurl+'/public/images/product/zummXD2dvAtI.png'"  class="img-size-50">
 
-
-</div>
-<div class="col-3 text-right">
-                           <span class="badge badge-warning "><strong>STOCK : </strong> {{ product.qty  | numeral('0,0')}}</span> 
-                        <span v-if="historylist_sumsale[product.code]>0" class="badge badge-danger  mr-1"> <strong>Sale : </strong> {{ historylist_sumsale[product.code]  | numeral('0,0')}}</span>
-  <br>   <strong>{{categorynamelist[product.category_code] }} </strong></div>
+                      
+                    </div>
+                    <div class="col-6">
+                      <a href="javascript:void(0)" class="product-title"><text-highlight :queries="queries">{{ product.stkcod}} - {{ product.stkdes}}</text-highlight>
+                      </a><br><text-highlight :queries="queries"> {{ product.stkdes }}</text-highlight>
+                    </div>
+                    <div class="col-3 text-right">
+                      <span class="badge badge-warning "><strong>STOCK : </strong> {{ product.qty  | numeral('0,0')}}</span> 
+                      <span v-if="historylist_sumsale[product.stkcod]>0" class="badge badge-danger  mr-1"> <strong>Sale : </strong> {{ historylist_sumsale[product.stkcod]  | numeral('0,0')}}</span>
+                      <br>   
+                      <strong>{{categorynamelist[product.stkgrp] }} </strong>
+                    </div>
                   </div>
-                   
-
-
-</li>
+                </li>
                   <!-- /.item -->             
-                </ul>
-                </div>
+              </ul>
+            </div>
                 <!-- /.table-responsive -->
                    <div v-if="productsall>0"  class="text-center pagingrow ">
  <div class="">จำนวนทั้งหมด {{ productsall  | numeral('0,0') }} รายการ  / {{ allpage  | numeral('0,0') }} หน้า</div>
@@ -84,24 +82,27 @@
 
 </div>
 <div class="col-md-3 ">
-           <div v-if="productshow[0] || productshow.code " class="card">
+           <div v-if="productshow[0] || productshow.stkcod " class="card">
 <div class="card-body">
      <h4>รายละเอียดสินค้า</h4>
 <div class="row">
   <div class="col-md-5">
 
-     <img :src="baseurl+'/public/images/product/'+productshow.image"  class="img-thumbnail">
+     <img v-if="productshow.image" :src="baseurl+'/public/images/product/'+productshow.image"  class="img-thumbnail">
+     <img v-else :src="baseurl+'/public/images/product/zummXD2dvAtI.png'"  class="img-thumbnail">
+
+     
 </div>
   <div class="col-md-6">
  
-      <strong>{{  productshow['name'] }} </strong>
-      <div> <strong>Code : </strong>  {{  productshow['code'] }}  </div>
-      <div> <strong>หมวดสินค้า : </strong>  {{categorynamelist[productshow.category_code] }} </div>
+      <strong>{{  productshow.stkdes }} </strong>
+      <div> <strong>Code : </strong>  {{  productshow.stkcod }}  </div>
+      <div> <strong>หมวดสินค้า : </strong>  {{categorynamelist[productshow.stkgrp] }} </div>
 <p id="productsdetails">
 <!-- <strong>Product Details : </strong> -->
  {{  productshow['product_details'] }}
 </p>
-<strong>ประวัติการขาย : </strong> {{ historylist_sumsale[productshow['code']]  | numeral('0,0')}} ชิ้น
+<strong>ประวัติการขาย : </strong> {{ historylist_sumsale[productshow.stkcod]  | numeral('0,0')}} ชิ้น
 </div>
 </div>
 
@@ -109,7 +110,10 @@
        <div class="row mt-1">
                   <div class="col border-right">
                     <div class="description-block">
-                      <h5 class="description-header"> {{  stocklist.sumstock1 | numeral('0,0') }}</h5>
+                      <h5 class="description-header">
+                         {{  stocklist.sumstock1 | numeral('0,0') }}
+                         
+                         </h5>
                       <span class="description-text">Stock เพื่อขาย</span>
                     </div>
                     <!-- /.description-block -->
@@ -152,7 +156,7 @@
 
   <div class="col-2 text-right"> จำนวน</div>
   <div class="col-4"><input type="number" min="1" class="form-control text-right" v-model="addqty"></div>
-  <div class="col">   <button @click="addtodorder(productshow['id'])" class="btn btn-sm btn-primary btn-flat">
+  <div class="col">   <button @click="addtodorder(productshow.indexrow)" class="btn btn-sm btn-primary btn-flat">
                
                   <i class="far fa-plus-square mr-2"></i>
               {{ buttonlabeladd }}
@@ -185,12 +189,14 @@ Keyword :  {{relatekey }}
 <div class="row">
                   <div class=" col-sm-6 mb-2" v-for="(relate_product,index) in relate_products" @click="showProductrelate(index)">
                     <div class="item">
-                      <img :src="baseurl+'/public/images/product/'+relate_product.image"  class="img-size-50 float-left mr-2" >
+                      <img v-if="relate_product.image" :src="baseurl+'/public/images/product/'+relate_product.image"  class="img-size-50 float-left mr-2" >
+
+                      <img v-else :src="baseurl+'/public/images/product/zummXD2dvAtI.png'"  class="img-size-50 float-left mr-2" >
                     
                     <div class="product-info p-1">
-               <text-highlight :queries="relate_queries">{{ relate_product.code}} - {{ relate_product.name}}</text-highlight>
+               <text-highlight :queries="relate_queries">{{ relate_product.stkcod}} - {{ relate_product.stkdes}}</text-highlight>
                         <span class="badge badge-warning "><strong>STOCK : </strong> {{ relate_product.qty  | numeral('0,0')}}</span> 
-                        <span v-if="historylist_sumsale[relate_product.code]>0" class="badge badge-danger "> <strong>Sale : </strong> {{ historylist_sumsale[relate_product.code]  | numeral('0,0')}}</span>
+                        <span v-if="historylist_sumsale[relate_product.stkcod]>0" class="badge badge-danger "> <strong>Sale : </strong> {{ historylist_sumsale[relate_product.stkcod]  | numeral('0,0')}}</span>
 
                         <div class="p-1 bg-light text-dark">
                     <strong>{{categorynamelist[relate_product.category_code] }} </strong>
@@ -360,6 +366,7 @@ Keyword :  {{relatekey }}
       this.searchget()
       this.categoryname()
       this.addproductpricecode()
+
       },
     components: { vPagination },
     data(){
@@ -387,38 +394,38 @@ Keyword :  {{relatekey }}
         customerdt : [],
         datelabel1 :'วันที่ทำรายการ',
         datelabel2 : 'กำหนดส่ง',
-buttonlabel : 'สร้างใบOrder',
-buttonlabeladd : 'เพิ่มในOrder',
-newdate:null,
-newselectdate:null,
-doctypecheck:'1',
-selectdate:[],
-orderdtall:[],
-productshow:[],
-customercode:'',
-histories:[],
-historylist_sumsale:[],
-historylist_code:[],
-stocklist:[],
-cat_code:'',
-categorynamelist:[],
-relatekey:'',
-relate_products:[],
-relate_queries:'',
-addproductorder :[],
-addqty:1,
-alertstatus:[],
-productlistinorder:[],
-docfullnumber:'',
-totalorderqty:0,
-diffstockadd:'',
-editqtyorderdetail:[],
-newtracking_qty:0,
-editqtynew:0,
-orderremark:'',
-productprice:[],
-productlistpriceobj:[],
-ordertotalamount:0,
+        buttonlabel : 'สร้างใบOrder',
+        buttonlabeladd : 'เพิ่มในOrder',
+        newdate:null,
+        newselectdate:null,
+        doctypecheck:'1',
+        selectdate:[],
+        orderdtall:[],
+        productshow:[],
+        customercode:'',
+        histories:[],
+        historylist_sumsale:[],
+        historylist_code:[],
+        stocklist:[],
+        cat_code:'',
+        categorynamelist:[],
+        relatekey:'',
+        relate_products:[],
+        relate_queries:'',
+        addproductorder :[],
+        addqty:1,
+        alertstatus:[],
+        productlistinorder:[],
+        docfullnumber:'',
+        totalorderqty:0,
+        diffstockadd:'',
+        editqtyorderdetail:[],
+        newtracking_qty:0,
+        editqtynew:0,
+        orderremark:'',
+        productprice:[],
+        productlistpriceobj:[],
+        ordertotalamount:0,
 
     }
 },
@@ -524,8 +531,8 @@ this.showProductDt(0)
  })
  
      },     relateproduct: function() {  //ฟังก์ชั่น
-  axios.get(this.baseurl+'/api/orderproducts-search?searchtext='+this.relatekey+'&page=1&customer='+this.customercode+'&showsearchtype=2&relate='+this.productshow['id'])
-  .then((response)=>{
+          axios.get(this.baseurl+'/api/orderproducts-search?searchtext='+this.relatekey+'&page=1&customer='+this.customercode+'&showsearchtype=2&relate='+this.productshow.stkcod)
+          .then((response)=>{
               this.relate_products=response.data.products; 
               this.relate_queries = response.data.searchhilight; 
 
@@ -539,21 +546,22 @@ this.showProductDt(0)
      , orderdtget: function() {  //ฟังก์ชั่น
   axios.get(this.baseurl+'/api/orderdt/'+this.orderid)
   .then((response)=>{
-      this.orderdtall=response.data 
-              this.orderdt=response.data.orderdt 
-              this.doctypename=response.data.doctypename 
-              this.customerdt=response.data.customer
-this.doctypecheck=response.data.orderdt['doctype'] 
-
-this.selectdate = response.data.orderdt['deliverydate'] 
-this.customercode = response.data.customer['customercode'] 
+    this.orderdtall=response.data 
+    this.orderdt=response.data.orderdt 
+    this.doctypename=response.data.doctypename 
+    this.customerdt=response.data.customer
+    this.doctypecheck=response.data.orderdt['doctype'] 
+    this.selectdate = response.data.orderdt['deliverydate'] 
+    this.customercode = response.data.customer.cuscod 
               
                             
  })
  
-     },showProductDt(index){
+     },
+     
+showProductDt(index){
 this.productshow = this.products[index]
-let productname = this.products[index].name
+let productname = this.products[index].stkdes
 this.changrelatekey(productname);
 
  
@@ -575,27 +583,24 @@ this.productshow = this.relate_products[index]
      
      ,
      showProductinorderdt(index){
-this.productshow = this.productlistinorder[index]
+      this.productshow = this.productlistinorder[index]
 
-this.productshow['name']  =this.productlistinorder[index].name;
-this.productshow['code'] = this.productlistinorder[index].productscode;
-this.productshow['category_code']=this.productlistinorder[index].category_code;
-this.productshow['product_details']=this.productlistinorder[index].product_details;
-this.productshow['id']=this.productlistinorder[index].pdid;
-let productname = this.productlistinorder[index].name;
-this.changrelatekey(productname);
+      this.productshow['name']  =this.productlistinorder[index].stkdes;
+      this.productshow['code'] = this.productlistinorder[index].stkcod;
+      this.productshow['category_code']=this.productlistinorder[index].stkgrp;
+      this.productshow['product_details']=this.productlistinorder[index].stkdes;
+      this.productshow['id']=this.productlistinorder[index].indexrow;
+      let productname = this.productlistinorder[index].stkdes;
+      this.changrelatekey(productname);
      },
      checkstock: function() {  //ฟังก์ชั่น
 
-  axios.get(this.baseurl+'/api/checkstock/'+this.productshow['code'])
-  .then((response)=>{
-    this.stocklist=response.data.stocklist; 
-
-     
- })
-this.checkthisprice(); 
- 
- }
+      axios.get(this.baseurl+'/api/checkstock/'+this.productshow.stkcod)
+      .then((response)=>{
+        this.stocklist=response.data.stocklist;
+    })
+    this.checkthisprice(); 
+    }
 ,
  categoryname : function() {  //ฟังก์ชั่น
   axios.get(this.baseurl+'/api/categorynamelist')
@@ -604,50 +609,52 @@ this.checkthisprice();
  })
  },
   addtodorder(productid) {  //ฟังก์ชั่นเพิ่มสินค้า
-if(this.addqty && this.userid && this.orderid ){
-axios.post(this.baseurl+'/api/addproducttoorder',{
-    productid : productid,
-    orderid :this.orderid,
-    addqty :this.addqty,
-    price :this.productprice.priceorder,
- productscode : this.productshow['code'],
-    doctype : this.orderdt.doctype,
-    orderdetails : this.orderdt,
-    stocknow:this.stocklist.sumstock1,
-    userfullname:this.userfullname,
-    userid:this.userid,
-    memonumber:this.productprice.memonumber,
-    once_time:this.productprice.once_time,
+    if(this.addqty && this.userid && this.orderid  && productid){
+
+        axios.post(this.baseurl+'/api/addproducttoorder',{
+          productid : productid,
+          orderid :this.orderid,
+          addqty :this.addqty,
+          price :this.productprice.priceorder,
+          productscode : this.productshow.stkcod,
+          doctype : this.orderdt.doctype,
+          orderdetails : this.orderdt,
+          stocknow:this.stocklist.sumstock1,
+          userfullname:this.userfullname,
+          userid:this.userid,
+          memonumber:this.productprice.memonumber,
+          once_time:this.productprice.once_time,
+        }
+      )
+      .then((response)=>{
+        this.alertstatus=response.data.alertstatus; 
+        this.productlistinorder=response.data.productlistinorder; 
+      
+        Vue.swal({
+          icon: response.data.alertstatus.icon,
+          title: response.data.title,
+          text: response.data.alertstatus.text,
+          toast: true,
+          timer: 2000,
+          timerProgressBar: true,
+        
+        });
+
+      })
+      .then( this.checkstock())
+      .then(this.showproductsinoreder())
+    } else {
+      Vue.swal({
+        icon: "error",
+        title: "ไม่มีการเพิ่มสินค้า",
+        text: "รายละเอียดไม่ครบ",
+        toast: true,
+        timer: 2000,
+        timerProgressBar: true,
+      });
+    }
   }
-  )
-  .then((response)=>{
-  this.alertstatus=response.data.alertstatus; 
-  this.productlistinorder=response.data.productlistinorder; 
-
-
-  
-  Vue.swal({
-  icon: response.data.alertstatus.icon,
-  title: response.data.title,
-  text: response.data.alertstatus.text,
-  toast: true,
-  timer: 2000,
-  timerProgressBar: true,
-  
-});
-
- })
-.then( this.checkstock())
-.then(this.showproductsinoreder())
-
-
-     }
-
- 
-
- 
- }
- ,async showproductsinoreder(){
+  ,async showproductsinoreder(){
   
   axios.get(this.baseurl+'/api/showproductinorder/'+this.orderid)
   .then((response)=>{
@@ -683,14 +690,11 @@ this.ordertotalamountget();
 //<--------------
 
 axios.post(this.baseurl+'/api/removeproducttoorder',{
-    productid : this.productlistinorder[index].pdid,
+    productid : this.productlistinorder[index].indexrow,
     orderid :this.orderid,
-
     orderproductid : this.productlistinorder[index].pdorderid,
-
-    
     addqty : this.productlistinorder[index].orderqty, 
-    productscode : this.productlistinorder[index].productscode,
+    productscode : this.productlistinorder[index].stkcod,
     doctype : this.orderdt.doctype,
     orderdetails : this.orderdt,
     userfullname:this.userfullname,
@@ -731,12 +735,7 @@ this.editqtyorderdetail.indexorder = index
 
 this.showProductinorderdt(index);
  }
-//  ,editqtyinput: function() {
-// let indexorder = this.editqtyorderdetail.indexorder;
-// let oldqty = this.productlistinorder[indexorder].orderqty
-// console.log(oldqty);
-// this.newtracking_qty = (+this.editqtynew)-(+oldqty)
-//      }
+
 ,editqtysumit(){
 
   if(this.newtracking_qty===0){
@@ -767,7 +766,7 @@ this.showProductinorderdt(index);
     userfullname:this.userfullname,
     userid:this.userid,
     price:this.productprice.priceorder ,
-     memonumber:this.productprice.memonumber,
+    memonumber:this.productprice.memonumber,
     once_time:this.productprice.once_time,
   }
   )
@@ -854,34 +853,46 @@ $('#modalloder').modal('hide');
 
 });
 
-     },checkthisprice(){
-         axios.post(this.baseurl+'/api/order_checkprice',{
-productcode : this.productshow.code,
-cuscode : this.customercode,
-typeprice : this.orderdtall.customer.price_group,
-
-         }).then((response)=>{ 
-
-this.productprice = response.data
-
-let plen = this.productlistpriceobj.length;  
-
-let pricepdindex = this.productlistpriceobj.findIndex(p=>p.productcode == this.productshow.code)
-if(pricepdindex!='-1'){
-plen = pricepdindex
-}
-       
-this.productlistpriceobj[plen]= response.data
-
-let pdinorderindex = this.productlistinorder.findIndex(po=>po.productscode == this.productshow.code)
-if(pdinorderindex!='-1'){
-
-this.productlistinorder[pdinorderindex].price=response.data.priceorder
-
-}
-
-         });
      }
+     ,checkthisprice(){
+      axios.post(this.baseurl+'/api/order_checkprice',{
+        productcode : this.productshow.stkcod,
+        cuscode : this.customercode,
+        typeprice : this.orderdtall.customer.price_group,
+      }).then((response)=>{ 
+
+      this.productprice = response.data
+      });
+     }
+     
+//      ,checkthisprice(){
+//          axios.post(this.baseurl+'/api/order_checkprice',{
+// productcode : this.productshow.code,
+// cuscode : this.customercode,
+// typeprice : this.orderdtall.customer.price_group,
+
+//          }).then((response)=>{ 
+
+// this.productprice = response.data
+
+// let plen = this.productlistpriceobj.length;  
+
+// let pricepdindex = this.productlistpriceobj.findIndex(p=>p.productcode == this.productshow.code)
+// if(pricepdindex!='-1'){
+// plen = pricepdindex
+// }
+       
+// this.productlistpriceobj[plen]= response.data
+
+// let pdinorderindex = this.productlistinorder.findIndex(po=>po.productscode == this.productshow.code)
+// if(pdinorderindex!='-1'){
+
+// this.productlistinorder[pdinorderindex].price=response.data.priceorder
+
+// }
+
+//          });
+//      }
 
 ,async addproductpricecode(pdcode,idexorder)   {
 

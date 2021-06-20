@@ -136,7 +136,7 @@
         ],
         dom: 'Blfrtip',
         buttons: [
-            'copy', 'csv', 'excel', 'print'
+            'copy','excel', 'print'
         ],
         "lengthMenu": [[10, 25, 50,100, -1], [10, 25, 50,100, "All"]]
     });

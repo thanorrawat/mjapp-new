@@ -359,7 +359,7 @@
 import Vue from 'vue';
 import vSelect from 'vue-select'
 import VueSweetalert2 from 'vue-sweetalert2';
- 
+import 'sweetalert2/dist/sweetalert2.min.css';
 Vue.use(VueSweetalert2);
 Vue.component('v-select', vSelect);
 import 'vue-select/dist/vue-select.css';
@@ -411,32 +411,31 @@ Vue.use(Buefy)
             productslist:[],
             cutomertype:1,
             changepricetime:1,
-      options: [],
-    selected:'',
-    selectedCustomer:'',
-    optionsCustomer:[],
-    pricetype:'',
-    nowpricename :'',
-    nowpricevalue :'',
-    memonewpricre:'',
-    memoremark:'',
-    alertstatus:[],
-    resonselected:'',
-    pricerangedateinput:'',
-memopriceList:[],
-
-                perPage:10,
-                total :0,
-                total2 :0,
-                memoviewdata:[],
-                memopriceListnoapprove:[],
-                memopriceListapprove:[],
-                userlist:[],
-userlistnewindex:[],
+            options: [],
+            selected:'',
+            selectedCustomer:'',
+            optionsCustomer:[],
+            pricetype:'',
+            nowpricename :'',
+            nowpricevalue :'',
+            memonewpricre:'',
+            memoremark:'',
+            alertstatus:[],
+            resonselected:'',
+            pricerangedateinput:'',
+            memopriceList:[],
+            perPage:10,
+            total :0,
+            total2 :0,
+            memoviewdata:[],
+            memopriceListnoapprove:[],
+            memopriceListapprove:[],
+            userlist:[],
+            userlistnewindex:[],
         }},
             methods: {
        customerData(){
-         axios.get(this.baseurl+'/api/customer_list')
+         axios.get(this.baseurl+'/api/customer_list-memo')
   .then((response)=>{
    this.customerlist = response.data;   
 
@@ -444,9 +443,9 @@ let i = 0;
 let len = this.customerlist.length;
 this.optionsCustomer = [];
 for (; i < len; i++) {
- this.optionsCustomer[i] = {};
-  this.optionsCustomer[i]['label'] = this.customerlist[i].customercode+' - '+ this.customerlist[i].name;
-  this.optionsCustomer[i]['code'] = this.customerlist[i].customercode;
+  this.optionsCustomer[i] = {};
+  this.optionsCustomer[i]['label'] = this.customerlist[i].cuscod+' - '+ this.customerlist[i].cusnam;
+  this.optionsCustomer[i]['code'] = this.customerlist[i].cuscod;
 
 }
 
@@ -597,22 +596,19 @@ this.memopriceListapprove[this.total2-1].rownumber = this.total2;
  })
  },
 viewmemo(id){
-           axios.post(this.baseurl+'/api/memoprice_view',{
-id : id
-           })
-  .then((response)=>{
-   this.memoviewdata = response.data;   
-let pdcode= this.memoviewdata.mmp_productcode;
-   this.memoviewdata.productdt = this.productslist.filter(a=>a.code==pdcode);
+    axios.post(this.baseurl+'/api/memoprice_view',{
+    id : id
+    })
+    .then((response)=>{
+      this.memoviewdata = response.data;   
+      let pdcode= this.memoviewdata.mmp_productcode;
+      this.memoviewdata.productdt = this.productslist.filter(a=>a.code==pdcode);
+      let cuscode= this.memoviewdata.mmp_customer;
+     // this.memoviewdata.customerdt = this.customerlist.filter(b=>b.customercode==cuscode);
+      let resonid= this.memoviewdata.mmp_reson;
+      this.memoviewdata.reson = this.reasons.filter(b=>b.value==resonid);
 
-   let cuscode= this.memoviewdata.mmp_customer;
-   this.memoviewdata.customerdt = this.customerlist.filter(b=>b.customercode==cuscode);
-
-
-   let resonid= this.memoviewdata.mmp_reson;
-   this.memoviewdata.reson = this.reasons.filter(b=>b.value==resonid);
-
-})
+    })
 
 },getuserlist(){
    axios.post(this.baseurl+'/api/user_list')

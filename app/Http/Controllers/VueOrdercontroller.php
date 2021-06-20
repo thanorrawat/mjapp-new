@@ -195,70 +195,57 @@ if(!empty($request->selectcustomer) && !empty($request->doctype)){
         $orderdt= MjOrderDetails::where('ordernumberfull', '=', $id)
         ->orwhere('bookingnumber', '=', $id)
         ->orderBy('id', 'desc')
-       ->first();
+        ->first();
 
 
-     if(!empty($orderdt->doctype)){
-        $orderid = $orderdt->id;
+        if(!empty($orderdt->doctype)){
+            $orderid = $orderdt->id;
+            if($orderdt->doctype==1){
+                $doctypename = "Order";
+            } else if($orderdt->doctype==2){
+                $doctypename = "ใบจอง";
+            }
+        }
 
-        
-        if($orderdt->doctype==1){
-            $doctypename = "Order";
-        } else if($orderdt->doctype==2){
-            $doctypename = "ใบจอง";
-                    }
-
-       }
-
-       if(!empty($orderdt->token)){
+        if(!empty($orderdt->token)){
         //lineNotifysend(1,'ทดสอบส่งแจ้งเตือน','https://www.mindphp.com/images/knowledge/Security/Alert.jpg');
-             return view('A_vue.order_confirm',['customers' => $orderdt->customer_id,'cartDetails'=>$orderdt
-             ,'orderid'=>$orderdt->id
-          ,'baseurl'=>url('/')
-           ,'orderdt'=> $orderdt
-             ]);
- 
-         }else{
+            return view('A_vue.order_confirm',['customers' => $orderdt->customer_id,'cartDetails'=>$orderdt
+                ,'orderid'=>$orderdt->id
+                ,'baseurl'=>url('/')
+                ,'orderdt'=> $orderdt
+            ]);
+        }else{
             // return view('App_sale.order',['customers' => $customers,'cartDetails'=>$cartDetails,'orderid'=>$orderid]);
 
             $customerdt = customerModel::on('report')
             ->where('indexrow', $orderdt->customer_id)
             ->first();
             $customercode  = $customerdt->cuscod;
-if(!empty($customercode)){
-    $salehistorycount = SaleHistory::where('customer_code',$customercode)
-    ->count();
-    if($salehistorycount>0){
-        $searchtype = 1 ; ///หน้า search แสดงสินค้าตามประวัติขาย
-    }else{
-        $searchtype = 2 ; ///หน้า search แสดงสินค้าทั้งหมด  
-    }
+            if(!empty($customercode)){
+                $salehistorycount = SaleHistory::where('customer_code',$customercode)
+                ->count();
+                if($salehistorycount>0){
+                    $searchtype = 1 ; ///หน้า search แสดงสินค้าตามประวัติขาย
+                }else{
+                    $searchtype = 2 ; ///หน้า search แสดงสินค้าทั้งหมด  
+                }
 
-}else{
-$searchtype = 2 ; ///หน้า search แสดงสินค้าทั้งหมด
-}
-
-
-
-// if(url('/')=='http://localhost/mj-app_onweb'){
-
-//     return url('/');
-// }
+            }else{
+            $searchtype = 2 ; ///หน้า search แสดงสินค้าทั้งหมด
+            }
 
 
+            return view('A_vue.order_create')
+            ->with('pagetype', 'edit')
+            ->with('baseurl', url('/'))
+            ->with('orderdt', $orderdt)
+            ->with('doctypename', $doctypename)
+            ->with('docnumber', $docnumber)
+            ->with('orderid', $orderid)
+            ->with('searchtype', $searchtype)
+            ;
 
-        return view('A_vue.order_create')
-        ->with('pagetype', 'edit')
-        ->with('baseurl', url('/'))
-        ->with('orderdt', $orderdt)
-        ->with('doctypename', $doctypename)
-        ->with('docnumber', $docnumber)
-        ->with('orderid', $orderid)
-        ->with('searchtype', $searchtype)
-  
-      ;
-
-         }
+        }
     }
 
     /**

@@ -58,6 +58,7 @@ Route::get('products_list','Api\ProductsController@index');
 
 //Customer
 Route::get('customer_list','express\exCustomerController@customerData');
+Route::get('customer_list-memo','express\exCustomerController@customerDataMemo');
 
 //checkmemoprice
 Route::post('meoprice_checkprice','Mj\MemoPriceController@memocheckprice');
