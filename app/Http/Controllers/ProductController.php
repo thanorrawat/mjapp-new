@@ -25,6 +25,7 @@ use App\ProductVariant;
 use Yajra\Datatables\Datatables;
 use App\Models\MjStoreProductsTracking;
 use App\express\productModel;
+use App\express\istab;
 
 class ProductController extends Controller
 {
@@ -37,7 +38,16 @@ class ProductController extends Controller
                 $all_permission[] = $permission->name;
             if(empty($all_permission))
                 $all_permission[] = 'dummy text';
-            return view('App_product.index', compact('all_permission'));
+
+            // stock สินค้า
+            $stock_name = istab::on('report')
+            ->where('tabtyp','21')
+            ->where('typcod','01')
+            ->first();
+            $stock_sale_name = $stock_name->typdes;
+            $stock_sale_name_en = $stock_name->typdes2;
+
+            return view('App_product.index', compact(['all_permission','stock_sale_name','stock_sale_name_en']));
         }
         else
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
@@ -52,7 +62,13 @@ class ProductController extends Controller
         if($_GET['csrf']==csrf_token()) {
 
             $products = productModel::on('report')
-            ->selectRaw('stkcod, stkdes, stkdes2, stkgrp, (SELECT typdes FROM mj_istab  WHERE tabtyp="22" AND  typcod = stkgrp ) AS stcatgory, (SELECT typdes2 FROM mj_istab  WHERE tabtyp="22" AND  typcod = stkgrp ) AS stcatgory2 ')
+            ->selectRaw('stkcod, stkdes, stkdes2, stkgrp
+            , (SELECT typdes FROM mj_istab  WHERE tabtyp="22" AND  typcod = stkgrp ) AS stcatgory
+            , (SELECT typdes2 FROM mj_istab  WHERE tabtyp="22" AND  typcod = stkgrp ) AS stcatgory2
+            , (SELECT typdes FROM mj_istab  WHERE tabtyp = "20" AND typcod = mj_stmas.qucod ) AS unitname
+            , (SELECT typdes2 FROM mj_istab  WHERE tabtyp = "20" AND typcod = mj_stmas.qucod ) AS unitname_en
+            , (SELECT locbal FROM mj_stloc  WHERE loccod = "01" AND stkcod = mj_stmas.stkcod ) AS stock
+            ')
             ->where('stktyp',0)
             ->get();
 
@@ -114,9 +130,38 @@ class ProductController extends Controller
                 
             // })
 
+            // ->editColumn('unitname', function ($products) {
+
+            //     $return = $products->unitname;
+            //     if($products->unitname_en){
+            //         $return .= ' ('.$products->unitname_en.')';
+            //     }
+            //     return $return;
+            // })
+
+            ->editColumn('stkdes2', function ($products) {
+
+
+                if($products->stkdes2){
+                    return $products->stkdes2;
+                } else {
+                    return $products->stkdes;
+                }
+            })
+
+
+            ->addColumn('stock_new', function ($products) {
+                if(!empty($products->stock)){
+                    return number_format($products->stock,2);
+                } else {
+                    return '0.00';
+                }
+            })
+
+
             ->escapeColumns([]) /// ทำให้แสดง html ในตาราง
             ->make();
-      }
+        }
     }
     
     

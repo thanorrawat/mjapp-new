@@ -78,7 +78,7 @@
 
 {{-- products --}}
 @endif
-<?php if(Auth::user()->role_id==1  || Auth::user()->role_id==2 || Auth::user()->role_id==5 || Auth::user()->role_id==7   ){  ?>
+<?php // if(Auth::user()->role_id==1  || Auth::user()->role_id==2 || Auth::user()->role_id==5 || Auth::user()->role_id==7   ){  ?>
 
     <li  class="nav-item has-treeview   @if(url()->current() == url('/category') || url()->current() == url('/products') || url()->current() == url('/products/create')) menu-open @endif" >
 
@@ -117,7 +117,9 @@
 
                   
 {{-- //products --}}
-        <?php } if(Auth::user()->role_id==1){  ?>
+        <?php  //}
+        
+        if(Auth::user()->role_id==1){  ?>
 
 {{-- Sales --}}
 {{-- 

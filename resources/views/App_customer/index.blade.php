@@ -32,11 +32,12 @@
     <div class="table-responsive">
         <table id="product-data-table" class="table" style="width: 100%">
             <thead>
-                <th>{{trans('file.Code')}}</th>
+                <th style="width:150px">{{trans('file.Code')}}</th>
                 <th>{{trans('file.name')}}</th>
+                <th>{{trans('file.Customer Price Group')}}</th>
                 <th>{{trans('file.Address')}}</th>
+                <th>{{trans('file.contact')}}</th>
                 <th>{{trans('file.Payment')}}</th>
-                <th>{{trans('file.Phone Number')}}</th>
                 <th>{{trans('file.Remark')}}</th>
             </thead>
         </table>
@@ -120,6 +121,7 @@
         columns: [
             { data: 'cuscod', name: 'cuscod' },
             { data: 'cusnam_new', name: 'cusnam' },
+            { data: 'customer_price', name: 'customer_price' },
             { data: 'addr01', name: 'addr01' },
             { data: 'telnum', name: 'telnum' },
             { data: 'paycond', name: 'paycond' },

@@ -31,6 +31,23 @@ class exCustomerController extends Controller
                 }
 
             })
+
+            ->addColumn('customer_price', function ($list) {
+                if($list->tabpr){
+                    if($list->tabpr==1){
+                        return 'Standard C'; 
+                    } else if($list->tabpr==3){
+                        return 'Standard A'; 
+                    } else if($list->tabpr==4){
+                        return 'Standard B'; 
+                    }
+
+                } else{
+                    return ''; 
+                }
+                
+            })
+
             ->escapeColumns([]) /// ทำให้แสดง html ในตาราง
             ->make();
     }

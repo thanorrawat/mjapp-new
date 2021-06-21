@@ -1,29 +1,24 @@
 <template>
     <div class=" content is-small"  >
-
-        <order-selectcustomer :baseurl="baseurl" :orderid="orderid" :orderdtall="orderdtall" ></order-selectcustomer>
-
-<div v-if="orderdt.order_status === 1 || orderdt.order_status === 2 " class="row">
-<div class="col-md-4">
-<div class="card">
-              <div class="card-header border-transparent">
-          
-    <h4 style="display:inline" >เลือกสินค้า</h4>
-                <div class="card-tools">
-                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fas fa-minus"></i>
-                  </button>
+      <order-selectcustomer :baseurl="baseurl" :orderid="orderid" :orderdtall="orderdtall" ></order-selectcustomer>
+      <div v-if="orderdt.order_status === 1 || orderdt.order_status === 2 " class="row">
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-header border-transparent">
+              <h4 style="display:inline" >เลือกสินค้า</h4>
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                  <i class="fas fa-minus"></i>
+                </button>
                   <!-- <button type="button" class="btn btn-tool" data-card-widget="remove">
                     <i class="fas fa-times"></i>
                   </button> -->
-                </div>
               </div>
+            </div>
               <!-- /.card-header -->
-              <div class="card-body ">
-                  
-                  <div class="row"><div class="col-md-6 ">
-
-                  <div class="mb-1" v-if="historylist_code.length>0">
+            <div class="card-body ">
+              <div class="row"><div class="col-md-6 ">
+                <div class="mb-1" v-if="historylist_code.length>0">
                   <div  class="icheck-warning d-inline">
                   <input type="radio" id="listsearchtype_1" name="listsearchtype" value="1" v-model="showsearchtype"  required>
                   <label for="listsearchtype_1">จากประวัติการขาย</label></div>
@@ -70,140 +65,124 @@
               </ul>
             </div>
                 <!-- /.table-responsive -->
-                   <div v-if="productsall>0"  class="text-center pagingrow ">
- <div class="">จำนวนทั้งหมด {{ productsall  | numeral('0,0') }} รายการ  / {{ allpage  | numeral('0,0') }} หน้า</div>
-         
-          <div class=""><v-pagination v-model="currentPage" :page-count="totalPages" :classes="bootstrapPaginationClasses"></v-pagination></div>
-      </div>
+              <div v-if="productsall>0"  class="text-center pagingrow ">
+                <div class="">จำนวนทั้งหมด {{ productsall  | numeral('0,0') }} รายการ  / {{ allpage  | numeral('0,0') }} หน้า</div>
+                <div class=""><v-pagination v-model="currentPage" :page-count="totalPages" :classes="bootstrapPaginationClasses"></v-pagination></div>
               </div>
+            </div>
                     <!-- /.card-footer -->
             </div>
 
 
-</div>
-<div class="col-md-3 ">
-  <div v-if="productshow[0] || productshow.stkcod " class="card">
-    <div class="card-body">
-      <h4>รายละเอียดสินค้า</h4>
-      <div class="row">
-        <div class="col-md-5">
-          <img v-if="productshow.image" :src="baseurl+'/public/images/product/'+productshow.image"  class="img-thumbnail" :alt="productshow.stkdes">
-          <img v-else :src="baseurl+'/public/images/product/zummXD2dvAtI.png'"  class="img-thumbnail" :alt="productshow.stkdes">
         </div>
-        <div class="col-md-6">
-          <strong>{{  productshow.stkdes }} </strong>
-          <div> <strong>Code : </strong>  {{  productshow.stkcod }}  </div>
-          <div> <strong>หมวดสินค้า : </strong>  {{categorynamelist[productshow.stkgrp] }} </div>
-          <p id="productsdetails">
-            <!-- <strong>Product Details : </strong> -->
-            {{  productshow['product_details'] }}
-          </p>
-          <strong>ประวัติการขาย : </strong> {{ historylist_sumsale[productshow.stkcod]  | numeral('0,0')}} ชิ้น
-        </div>
-      </div>
+        <div class="col-md-3 ">
+          <div v-if="productshow[0] || productshow.stkcod" class="card">
+            <div class="card-body">
+              <h4>รายละเอียดสินค้า</h4>
+              <div class="row">
+                <div class="col-md-5">
+                  <img v-if="productshow.image" :src="baseurl+'/public/images/product/'+productshow.image"  class="img-thumbnail" :alt="productshow.stkdes">
+                  <img v-else :src="baseurl+'/public/images/product/zummXD2dvAtI.png'"  class="img-thumbnail" :alt="productshow.stkdes">
+                </div>
+                <div class="col-md-6">
+                  <strong>{{  productshow.stkdes }} </strong>
+                  <div> <strong>Code : </strong>  {{  productshow.stkcod }}  </div>
+                  <div> <strong>หมวดสินค้า : </strong>  {{categorynamelist[productshow.stkgrp] }} </div>
+                  <p id="productsdetails">
+                    <!-- <strong>Product Details : </strong> -->
+                    {{  productshow['product_details'] }}
+                  </p>
+                  <strong>ประวัติการขาย : </strong> {{ historylist_sumsale[productshow.stkcod]  | numeral('0,0')}} ชิ้น
+                </div>
+              </div>
+              <!-- {{  productshow }}    -->
+              <div class="row mt-1">
+                <div class="col border-right">
+                  <div class="description-block">
+                    <h5 class="description-header">
+                        {{  stocklist.sumstock1 | numeral('0,0') }}
+                    </h5>
+                    <span class="description-text">Stock เพื่อขาย</span>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col border-right">
+                  <div class="description-block">
+                    <h5 class="description-header">{{  stocklist.sumstock2 | numeral('0,0') }}</h5>
+                    <span class="description-text">Order</span>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col">
+                  <div class="description-block">
+                    <h5 class="description-header">{{  stocklist.sumstock3 | numeral('0,0') }}</h5>
+                    <span class="description-text">จอง</span>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+              <div class="row mt-1 ">
+              <h2  class="text-center"> 
+                ราคาขาย : {{  productprice.priceorder  }}
+              </h2>
+              <div class="col-12" >
+                <div style="border: 1px solid blue;padding:5px">
+                  <strong>ราคาสำหรับ</strong>
+                    <span v-if="productprice.cuscode"> เฉพาะลูกค้ารหัส {{ productprice.cuscode }}</span>
+                    <span v-if="productprice.typeprice && productprice.typeprice!='SPC' "> Standard {{ productprice.typeprice }}</span>
+                    <span v-if="productprice.pricetime==3" > ช่วงเวลา :  {{ productprice.daterange }}</span>
+                    <span v-if="productprice.once_time==1"> เฉพาะครั้งนี้</span>
+                </div>
+              </div>
+            </div>
+          <div class="row mt-2">
 
-      <!-- {{  productshow }}    -->
-      <div class="row mt-1">
-        <div class="col border-right">
-          <div class="description-block">
-            <h5 class="description-header">
-                {{  stocklist.sumstock1 | numeral('0,0') }}
-            </h5>
-            <span class="description-text">Stock เพื่อขาย</span>
-          </div>
-          <!-- /.description-block -->
-        </div>
-        <!-- /.col -->
-        <div class="col border-right">
-          <div class="description-block">
-            <h5 class="description-header">{{  stocklist.sumstock2 | numeral('0,0') }}</h5>
-            <span class="description-text">Order</span>
-          </div>
-          <!-- /.description-block -->
-        </div>
-        <!-- /.col -->
-        <div class="col">
-          <div class="description-block">
-            <h5 class="description-header">{{  stocklist.sumstock3 | numeral('0,0') }}</h5>
-            <span class="description-text">จอง</span>
-          </div>
-          <!-- /.description-block -->
-        </div>
-        <!-- /.col -->
-      </div>
-      <!-- /.row -->
-      <div class="row mt-1 ">
-      <h2  class="text-center"> 
-        ราคาขาย : {{  productprice.priceorder  }}
-      </h2>
-      <div class="col-12" >
-        <div style="border: 1px solid blue;padding:5px">
-          <strong>ราคาสำหรับ</strong>
-            <span v-if="productprice.cuscode"> เฉพาะลูกค้ารหัส {{ productprice.cuscode }}</span>
-            <span v-if="productprice.typeprice && productprice.typeprice!='SPC' "> Standard {{ productprice.typeprice }}</span>
-            <span v-if="productprice.pricetime==3" > ช่วงเวลา :  {{ productprice.daterange }}</span>
-            <span v-if="productprice.once_time==1"> เฉพาะครั้งนี้</span>
-        </div>
-      </div>
-    </div>
-  <div class="row mt-2">
-
-  <div class="col-2 text-right"> จำนวน</div>
-  <div class="col-4"><input type="number" min="1" class="form-control text-right" v-model="addqty"></div>
-  <div class="col">   <button @click="addtodorder(productshow.indexrow)" class="btn btn-sm btn-primary btn-flat">
-               
-                  <i class="far fa-plus-square mr-2"></i>
+          <div class="col-2 text-right"> จำนวน</div>
+          <div class="col-4"><input type="number" min="1" class="form-control text-right" v-model="addqty"></div>
+          <div class="col">   
+            <button @click="addtodorder(productshow.indexrow)" class="btn btn-sm btn-primary btn-flat">
+              <i class="far fa-plus-square mr-2"></i>
               {{ buttonlabeladd }}
-                </button>   </div>
-
-
-              
-<ul v-if="diffstockadd<0" class="nav nav-pills flex-column">
-                  <li class="nav-item active p-1 m-1" style="border:1px solid red;">
-           
-         <i class="fas fa-exclamation-triangle text-danger"></i> จำนวนที่ขาด : {{ diffstockaddnumber | numeral('0,0')  }} ชิ้น
-               
-                
-                  </li>
-          
-            
-     
-                </ul></div>
-
+            </button>   
+          </div>
+          <ul v-if="diffstockadd<0" class="nav nav-pills flex-column">
+            <li class="nav-item active p-1 m-1" style="border:1px solid red;">
+              <i class="fas fa-exclamation-triangle text-danger"></i> จำนวนที่ขาด : {{ diffstockaddnumber | numeral('0,0')  }} ชิ้น
+            </li>
+          </ul>
+          </div>
 </div>
 </div>
 
 <!-- Relate -->
 <div class="card">
-<div class="card-body">
-<h4>สินค้าใกล้เคียง</h4>
-Keyword :  {{relatekey }}
-                <div id="relateproducts"  >
-
-<div class="row">
-                  <div class=" col-sm-6 mb-2" v-for="(relate_product,index) in relate_products" @click="showProductrelate(index)">
-                    <div class="item">
-                      <img v-if="relate_product.image" :src="baseurl+'/public/images/product/'+relate_product.image"  class="img-size-50 float-left mr-2" >
-
-                      <img v-else :src="baseurl+'/public/images/product/zummXD2dvAtI.png'"  class="img-size-50 float-left mr-2" >
-                    
-                    <div class="product-info p-1">
-               <text-highlight :queries="relate_queries">{{ relate_product.stkcod}} - {{ relate_product.stkdes}}</text-highlight>
-                        <span class="badge badge-warning "><strong>STOCK : </strong> {{ relate_product.qty  | numeral('0,0')}}</span> 
-                        <span v-if="historylist_sumsale[relate_product.stkcod]>0" class="badge badge-danger "> <strong>Sale : </strong> {{ historylist_sumsale[relate_product.stkcod]  | numeral('0,0')}}</span>
-
-                        <div class="p-1 bg-light text-dark">
-                    <strong>{{categorynamelist[relate_product.category_code] }} </strong>
-                        </div>
-                    </div>
-
-                    </div>
-                  </div>
-                  <!-- /.item -->             
-                </div>
-                </div>
-
-</div>
+  <div class="card-body">
+    <h4>สินค้าใกล้เคียง</h4>
+    Keyword :  {{relatekey }}
+    <div id="relateproducts"  >
+      <div class="row">
+        <div class=" col-sm-6 mb-2" v-for="(relate_product,index) in relate_products" @click="showProductrelate(index)">
+          <div class="item">
+            <img v-if="relate_product.image" :src="baseurl+'/public/images/product/'+relate_product.image"  class="img-size-50 float-left mr-2" >
+            <img v-else :src="baseurl+'/public/images/product/zummXD2dvAtI.png'"  class="img-size-50 float-left mr-2" >
+            <div class="product-info p-1">
+              <text-highlight :queries="relate_queries">{{ relate_product.stkcod}} - {{ relate_product.stkdes}}</text-highlight>
+              <span class="badge badge-warning "><strong>STOCK : </strong> {{ relate_product.qty  | numeral('0,0')}}</span> 
+              <span v-if="historylist_sumsale[relate_product.stkcod]>0" class="badge badge-danger "> <strong>Sale : </strong> {{ historylist_sumsale[relate_product.stkcod]  | numeral('0,0')}}</span>
+              <div class="p-1 bg-light text-dark">
+                <strong>{{categorynamelist[relate_product.category_code] }} </strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      <!-- /.item -->             
+      </div>
+    </div>
+  </div>
 </div>
 <!-- Relate -->
 
@@ -212,50 +191,46 @@ Keyword :  {{relatekey }}
 
 <!-- รายการที่เลือกแล้ว -->
 <div class="col-md-5">
-           <div class="card">
-<div class="card-body">
-
-
-     <h4>รายการที่เลือก</h4>
-
-
-<table id="orderlist" class="table table-bordered">
-<thead><tr>
-<th>ที่</th>
-<th>Image</th>
-<th>รายละเอียดสินค้า</th>
-<th>ราคา</th>
-<th>จำนวน</th>
-<th>รวม</th>
-<th>#</th>
-</tr></thead>
-
-    <tbody>
-      <tr v-for="(productorder,index) in productlistinorder" >
-        <td>
-          {{(index+1)}}
-        </td>
-        <td  >
-          <img v-if="productorder.image" :src="baseurl+'/public/images/product/'+productorder.image"  class="img-size-50"  :alt="productorder.name">
-          <img v-else :src="baseurl+'/public/images/product/zummXD2dvAtI.png'"  class="img-size-50"  :alt="productorder.name">
-        </td>
-        <td @click="showProductinorderdt(index)">   <strong >{{productorder.productscode}}</strong>
-          <br>
-          {{productorder.name}}
-        </td>
-        <td   class="text-right">
-          {{productorder.orderprice| numeral('0,0') }}
-        </td>
-        <td   class="text-right">{{productorder.orderqty | numeral('0,0') }}
-          <i style="font-size:90%" data-toggle="modal" data-target="#editqty" class="fas fa-pencil-alt" @click="editqtyorder(index)"></i>
-        </td>
-        <td   class="text-right">
-          {{productorder.amount| numeral('0,0') }} 
-        </td>
-        <td @mouseover="showProductinorderdt(index)" >
-          <i  class="fas fa-backspace  text-danger" @click="removepd(index)"></i>
-        </td>
-      </tr>
+  <div class="card">
+    <div class="card-body">
+      <h4>รายการที่เลือก</h4>
+      <table id="orderlist" class="table table-bordered">
+      <thead>
+        <th>ที่</th>
+        <th>Image</th>
+        <th>รายละเอียดสินค้า</th>
+        <th>ราคา</th>
+        <th>จำนวน</th>
+        <th>รวม</th>
+        <th>#</th>
+      </thead>
+      <tbody>
+        <tr v-for="(productorder,index) in productlistinorder" :key="index" >
+          <td>
+            {{(index+1)}}
+          </td>
+          <td  >
+            <img v-if="productorder.image" :src="baseurl+'/public/images/product/'+productorder.image"  class="img-size-50"  :alt="productorder.name">
+            <img v-else :src="baseurl+'/public/images/product/zummXD2dvAtI.png'"  class="img-size-50"  :alt="productorder.name">
+          </td>
+          <td @click="showProductinorderdt(index)"  @keypress="showProductinorderdt(index)">   
+            <strong >{{productorder.productscode}}</strong>
+            <br>
+            {{productorder.name}}
+          </td>
+          <td   class="text-right">
+            {{productorder.orderprice| numeral('0,0') }}
+          </td>
+          <td   class="text-right">{{productorder.orderqty | numeral('0,0') }}
+            <i style="font-size:90%" data-toggle="modal" data-target="#editqty" class="fas fa-pencil-alt" @click="editqtyorder(index)"></i>
+          </td>
+          <td   class="text-right">
+            {{productorder.amount| numeral('0,0') }} 
+          </td>
+          <td @mouseover="showProductinorderdt(index)" >
+            <i  class="fas fa-backspace  text-danger" @click="removepd(index)"></i>
+          </td>
+        </tr>
       <tr>
   <td></td>
   <td></td>
@@ -350,7 +325,7 @@ Keyword :  {{relatekey }}
   import 'vue-date-pick/dist/vueDatePick.css';
   import VueSweetalert2 from 'vue-sweetalert2';
   import vueNumeralFilterInstaller from 'vue-numeral-filter';
- 
+
   Vue.use(vueNumeralFilterInstaller, { locale: 'en-gb' })
   Vue.use(VueSweetalert2);
   Vue.component('text-highlight', TextHighlight);
@@ -428,231 +403,190 @@ Keyword :  {{relatekey }}
 
     }
 },
-    watch: {
-// searchtext: function() { //ถ้าค่า searchtext เปลี่ยน
-// this.currentPage=1;
-//  this.searchget() //เรียกใช้ฟังก์ชั่น
+  watch: {
+  // searchtext: function() { //ถ้าค่า searchtext เปลี่ยน
+  // this.currentPage=1;
+  //  this.searchget() //เรียกใช้ฟังก์ชั่น
 
-//      },
-currentPage: function() { //ถ้าค่า currentPage เปลี่ยน
- this.searchget() //เรียกใช้ฟังก์ชั่น
-
- 
- 
-     }
-
-,doctypecheck: function() { //ถ้าค่า searchtext เปลี่ยน
-
-   if(this.doctypecheck===1){
-    
-  this.datelabel1 = 'วันที่ทำรายการ';
-  this.datelabel2 = 'กำหนดส่ง';
- this.buttonlabel ='สร้างใบOrder';
- this.buttonlabeladd ='เพิ่มในOrder';
-
- }else if(this.doctypecheck===2){
-
-   this.datelabel1 = 'วันที่จอง';
-this.datelabel2 = 'วันที่สิ้นสุดการจอง';
- this.buttonlabel ='สร้างใบจอง';
- this.buttonlabeladd ='เพิ่มในใบจอง';
-
-
+  //      },
+    currentPage: function() { //ถ้าค่า currentPage เปลี่ยน
+      this.searchget() //เรียกใช้ฟังก์ชั่น
     }
- 
-     },
+    ,doctypecheck: function() { //ถ้าค่า searchtext เปลี่ยน
+      if(this.doctypecheck===1){
+        this.datelabel1 = 'วันที่ทำรายการ';
+        this.datelabel2 = 'กำหนดส่ง';
+        this.buttonlabel ='สร้างใบOrder';
+        this.buttonlabeladd ='เพิ่มในOrder';
 
-     customercode: function() {
-this.searchget();
-this.currentPage=1;
-     },
-     showsearchtype : function() {
-this.searchget();
-this.currentPage=1;
-     }
-,productshow : function() {
-this.checkstock();
-this.relateproduct();
-this.diffstockadd = '';
-     }
-     ,productlistinorder: function(){
+      }else if(this.doctypecheck===2){
 
+        this.datelabel1 = 'วันที่จอง';
+        this.datelabel2 = 'วันที่สิ้นสุดการจอง';
+        this.buttonlabel ='สร้างใบจอง';
+        this.buttonlabeladd ='เพิ่มในใบจอง';
+      }
+    },
+    customercode: function() {
+      this.searchget();
+      this.currentPage=1;
+    },
+    showsearchtype : function() {
+      this.searchget();
+      this.currentPage=1;
+    },
+    productshow : function() {
+      this.checkstock();
+      this.relateproduct();
+      this.diffstockadd = '';
+    },
+    productlistinorder: function(){
     let sum = 0;
       for(let i = 0; i < this.productlistinorder.length; i++){
         sum += (parseFloat(this.productlistinorder[i].orderqty));
       }
-//console.log(sum);
-     this.totalorderqty = sum;
- 
-     },
-     addqty: function() {
-this.diffstockadd = this.stocklist.sumstock1 - this.addqty;
-if(this.diffstockadd<0){
-this.diffstockaddnumber = -(this.diffstockadd);
-}     }
-,editqtynew: function() {
-
-let index =  this.editqtyorderdetail.indexorder
-let oldqty =  this.productlistinorder[index].orderqty
-  
-
-this.newtracking_qty=this.editqtynew -oldqty
-}
-     
-     },
-
-
-
-
-///////////////////////
-     methods: {
-     searchget: function() {  //ฟังก์ชั่น
-  axios.get(this.baseurl+'/api/orderproducts-search?searchtext='+this.searchtext+'&page='+this.currentPage+'&customer='+this.customercode+'&showsearchtype='+this.showsearchtype)
-  .then((response)=>{
-              this.products=response.data.products; 
-              this.show=response.data.search; 
-              this.productscount = response.data.productscount; 
-              this.productsall = response.data.productsall; 
-              this.allpage = response.data.allpage; 
-              this.queries = response.data.searchhilight; 
-              this.totalPages= response.data.allpage; 
-              this.offset= response.data.offset; 
-              // this.groups= response.data.grouped; 
-              // this.checkedCategory= response.data.categoryselect; 
-              this.histories= response.data.salehistory; 
-              this.historylist_sumsale= response.data.historylist_sumsale; 
-              this.historylist_code= response.data.historylist_code; 
-              if(!this.productshow){
-this.showProductDt(0)   
-              }
-
-     
- })
- 
-     },     relateproduct: function() {  //ฟังก์ชั่น
-          axios.get(this.baseurl+'/api/orderproducts-search?searchtext='+this.relatekey+'&page=1&customer='+this.customercode+'&showsearchtype=2&relate='+this.productshow.stkcod)
-          .then((response)=>{
-              this.relate_products=response.data.products; 
-              this.relate_queries = response.data.searchhilight; 
-
-     
- })
- 
-     }
-
-
-
-     , orderdtget: function() {  //ฟังก์ชั่น
-  axios.get(this.baseurl+'/api/orderdt/'+this.orderid)
-  .then((response)=>{
-    this.orderdtall=response.data 
-    this.orderdt=response.data.orderdt 
-    this.doctypename=response.data.doctypename 
-    this.customerdt=response.data.customer
-    this.doctypecheck=response.data.orderdt['doctype'] 
-    this.selectdate = response.data.orderdt['deliverydate'] 
-    this.customercode = response.data.customer.cuscod 
-              
-                            
- })
- 
-     },
-     
-showProductDt(index){
-this.productshow = this.products[index]
-let productname = this.products[index].stkdes
-this.changrelatekey(productname);
-
- 
-     },
-changrelatekey(productname){
-this.relatekey1 = productname.substring (0,7); //lo w
-this.relatekey1arr = this.relatekey1.split(" ");
-this.relatekey = this.relatekey1arr[0]
-this.relatekey2arr = productname.split("สี");
-if(this.relatekey2arr[1]!==null){
-  this.relatekey2 =  this.relatekey2arr[1].substring (0,5).split(" ");
-this.relatekey =this.relatekey+' '+this.relatekey2[0]
-}
-
-}, showProductrelate(index){
-this.productshow = this.relate_products[index]
-
-     }
-     
-     ,
-     showProductinorderdt(index){
-      this.productshow = this.productlistinorder[index]
-
-      this.productshow['name']  =this.productlistinorder[index].stkdes;
-      this.productshow['code'] = this.productlistinorder[index].stkcod;
-      this.productshow['category_code']=this.productlistinorder[index].stkgrp;
-      this.productshow['product_details']=this.productlistinorder[index].stkdes;
-      this.productshow['id']=this.productlistinorder[index].indexrow;
-      let productname = this.productlistinorder[index].stkdes;
+    //console.log(sum);
+    this.totalorderqty = sum;
+    },
+    addqty: function() {
+      this.diffstockadd = this.stocklist.sumstock1 - this.addqty;
+      if(this.diffstockadd<0){
+        this.diffstockaddnumber = -(this.diffstockadd);
+      }     
+    },
+    editqtynew: function() {
+      let index =  this.editqtyorderdetail.indexorder
+      let oldqty =  this.productlistinorder[index].orderqty
+      this.newtracking_qty=this.editqtynew -oldqty
+    }
+  },
+  methods: {
+    searchget: function() {  //ฟังก์ชั่น
+      axios.get(this.baseurl+'/api/orderproducts-search?searchtext='+this.searchtext+'&page='+this.currentPage+'&customer='+this.customercode+'&showsearchtype='+this.showsearchtype)
+      .then((response)=>{
+        this.products=response.data.products; 
+        this.show=response.data.search; 
+        this.productscount = response.data.productscount; 
+        this.productsall = response.data.productsall; 
+        this.allpage = response.data.allpage; 
+        this.queries = response.data.searchhilight; 
+        this.totalPages= response.data.allpage; 
+        this.offset= response.data.offset; 
+        // this.groups= response.data.grouped; 
+        // this.checkedCategory= response.data.categoryselect; 
+        this.histories= response.data.salehistory; 
+        this.historylist_sumsale= response.data.historylist_sumsale; 
+        this.historylist_code= response.data.historylist_code; 
+        if(!this.productshow){
+          this.showProductDt(0)   
+        }
+      })
+    },     
+     relateproduct: function() {  //ฟังก์ชั่น
+      axios.get(this.baseurl+'/api/orderproducts-search?searchtext='+this.relatekey+'&page=1&customer='+this.customercode+'&showsearchtype=2&relate='+this.productshow.stkcod)
+      .then((response)=>{
+          this.relate_products=response.data.products; 
+          this.relate_queries = response.data.searchhilight; 
+      })
+    }, 
+    orderdtget: function() {  //ฟังก์ชั่น
+      axios.get(this.baseurl+'/api/orderdt/'+this.orderid)
+      .then((response)=>{
+        this.orderdtall=response.data 
+        this.orderdt=response.data.orderdt 
+        this.doctypename=response.data.doctypename 
+        this.customerdt=response.data.customer
+        this.doctypecheck=response.data.orderdt['doctype'] 
+        this.selectdate = response.data.orderdt['deliverydate'] 
+        this.customercode = response.data.customer.cuscod 
+      })
+    },
+    showProductDt(index){
+      this.productshow = this.products[index]
+      let productname = this.products[index].stkdes
       this.changrelatekey(productname);
-     },
-     checkstock: function() {  //ฟังก์ชั่น
-
-      axios.get(this.baseurl+'/api/checkstock/'+this.productshow.stkcod)
+    },
+    changrelatekey(productname){
+      this.relatekey1 = productname.substring (0,7); //lo w
+      this.relatekey1arr = this.relatekey1.split(" ");
+      this.relatekey = this.relatekey1arr[0]
+      this.relatekey2arr = productname.split("สี");
+      if(this.relatekey2arr[1]!==null){
+        this.relatekey2 =  this.relatekey2arr[1].substring (0,5).split(" ");
+        this.relatekey =this.relatekey+' '+this.relatekey2[0]
+      }
+    }, 
+    showProductrelate(index){
+      this.productshow = this.relate_products[index]
+    },
+    showProductinorderdt(index){
+      this.productshow = this.productlistinorder[index]
+      this.productshow['name']  =this.productlistinorder[index].name;
+      this.productshow['stkcod'] = this.productlistinorder[index].productscode;
+      this.productshow['category_code']=this.productlistinorder[index].category_code;
+      this.productshow['product_details']=this.productlistinorder[index].product_details;
+      this.productshow['id']=this.productlistinorder[index].indexrow;
+      let productname = this.productlistinorder[index].name;
+      this.changrelatekey(productname);
+    },
+    checkstock: function() {  //ฟังก์ชั่น
+      axios.get(this.baseurl+'/api/checkstock/'+this.productshow.productscode)
       .then((response)=>{
         this.stocklist=response.data.stocklist;
-    })
-    this.checkthisprice(); 
-    }
-,
- categoryname : function() {  //ฟังก์ชั่น
-  axios.get(this.baseurl+'/api/categorynamelist')
-  .then((response)=>{
-    this.categorynamelist=response.data; 
- })
- },
-  addtodorder(productid) {  //ฟังก์ชั่นเพิ่มสินค้า
-    if(this.addqty && this.userid && this.orderid  && productid){
-
-        axios.post(this.baseurl+'/api/addproducttoorder',{
-          productid : productid,
-          orderid :this.orderid,
-          addqty :this.addqty,
-          price :this.productprice.priceorder,
-          productscode : this.productshow.stkcod,
-          doctype : this.orderdt.doctype,
-          orderdetails : this.orderdt,
-          stocknow:this.stocklist.sumstock1,
-          userfullname:this.userfullname,
-          userid:this.userid,
-          memonumber:this.productprice.memonumber,
-          once_time:this.productprice.once_time,
-        }
-      )
+      })
+      this.checkthisprice(); 
+    },
+    categoryname : function() {  //ฟังก์ชั่น
+      axios.get(this.baseurl+'/api/categorynamelist')
       .then((response)=>{
-        this.alertstatus=response.data.alertstatus; 
-        this.productlistinorder=response.data.productlistinorder; 
-      
+        this.categorynamelist=response.data; 
+      })
+    },
+    addtodorder(productid) {  //ฟังก์ชั่นเพิ่มสินค้า
+      if(this.addqty && this.userid && this.orderid  && productid){
+        axios.post(this.baseurl+'/api/addproducttoorder',{
+            productid : productid,
+            orderid :this.orderid,
+            addqty :this.addqty,
+            price :this.productprice.priceorder,
+            productscode : this.productshow.stkcod,
+            doctype : this.orderdt.doctype,
+            orderdetails : this.orderdt,
+            stocknow:this.stocklist.sumstock1,
+            userfullname:this.userfullname,
+            userid:this.userid,
+            memonumber:this.productprice.memonumber,
+            once_time:this.productprice.once_time,
+          }
+        )
+        .then((response)=>{
+          this.alertstatus=response.data.alertstatus; 
+          this.productlistinorder=response.data.productlistinorder; 
+        
+          Vue.swal({
+            icon: response.data.alertstatus.icon,
+            title: response.data.title,
+            text: response.data.alertstatus.text,
+            toast: true,
+            timer: 2000,
+            timerProgressBar: true,
+          
+          });
+
+        })
+        .then( this.checkstock())
+        .then(this.showproductsinoreder())
+      } else {
         Vue.swal({
-          icon: response.data.alertstatus.icon,
-          title: response.data.title,
-          text: response.data.alertstatus.text,
+          icon: "error",
+          title: "ไม่มีการเพิ่มสินค้า",
+          text: "รายละเอียดไม่ครบ",
           toast: true,
           timer: 2000,
           timerProgressBar: true,
-        
         });
-
-      })
-      .then( this.checkstock())
-      .then(this.showproductsinoreder())
-    } else {
-      Vue.swal({
-        icon: "error",
-        title: "ไม่มีการเพิ่มสินค้า",
-        text: "รายละเอียดไม่ครบ",
-        toast: true,
-        timer: 2000,
-        timerProgressBar: true,
-      });
+      }
     }
-  }
   ,async showproductsinoreder(){
   
   axios.get(this.baseurl+'/api/showproductinorder/'+this.orderid)
