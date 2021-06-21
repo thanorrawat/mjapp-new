@@ -62,7 +62,7 @@ $offset = ($request->page-1)*$limitnumber;
         }
 
         $search=  $request->searchtext;
-        if(!empty($search)){
+        if(!empty($search)){  ///ค้นหา
 
             $searcharr= explode(" ", TRIM($search));
             $searchhilight[] = $searcharr[0];
@@ -88,9 +88,10 @@ $offset = ($request->page-1)*$limitnumber;
                 //$wheresearch .= " stkcod <> '".$request->relate."'";
             }
 
-            if($request->showsearchtype==1){
+            if($request->showsearchtype==1){  // ค้นหา + ประวัติการสั่งซื้อ
 
                 $products = productModel::on('report')
+                ->selectRaw('*, (SELECT locbal FROM mj_stloc  WHERE loccod = "01" AND stkcod = mj_stmas.stkcod ) AS qty')
                 ->whereRaw($wheresearch)
                 ->offset($offset)
                 ->limit($limitnumber)
@@ -111,6 +112,7 @@ $offset = ($request->page-1)*$limitnumber;
 
                 $salehistory=[];
                 $products = productModel::on('report')
+                ->selectRaw('*, (SELECT locbal FROM mj_stloc  WHERE loccod = "01" AND stkcod = mj_stmas.stkcod ) AS qty')
                 ->whereRaw($wheresearch)
                 ->offset($offset)
                 ->limit($limitnumber)
@@ -149,7 +151,7 @@ $offset = ($request->page-1)*$limitnumber;
                 $salehistory=[];
 
                 $products = productModel::on('report')
-                ->
+                ->selectRaw('*, (SELECT locbal FROM mj_stloc  WHERE loccod = "01" AND stkcod = mj_stmas.stkcod ) AS qty')
                 ->limit($limitnumber)
                 ->offset($offset)
                 ->get();
@@ -199,16 +201,33 @@ $offset = ($request->page-1)*$limitnumber;
             $doctypename = "ใบจอง";
         }
 
+
         $customer = customerModel::on('report')
         ->where('indexrow',$orderdetrails->customer_id)
         ->first();
+
+        if($customer->tabpr==1){
+            $price_group = 'Standard C'; 
+        } else if($customer->tabpr==3){
+            $price_group = 'Standard A'; 
+        } else if($customer->tabpr==4){
+            $price_group = 'Standard B'; 
+        } else if($customer->tabpr==4){
+            $price_group = 'ราคาปลีก'; 
+        }else{
+            $price_group = '';
+        }
+
+
+        
 
         return response()->json(
             [
                 'orderdt' => $orderdetrails,
                 'doctypename'=>$doctypename,
-                'customer'=>$customer
-                ]
+                'customer'=>$customer,
+                'price_group'=>$price_group 
+            ]
         );
     }
 
@@ -224,12 +243,13 @@ $offset = ($request->page-1)*$limitnumber;
         ->first();
 
         $expressStock = stockModel::on('report')
+        ->select('locbal')
         ->where('stkcod',$id)
         ->where('loccod','01')
-        ->groupBy('stkcod')
-        ->get();
+        ->first();
 
-        $stocklist['sumstock1'] =  $expressStock->sum('locbal');
+        $stocklist['sumstock1'] = isset($expressStock->locbal) ? $expressStock->locbal : 0;
+
 
         if(!empty($showstockbyproduct->sumstock2)){
             $stocklist['sumstock2'] =  $showstockbyproduct->sumstock2;

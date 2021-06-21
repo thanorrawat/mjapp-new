@@ -462,7 +462,7 @@
   },
   methods: {
     searchget: function() {  //ฟังก์ชั่น
-      axios.get(this.baseurl+'/api/orderproducts-search?searchtext='+this.searchtext+'&page='+this.currentPage+'&customer='+this.customercode+'&showsearchtype='+this.showsearchtype)
+      axios.get(this.baseurl+'/api/orderproducts-search?searchtext='+encodeURIComponent(this.searchtext)+'&page='+this.currentPage+'&customer='+this.customercode+'&showsearchtype='+this.showsearchtype)
       .then((response)=>{
         this.products=response.data.products; 
         this.show=response.data.search; 
@@ -530,7 +530,7 @@
       this.changrelatekey(productname);
     },
     checkstock: function() {  //ฟังก์ชั่น
-      axios.get(this.baseurl+'/api/checkstock/'+this.productshow.productscode)
+      axios.get(this.baseurl+'/api/checkstock/'+encodeURIComponent(this.productshow.stkcod))
       .then((response)=>{
         this.stocklist=response.data.stocklist;
       })

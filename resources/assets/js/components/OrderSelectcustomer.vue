@@ -14,48 +14,43 @@
 <form action="create_order_addform" method="POST" @submit="checkForm" >
   <input type="hidden" name="_token" :value="csrf">
       <div v-if="!orderid" class="row">
-<div class="col-md-6 row">
-<label class="col-md-4">ประเภทเอกสาร :</label>
-<div class="col-md-8">
-<div class="icheck-primary d-inline">
-<input type="radio" id="doctype_1" name="doctype"  v-model="doctype" value="1" required>
-<label for="doctype_1">Order</label></div>
-
-<div class="icheck-primary d-inline">
-<input type="radio" id="doctype_2" name="doctype"  v-model="doctype" value="2" required>
-<label for="doctype_2"> ใบจอง  </label>  </div>
-
-</div>
-</div>
-
-<div class="col-md-6 row">
-<label class="col-md-4">ลูกค้า :</label>
-<div class="col-md-8">
-  <Select2 name="selectcustomer" v-model="selectcustomer" :options="customerlist" :settings="{ 'placeholder':'กรุณาเลือกลูกค้า'  }"  />
-</div>
-
-  
-</div>
+        <div class="col-md-6 row">
+          <label class="col-md-4">ประเภทเอกสาร :</label>
+          <div class="col-md-8">
+            <div class="icheck-primary d-inline">
+              <input type="radio" id="doctype_1" name="doctype"  v-model="doctype" value="1" required>
+              <label for="doctype_1">Order</label>
+            </div>
+            <div class="icheck-primary d-inline">
+              <input type="radio" id="doctype_2" name="doctype"  v-model="doctype" value="2" required>
+              <label for="doctype_2"> ใบจอง  </label>  
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 row">
+          <label class="col-md-4">ลูกค้า :</label>
+          <div class="col-md-8">
+            
+            <Select2 name="selectcustomer" v-model="selectcustomer" :options="customerlist" :settings="{ 'placeholder':'กรุณาเลือกลูกค้า'  }"  />
+          </div>
+        </div>
       </div>
 
 
       <div v-if="orderid" class="row">
-<div class="col-md-6 row">
-<label class="col-md-4">ประเภทเอกสาร :</label>
-<div class="col-md-8">
-{{  orderdtall.doctypename}}
+        <div class="col-md-6 row">
+          <label class="col-md-4">ประเภทเอกสาร :</label>
+            <div class="col-md-8">
+              {{  orderdtall.doctypename}}
+            </div>
+        </div>
 
-</div>
-</div>
-
-<div class="col-md-6 row">
-<label class="col-md-4">ลูกค้า :</label>
-<div class="col-md-8">
-{{  orderdtall.customer['name']}}  <span v-if="orderdtall.customer.price_group"> ( Standard {{ orderdtall.customer.price_group }} ) </span> 
-</div>
-
-  
-</div>
+        <div class="col-md-6 row">
+          <label class="col-md-4">ลูกค้า :</label>
+          <div class="col-md-8">
+            {{  orderdtall.customer.cusnam}}  <span v-if="orderdtall.price_group"> ( {{ orderdtall.price_group }} ) </span> 
+          </div>
+        </div>
       </div>
 
 
@@ -224,8 +219,8 @@ Vue.swal({
   icon: 'error',
   title: 'เกิดข้อผิดพลาด',
   text: this.errors,
-   toast: true,
-     timer: 2000,
+  toast: true,
+  timer: 2000,
   timerProgressBar: true,
 
 });
@@ -276,9 +271,10 @@ var datearr = this.thisdatedata.split("-");
 var datearrdate = datearr[2].split(" ");
 this.thisdate = datearrdate[0]+"/"+datearr[1]+"/"+datearr[0];
 if(this.orderdtall.orderdt['deliverydate']){
- this.thisdatedata2 = this.orderdtall.orderdt['deliverydate'];
-var datearr2 = this.thisdatedata2.split("-");
-this.selectdate= datearr2[2]+"/"+datearr2[1]+"/"+datearr2[0];
+
+  this.thisdatedata2 = this.orderdtall.orderdt['deliverydate'];
+  var datearr2 = this.thisdatedata2.split("-");
+  this.selectdate= datearr2[2]+"/"+datearr2[1]+"/"+datearr2[0];
 
 }
 this.ordertype = this.orderdtall.orderdt['ordertype'];

@@ -34,16 +34,10 @@
             <thead>             
                 <th>{{trans('file.Code')}}</th>
                 <th>{{trans('file.name')}}</th>
-                    <th>{{trans('file.Unit')}}</th>
-                
+                <th>{{trans('file.Unit')}}</th>
                 <th>{{trans('file.category')}}</th>
                 <th>Stock 
-                @if($_COOKIE['language']=='th')
                     ({{ $stock_sale_name }})
-                @else
-                    ({{ $stock_sale_name_en }})
-                @endif
-
                 </th>
                     {{-- <th>{{trans('file.category')}}</th>
                     <th>{{trans('file.Product Details')}}</th>
@@ -129,20 +123,20 @@
 
         },
         columns: [
-            @if($_COOKIE['language']=='th')
+            {{--  @if($_COOKIE['language']=='th' )  --}}
                 { data: 'stkcod', name: 'stkcod' },
                 { data: 'stkdes', name: 'stkdes' },
                 { data: 'unitname', name: 'unitname' },
                 { data: 'stcatgory', name: 'stcatgory' },
                 { data: 'stock_new', name: 'stock' },
                 
-            @else
+            {{--  @else
                 { data: 'stkcod', name: 'stkcod' },
                 { data: 'stkdes2', name: 'stkdes2' },
                 { data: 'unitname_en', name: 'unitname_en' },
                 { data: 'stcatgory2', name: 'stcatgory2' },
                 { data: 'stock_new', name: 'stock' },
-            @endif
+            @endif  --}}
 
         ],
         dom: 'Blfrtip',

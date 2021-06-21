@@ -49908,7 +49908,7 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
       var _this = this;
 
       //ฟังก์ชั่น
-      axios.get(this.baseurl + '/api/orderproducts-search?searchtext=' + this.searchtext + '&page=' + this.currentPage + '&customer=' + this.customercode + '&showsearchtype=' + this.showsearchtype).then(function (response) {
+      axios.get(this.baseurl + '/api/orderproducts-search?searchtext=' + encodeURIComponent(this.searchtext) + '&page=' + this.currentPage + '&customer=' + this.customercode + '&showsearchtype=' + this.showsearchtype).then(function (response) {
         _this.products = response.data.products;
         _this.show = response.data.search;
         _this.productscount = response.data.productscount;
@@ -49983,7 +49983,7 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
       var _this4 = this;
 
       //ฟังก์ชั่น
-      axios.get(this.baseurl + '/api/checkstock/' + this.productshow.productscode).then(function (response) {
+      axios.get(this.baseurl + '/api/checkstock/' + encodeURIComponent(this.productshow.stkcod)).then(function (response) {
         _this4.stocklist = response.data.stocklist;
       });
       this.checkthisprice();
@@ -65721,11 +65721,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
 
 var today = new Date();
 var dd = String(today.getDate()).padStart(2, '0');
@@ -65865,6 +65860,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_4_vue_
       var datearrdate = datearr[2].split(" ");
       this.thisdate = datearrdate[0] + "/" + datearr[1] + "/" + datearr[0];
       if (this.orderdtall.orderdt['deliverydate']) {
+
         this.thisdatedata2 = this.orderdtall.orderdt['deliverydate'];
         var datearr2 = this.thisdatedata2.split("-");
         this.selectdate = datearr2[2] + "/" + datearr2[1] + "/" + datearr2[0];
@@ -66009,7 +66005,11 @@ var render = function() {
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "col-md-8" }, [
-                      _vm._v("\n" + _vm._s(_vm.orderdtall.doctypename) + "\n\n")
+                      _vm._v(
+                        "\n              " +
+                          _vm._s(_vm.orderdtall.doctypename) +
+                          "\n            "
+                      )
                     ])
                   ]),
                   _vm._v(" "),
@@ -66020,14 +66020,14 @@ var render = function() {
                     _vm._v(" "),
                     _c("div", { staticClass: "col-md-8" }, [
                       _vm._v(
-                        "\n" + _vm._s(_vm.orderdtall.customer["name"]) + "  "
+                        "\n            " +
+                          _vm._s(_vm.orderdtall.customer.cusnam) +
+                          "  "
                       ),
-                      _vm.orderdtall.customer.price_group
+                      _vm.orderdtall.price_group
                         ? _c("span", [
                             _vm._v(
-                              " ( Standard " +
-                                _vm._s(_vm.orderdtall.customer.price_group) +
-                                " ) "
+                              " ( " + _vm._s(_vm.orderdtall.price_group) + " ) "
                             )
                           ])
                         : _vm._e()
