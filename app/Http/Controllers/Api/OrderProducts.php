@@ -149,6 +149,7 @@ $offset = ($request->page-1)*$limitnumber;
                 $salehistory=[];
 
                 $products = productModel::on('report')
+                ->
                 ->limit($limitnumber)
                 ->offset($offset)
                 ->get();
@@ -224,6 +225,7 @@ $offset = ($request->page-1)*$limitnumber;
 
         $expressStock = stockModel::on('report')
         ->where('stkcod',$id)
+        ->where('loccod','01')
         ->groupBy('stkcod')
         ->get();
 

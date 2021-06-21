@@ -131,23 +131,23 @@ class CustomerController extends Controller
                 foreach ($columns as $key => $value) {
                     $value=preg_replace('/\D/','',$value);
                 }
-               $data= array_combine($escapedHeader, $columns);
-               $lims_customer_group_data = CustomerGroup::where('name', $data['customergroup'])->first();
-               $customer = Customer::firstOrNew(['name'=>$data['name']]);
-               $customer->customer_group_id = $lims_customer_group_data->id;
-               $customer->name = $data['name'];
-               $customer->company_name = $data['companyname'];
-               $customer->email = $data['email'];
-               $customer->phone_number = $data['phonenumber'];
-               $customer->address = $data['address'];
-               $customer->city = $data['city'];
-               $customer->state = $data['state'];
-               $customer->postal_code = $data['postalcode'];
-               $customer->country = $data['country'];
-               $customer->is_active = true;
-               $customer->save();
-               $message = 'Customer Imported Successfully';
-               if($data['email']){
+                $data= array_combine($escapedHeader, $columns);
+                $lims_customer_group_data = CustomerGroup::where('name', $data['customergroup'])->first();
+                $customer = Customer::firstOrNew(['name'=>$data['name']]);
+                $customer->customer_group_id = $lims_customer_group_data->id;
+                $customer->name = $data['name'];
+                $customer->company_name = $data['companyname'];
+                $customer->email = $data['email'];
+                $customer->phone_number = $data['phonenumber'];
+                $customer->address = $data['address'];
+                $customer->city = $data['city'];
+                $customer->state = $data['state'];
+                $customer->postal_code = $data['postalcode'];
+                $customer->country = $data['country'];
+                $customer->is_active = true;
+                $customer->save();
+                $message = 'Customer Imported Successfully';
+                if($data['email']){
                     try{
                         Mail::send( 'mail.customer_create', $data, function( $message ) use ($data)
                         {

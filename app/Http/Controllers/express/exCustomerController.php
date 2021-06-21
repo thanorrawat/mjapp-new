@@ -40,6 +40,8 @@ class exCustomerController extends Controller
                         return 'Standard A'; 
                     } else if($list->tabpr==4){
                         return 'Standard B'; 
+                    } else if($list->tabpr==4){
+                        return 'ราคาปลีก'; 
                     }
 
                 } else{

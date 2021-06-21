@@ -33,8 +33,8 @@
         <table id="product-data-table" class="table" style="width: 100%">
             <thead>
                 <th style="width:150px">{{trans('file.Code')}}</th>
-                <th>{{trans('file.name')}}</th>
-                <th>{{trans('file.Customer Price Group')}}</th>
+                <th >{{trans('file.name')}}</th>
+                <th style="width:120px">{{trans('file.Customer Price Group')}}</th>
                 <th>{{trans('file.Address')}}</th>
                 <th>{{trans('file.contact')}}</th>
                 <th>{{trans('file.Payment')}}</th>
