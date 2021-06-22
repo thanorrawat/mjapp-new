@@ -129,7 +129,7 @@
               <h2  class="text-center"> 
                 ราคาขาย : {{  productprice.priceorder  }}
               </h2>
-              <div class="col-12" >
+              <!-- <div class="col-12" >
                 <div style="border: 1px solid blue;padding:5px">
                   <strong>ราคาสำหรับ</strong>
                     <span v-if="productprice.cuscode"> เฉพาะลูกค้ารหัส {{ productprice.cuscode }}</span>
@@ -137,8 +137,49 @@
                     <span v-if="productprice.pricetime==3" > ช่วงเวลา :  {{ productprice.daterange }}</span>
                     <span v-if="productprice.once_time==1"> เฉพาะครั้งนี้</span>
                 </div>
-              </div>
+              </div> -->
             </div>
+
+
+                          <!-- {{  productshow }}    -->
+              <h4 class="mt-3">เลือกราคา</h4>
+
+              <div class="row mt-1">
+                <div class="col border-right">
+                  <div @click="selectPriceType(1)"  class="description-block price" >
+                    <span class="description-text">ราคาปลีก</span>
+                    <h5 class="description-header">
+                      {{  productprice.price_retail | numeral('0,0') }}
+                    </h5>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col border-right">
+                  <div @click="selectPriceType(2)"  class="description-block price">
+                    <span class="description-text">ราคาส่ง</span>
+                    <h5 class="description-header">{{  productprice.price_bygroup | numeral('0,0') }}</h5>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col" v-if="productprice.price_spc">
+                  <div @click="selectPriceType(3)"  class="description-block price">
+                    <span class="description-text">ราคาพิเศษ</span>
+                    <h5 class="description-header">{{  productprice.price_spc | numeral('0,0') }}</h5>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+
+                <div class="col" v-else >
+                  <div class="description-block ">
+                    <span class="description-text">ราคาพิเศษ</span>
+                    <h5 class="description-header"> ไม่มี </h5>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+              </div>
           <div class="row mt-2">
 
           <div class="col-2 text-right"> จำนวน</div>
@@ -400,10 +441,11 @@
         productprice:[],
         productlistpriceobj:[],
         ordertotalamount:0,
+        pricetype_select:0
 
     }
 },
-  watch: {
+  watch: { ///////////////////////////////////////-------------------------------------////////////////////////////////
   // searchtext: function() { //ถ้าค่า searchtext เปลี่ยน
   // this.currentPage=1;
   //  this.searchget() //เรียกใช้ฟังก์ชั่น
@@ -460,7 +502,18 @@
       this.newtracking_qty=this.editqtynew -oldqty
     }
   },
-  methods: {
+  methods: { ///////////////////////////////////////-------------------------------------////////////////////////////////
+    selectPriceType: function($id)   // เลือก ประเภทราคา
+    {
+      if($id === 1 ){
+        this.productprice.priceorder = this.productprice.price_retail;
+      }else if($id === 2 ){
+        this.productprice.priceorder = this.productprice.price_bygroup;
+      }else if($id === 3 ){
+        this.productprice.priceorder = this.productprice.price_spc;
+      }
+
+    },
     searchget: function() {  //ฟังก์ชั่น
       axios.get(this.baseurl+'/api/orderproducts-search?searchtext='+encodeURIComponent(this.searchtext)+'&page='+this.currentPage+'&customer='+this.customercode+'&showsearchtype='+this.showsearchtype)
       .then((response)=>{
@@ -543,7 +596,9 @@
       })
     },
     addtodorder(productid) {  //ฟังก์ชั่นเพิ่มสินค้า
-      if(this.addqty && this.userid && this.orderid  && productid){
+    //console.log(this.addqty+'/'+this.userid+'/'+this.orderid+'/'+productid)
+    var productid = this.productshow.indexrow
+      if(this.addqty && this.userid && this.orderid  && productid !== null){
         axios.post(this.baseurl+'/api/addproducttoorder',{
             productid : productid,
             orderid :this.orderid,
@@ -580,7 +635,7 @@
         Vue.swal({
           icon: "error",
           title: "ไม่มีการเพิ่มสินค้า",
-          text: "รายละเอียดไม่ครบ",
+          text: 'รายละเอียดไม่ครบ'+this.addqty+'/'+this.userid+'/'+this.orderid+'/'+productid,
           toast: true,
           timer: 2000,
           timerProgressBar: true,
@@ -594,60 +649,60 @@
   this.productlistinorder=response.data; 
   })
 
-this.ordertotalamountget();
-  /*
-  .then(
-(response)=>{ 
-     for(let i = 0; i < this.productlistinorder.length; i++){
-       let pdcode =  this.productlistinorder[i].productscode;
-       // this.addproductpricecode(pdcode,i)
-      }
+  this.ordertotalamountget();
+    /*
+    .then(
+  (response)=>{ 
+      for(let i = 0; i < this.productlistinorder.length; i++){
+        let pdcode =  this.productlistinorder[i].productscode;
+        // this.addproductpricecode(pdcode,i)
+        }
 
-     
-})
- */
- 
- },removepd(index){
-
-   Vue.swal({
-  title: 'ยืนยันการลบสินค้า?',
-  text: "คุณต้องการลบสินค้า "+this.productlistinorder[index].productscode+" ออกจากรายการ"+this.doctypename+"นี้ใช่หรือไม่",
-  icon: 'warning',
-  showCancelButton: true,
-  confirmButtonColor: '#3085d6',
-  cancelButtonColor: '#d33',
-  confirmButtonText: 'ใช่ ลบได้เลย',
-  cancelButtonText: 'ไม่ต้องการลบ'
-}).then((result) => {
-  if (result.value) {
-//<--------------
-
-axios.post(this.baseurl+'/api/removeproducttoorder',{
-    productid : this.productlistinorder[index].indexrow,
-    orderid :this.orderid,
-    orderproductid : this.productlistinorder[index].pdorderid,
-    addqty : this.productlistinorder[index].orderqty, 
-    productscode : this.productlistinorder[index].stkcod,
-    doctype : this.orderdt.doctype,
-    orderdetails : this.orderdt,
-    userfullname:this.userfullname,
-    userid:this.userid,
+      
   })
- .then((response)=>{
-  this.alertstatus=response.data.alertstatus; 
-  this.productlistinorder=response.data.productlistinorder; 
-
-  Vue.swal({
-  icon: response.data.alertstatus.icon,
-  title: response.data.title,
-  text: response.data.alertstatus.text,
-  toast: true,
-  timer: 2000,
-  timerProgressBar: true,
- 
+  */
   
-});
- this.showproductsinoreder();
+  },removepd(index){
+
+    Vue.swal({
+    title: 'ยืนยันการลบสินค้า?',
+    text: "คุณต้องการลบสินค้า "+this.productlistinorder[index].productscode+" ออกจากรายการ"+this.doctypename+"นี้ใช่หรือไม่",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'ใช่ ลบได้เลย',
+    cancelButtonText: 'ไม่ต้องการลบ'
+  }).then((result) => {
+    if (result.value) {
+  //<--------------
+
+  axios.post(this.baseurl+'/api/removeproducttoorder',{
+      productid : this.productlistinorder[index].indexrow,
+      orderid :this.orderid,
+      orderproductid : this.productlistinorder[index].pdorderid,
+      addqty : this.productlistinorder[index].orderqty, 
+      productscode : this.productlistinorder[index].stkcod,
+      doctype : this.orderdt.doctype,
+      orderdetails : this.orderdt,
+      userfullname:this.userfullname,
+      userid:this.userid,
+    })
+  .then((response)=>{
+    this.alertstatus=response.data.alertstatus; 
+    this.productlistinorder=response.data.productlistinorder; 
+
+    Vue.swal({
+    icon: response.data.alertstatus.icon,
+    title: response.data.title,
+    text: response.data.alertstatus.text,
+    toast: true,
+    timer: 2000,
+    timerProgressBar: true,
+  
+    
+  });
+  this.showproductsinoreder();
   this.checkstock();
 
 
@@ -660,14 +715,14 @@ axios.post(this.baseurl+'/api/removeproducttoorder',{
   }
 })
 
- },editqtyorder(index){
+  },editqtyorder(index){
 
-this.editqtyorderdetail = this.productlistinorder[index]
-this.editqtynew=this.productlistinorder[index].orderqty
-this.editqtyorderdetail.indexorder = index
+    this.editqtyorderdetail = this.productlistinorder[index]
+    this.editqtynew=this.productlistinorder[index].orderqty
+    this.editqtyorderdetail.indexorder = index
 
-this.showProductinorderdt(index);
- }
+    this.showProductinorderdt(index);
+  }
 
 ,editqtysumit(){
 
@@ -791,7 +846,7 @@ $('#modalloder').modal('hide');
       axios.post(this.baseurl+'/api/order_checkprice',{
         productcode : this.productshow.stkcod,
         cuscode : this.customercode,
-        typeprice : this.orderdtall.customer.price_group,
+        typeprice : this.customerdt.tabpr,
       }).then((response)=>{ 
 
       this.productprice = response.data
@@ -867,12 +922,9 @@ this.productlistinorder[oderindex].amountrow = (+response.data.priceorder)*(+thi
       this.ordertotalamount=response.data[0].totalamount
                         
  })
-     }
+    }
 
-////////////////////////////////
-     
-////////////////////////////////
-     }
+     }  ///////////////////////////////////////-------------------   method
      ,
  computed: {
 
@@ -923,6 +975,12 @@ margin-bottom: 0.5em;
 }
 #orderlist td,#orderlist th{
 border-width: thin;
+}
+a.description-block{
+  padding: 3px;
+}
+.description-block.price:hover{
+  background : #ff9633;
 }
 
 </style>

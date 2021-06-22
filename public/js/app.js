@@ -49377,7 +49377,7 @@ exports = module.exports = __webpack_require__(13)(false);
 
 
 // module
-exports.push([module.i, "\n.search-box {\r\n    font-size: 18px;\r\n    padding: 0.4em;\r\n    width: 100%;\r\n    -webkit-appearance: none;\r\n    -moz-appearance: none;\r\n    appearance: none;\r\nborder: 1px sloid #ccc;\r\n    background: #fff url('https://image.flaticon.com/icons/svg/1086/1086933.svg') no-repeat center right 24px/32px !important;\r\n    border-radius: 4px;\r\nmargin-bottom: 1em;\n}\n.pagingrow{\r\n\r\nmargin-bottom: 0.5em;\n}\n.searchlist{\r\n    border-bottom: #ccc 1px solid;\n}\n.searchlist:hover{\r\n  background: #ccc;\n}\n.description-block{\r\n font-size: 0.8rem;\n}\n.text__highlight{\r\n  background:#fff9dd !important;\r\n   padding:0;\n}\n#relateproducts .item{\r\n     font-size: 80%;\r\n     border: #ccc 1px solid;\n}\n#orderlist i:before {\r\n    font-size: 80%;\n}\n#orderlist td,#orderlist th{\r\nborder-width: thin;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.search-box {\r\n    font-size: 18px;\r\n    padding: 0.4em;\r\n    width: 100%;\r\n    -webkit-appearance: none;\r\n    -moz-appearance: none;\r\n    appearance: none;\r\nborder: 1px sloid #ccc;\r\n    background: #fff url('https://image.flaticon.com/icons/svg/1086/1086933.svg') no-repeat center right 24px/32px !important;\r\n    border-radius: 4px;\r\nmargin-bottom: 1em;\n}\n.pagingrow{\r\n\r\nmargin-bottom: 0.5em;\n}\n.searchlist{\r\n    border-bottom: #ccc 1px solid;\n}\n.searchlist:hover{\r\n  background: #ccc;\n}\n.description-block{\r\n font-size: 0.8rem;\n}\n.text__highlight{\r\n  background:#fff9dd !important;\r\n   padding:0;\n}\n#relateproducts .item{\r\n     font-size: 80%;\r\n     border: #ccc 1px solid;\n}\n#orderlist i:before {\r\n    font-size: 80%;\n}\n#orderlist td,#orderlist th{\r\nborder-width: thin;\n}\na.description-block{\r\n  padding: 3px;\n}\n.description-block.price:hover{\r\n  background : #ff9633;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -49439,6 +49439,47 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -49840,12 +49881,13 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
       orderremark: '',
       productprice: [],
       productlistpriceobj: [],
-      ordertotalamount: 0
+      ordertotalamount: 0,
+      pricetype_select: 0
 
     };
   },
 
-  watch: {
+  watch: { ///////////////////////////////////////-------------------------------------////////////////////////////////
     // searchtext: function() { //ถ้าค่า searchtext เปลี่ยน
     // this.currentPage=1;
     //  this.searchget() //เรียกใช้ฟังก์ชั่น
@@ -49903,7 +49945,17 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
       this.newtracking_qty = this.editqtynew - oldqty;
     }
   },
-  methods: {
+  methods: { ///////////////////////////////////////-------------------------------------////////////////////////////////
+    selectPriceType: function selectPriceType($id) // เลือก ประเภทราคา
+    {
+      if ($id === 1) {
+        this.productprice.priceorder = this.productprice.price_retail;
+      } else if ($id === 2) {
+        this.productprice.priceorder = this.productprice.price_bygroup;
+      } else if ($id === 3) {
+        this.productprice.priceorder = this.productprice.price_spc;
+      }
+    },
     searchget: function searchget() {
       var _this = this;
 
@@ -50000,7 +50052,9 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
       var _this6 = this;
 
       //ฟังก์ชั่นเพิ่มสินค้า
-      if (this.addqty && this.userid && this.orderid && productid) {
+      //console.log(this.addqty+'/'+this.userid+'/'+this.orderid+'/'+productid)
+      var productid = this.productshow.indexrow;
+      if (this.addqty && this.userid && this.orderid && productid !== null) {
         axios.post(this.baseurl + '/api/addproducttoorder', {
           productid: productid,
           orderid: this.orderid,
@@ -50032,7 +50086,7 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
         __WEBPACK_IMPORTED_MODULE_1_vue___default.a.swal({
           icon: "error",
           title: "ไม่มีการเพิ่มสินค้า",
-          text: "รายละเอียดไม่ครบ",
+          text: 'รายละเอียดไม่ครบ' + this.addqty + '/' + this.userid + '/' + this.orderid + '/' + productid,
           toast: true,
           timer: 2000,
           timerProgressBar: true
@@ -50056,11 +50110,11 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
                 /*
                 .then(
                 (response)=>{ 
-                   for(let i = 0; i < this.productlistinorder.length; i++){
-                     let pdcode =  this.productlistinorder[i].productscode;
-                     // this.addproductpricecode(pdcode,i)
+                  for(let i = 0; i < this.productlistinorder.length; i++){
+                    let pdcode =  this.productlistinorder[i].productscode;
+                    // this.addproductpricecode(pdcode,i)
                     }
-                    
+                   
                 })
                 */
 
@@ -50239,7 +50293,7 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
       axios.post(this.baseurl + '/api/order_checkprice', {
         productcode: this.productshow.stkcod,
         cuscode: this.customercode,
-        typeprice: this.orderdtall.customer.price_group
+        typeprice: this.customerdt.tabpr
       }).then(function (response) {
 
         _this11.productprice = response.data;
@@ -50346,14 +50400,9 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
         _this13.ordertotalamount = response.data[0].totalamount;
       });
     }
+  } ///////////////////////////////////////-------------------   method
 
-    ////////////////////////////////
-
-    ////////////////////////////////
-
-  },
-
-  computed: {}
+  , computed: {}
 
 });
 
@@ -64734,54 +64783,111 @@ var render = function() {
                               _vm._s(_vm.productprice.priceorder) +
                               "\n              "
                           )
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "col-12" }, [
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("h4", { staticClass: "mt-3" }, [_vm._v("เลือกราคา")]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "row mt-1" }, [
+                        _c("div", { staticClass: "col border-right" }, [
                           _c(
                             "div",
                             {
-                              staticStyle: {
-                                border: "1px solid blue",
-                                padding: "5px"
+                              staticClass: "description-block price",
+                              on: {
+                                click: function($event) {
+                                  return _vm.selectPriceType(1)
+                                }
                               }
                             },
                             [
-                              _c("strong", [_vm._v("ราคาสำหรับ")]),
+                              _c("span", { staticClass: "description-text" }, [
+                                _vm._v("ราคาปลีก")
+                              ]),
                               _vm._v(" "),
-                              _vm.productprice.cuscode
-                                ? _c("span", [
-                                    _vm._v(
-                                      " เฉพาะลูกค้ารหัส " +
-                                        _vm._s(_vm.productprice.cuscode)
-                                    )
-                                  ])
-                                : _vm._e(),
-                              _vm._v(" "),
-                              _vm.productprice.typeprice &&
-                              _vm.productprice.typeprice != "SPC"
-                                ? _c("span", [
-                                    _vm._v(
-                                      " Standard " +
-                                        _vm._s(_vm.productprice.typeprice)
-                                    )
-                                  ])
-                                : _vm._e(),
-                              _vm._v(" "),
-                              _vm.productprice.pricetime == 3
-                                ? _c("span", [
-                                    _vm._v(
-                                      " ช่วงเวลา :  " +
-                                        _vm._s(_vm.productprice.daterange)
-                                    )
-                                  ])
-                                : _vm._e(),
-                              _vm._v(" "),
-                              _vm.productprice.once_time == 1
-                                ? _c("span", [_vm._v(" เฉพาะครั้งนี้")])
-                                : _vm._e()
+                              _c("h5", { staticClass: "description-header" }, [
+                                _vm._v(
+                                  "\n                      " +
+                                    _vm._s(
+                                      _vm._f("numeral")(
+                                        _vm.productprice.price_retail,
+                                        "0,0"
+                                      )
+                                    ) +
+                                    "\n                    "
+                                )
+                              ])
                             ]
                           )
-                        ])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col border-right" }, [
+                          _c(
+                            "div",
+                            {
+                              staticClass: "description-block price",
+                              on: {
+                                click: function($event) {
+                                  return _vm.selectPriceType(2)
+                                }
+                              }
+                            },
+                            [
+                              _c("span", { staticClass: "description-text" }, [
+                                _vm._v("ราคาส่ง")
+                              ]),
+                              _vm._v(" "),
+                              _c("h5", { staticClass: "description-header" }, [
+                                _vm._v(
+                                  _vm._s(
+                                    _vm._f("numeral")(
+                                      _vm.productprice.price_bygroup,
+                                      "0,0"
+                                    )
+                                  )
+                                )
+                              ])
+                            ]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _vm.productprice.price_spc
+                          ? _c("div", { staticClass: "col" }, [
+                              _c(
+                                "div",
+                                {
+                                  staticClass: "description-block price",
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.selectPriceType(3)
+                                    }
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "span",
+                                    { staticClass: "description-text" },
+                                    [_vm._v("ราคาพิเศษ")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "h5",
+                                    { staticClass: "description-header" },
+                                    [
+                                      _vm._v(
+                                        _vm._s(
+                                          _vm._f("numeral")(
+                                            _vm.productprice.price_spc,
+                                            "0,0"
+                                          )
+                                        )
+                                      )
+                                    ]
+                                  )
+                                ]
+                              )
+                            ])
+                          : _c("div", { staticClass: "col" }, [_vm._m(2)])
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "row mt-2" }, [
@@ -65017,7 +65123,7 @@ var render = function() {
                       attrs: { id: "orderlist" }
                     },
                     [
-                      _vm._m(2),
+                      _vm._m(3),
                       _vm._v(" "),
                       _c(
                         "tbody",
@@ -65165,7 +65271,7 @@ var render = function() {
                             _vm._v(" "),
                             _c("td"),
                             _vm._v(" "),
-                            _vm._m(3),
+                            _vm._m(4),
                             _vm._v(" "),
                             _c("td", { staticClass: "text-right" }, [
                               _vm._v(
@@ -65297,7 +65403,7 @@ var render = function() {
             { staticClass: "modal-dialog", attrs: { role: "document" } },
             [
               _c("div", { staticClass: "modal-content" }, [
-                _vm._m(4),
+                _vm._m(5),
                 _vm._v(" "),
                 _c("div", { staticClass: "modal-body" }, [
                   _vm._v(
@@ -65306,7 +65412,7 @@ var render = function() {
                       "\n         "
                   ),
                   _c("div", { staticClass: "row mt-2" }, [
-                    _vm._m(5),
+                    _vm._m(6),
                     _vm._v(" "),
                     _c("div", { staticClass: "col-4" }, [
                       _c("input", {
@@ -65351,7 +65457,7 @@ var render = function() {
                   )
                 ]),
                 _vm._v(" "),
-                _vm._m(6)
+                _vm._m(7)
               ])
             ]
           )
@@ -65366,7 +65472,7 @@ var render = function() {
               attrs: { role: "alert" }
             },
             [
-              _vm._m(7),
+              _vm._m(8),
               _vm._v(" "),
               _c("h4", [_vm._v("อยู่ระหว่างการรอนุมัติจาก ผู้จัดการ")])
             ]
@@ -65404,6 +65510,16 @@ var staticRenderFns = [
       _c("span", { staticClass: "input-group-text" }, [
         _c("i", { staticClass: "fas fa-search" })
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "description-block " }, [
+      _c("span", { staticClass: "description-text" }, [_vm._v("ราคาพิเศษ")]),
+      _vm._v(" "),
+      _c("h5", { staticClass: "description-header" }, [_vm._v(" ไม่มี ")])
     ])
   },
   function() {

@@ -31,6 +31,25 @@ class MemoPriceController extends Controller
         ;
     }
 
+    public function priceGroup($id)
+    {
+
+        if($id==1){
+            $price_group = 'C'; 
+        } else if($id==3){
+            $price_group = 'A'; 
+        } else if($id==4){
+            $price_group = 'B'; 
+        }else{
+            $price_group = '';
+        }
+
+        return $price_group;
+    }
+
+
+
+
 
     public function memocheckprice(Request $request)
     {
@@ -70,7 +89,7 @@ class MemoPriceController extends Controller
         ->select('price_group')
         ->first();  
         if($cpricegroup){
-            $pricegroup = $cpricegroup->price_group;
+            $pricegroup = self::priceGroup($cpricegroup->price_group);
 
         }else{
             $pricegroup ="B";
@@ -317,15 +336,19 @@ $addspecificprice->save();
     
     public function checkpriceorder(Request $request)
     {
+        $typeprice = self::priceGroup($request->typeprice);
+
         $priceorder = '';
-        $cuscode='';
+        $cuscode=$request->cuscode;
         $daterange='';
-        $typeprice = '';
         $once_time ='';
         $pricetime='';
         $memonumber='';
-///check ราคา special
-/// 1. ตามรหัสลูกค้า +  ช่วงเวลา
+        $price_spc = null; // ราคาพิเศษตาม memo
+        $price_bygroup = null; // ราคาตาม standard ลูกค้า
+        $price_retail = null; // ราคาปลีก
+        ///check ราคา special
+        /// 1. ตามรหัสลูกค้า +  ช่วงเวลา
         $productprice= PriceSpecific::where('productcode',$request->productcode)
         ->where('custype','2')
         ->where('cuscode',$request->cuscode)
@@ -338,12 +361,14 @@ $addspecificprice->save();
     
 
         if(!empty($productprice->pricevalue)){
-            $priceorder = $productprice->pricevalue;
+
+            $price_spc = $productprice->pricevalue;
             $cuscode = $productprice->cuscode;
             $daterange= $productprice->pricedaterange;
             $typeprice = $productprice->typeprice;
             $pricetime = $productprice->pricetime;
             $memonumber =$productprice->memonumber;
+
         }else{
             /// 2. ช่วงเวลา + ประเภททราคา
             $productprice= PriceSpecific::where('productcode',$request->productcode)
@@ -355,120 +380,147 @@ $addspecificprice->save();
             ->orderBy('id','desc')
             ->first();
 
-if(!empty($productprice->pricevalue)){
-    $priceorder = $productprice->pricevalue;
-    $daterange= $productprice->pricedaterange;
-    $typeprice = $productprice->typeprice;
-    $pricetime = $productprice->pricetime;
-    $memonumber =$productprice->memonumber;
+            if(!empty($productprice->pricevalue)){
+                $price_spc = $productprice->pricevalue;
+                $daterange= $productprice->pricedaterange;
+                $typeprice = $productprice->typeprice;
+                $pricetime = $productprice->pricetime;
+                $memonumber =$productprice->memonumber;
             }else{
 
-/// 3. เฉพาะครั้งนี้ + ลูกค้า
-$productprice= PriceSpecific::where('productcode',$request->productcode)
-->where('custype','2')
-->where('cuscode',$request->cuscode)
-->where('pricetime','2')
-->where('once_time','1')
-->orderBy('id','desc')
-->first();
-if(!empty($productprice->pricevalue)){
+                /// 3. เฉพาะครั้งนี้ + ลูกค้า
+                $productprice= PriceSpecific::where('productcode',$request->productcode)
+                ->where('custype','2')
+                ->where('cuscode',$request->cuscode)
+                ->where('pricetime','2')
+                ->where('once_time','1')
+                ->orderBy('id','desc')
+                ->first();
+                if(!empty($productprice->pricevalue)){
 
-    $priceorder = $productprice->pricevalue;
-    $once_time = $productprice->once_time;
-    $typeprice = $productprice->typeprice;
-$cuscode = $productprice->cuscode;
-$pricetime = $productprice->pricetime;
-$memonumber =$productprice->memonumber;
-            }else{
+                    $price_spc = $productprice->pricevalue;
+                    $once_time = $productprice->once_time;
+                    $typeprice = $productprice->typeprice;
+                    $cuscode = $productprice->cuscode;
+                    $pricetime = $productprice->pricetime;
+                    $memonumber =$productprice->memonumber;
 
-/// 4. เฉพาะครั้งนี้ + ประเภททราคา
-$productprice= PriceSpecific::where('productcode',$request->productcode)
+                }else{
 
-->where('typeprice',$request->typeprice)
-->where('pricetime','2')
-->where('once_time','1')
-->orderBy('id','desc')
+                    /// 4. เฉพาะครั้งนี้ + ประเภททราคา
+                    $productprice= PriceSpecific::where('productcode',$request->productcode)
 
-->first();
-if(!empty($productprice->pricevalue)){
-    $priceorder = $productprice->pricevalue;
-    $once_time = $productprice->once_time;
-    $typeprice = $productprice->typeprice;
-    $pricetime = $productprice->pricetime;
-    $memonumber =$productprice->memonumber;
+                    ->where('typeprice',$request->typeprice)
+                    ->where('pricetime','2')
+                    ->where('once_time','1')
+                    ->orderBy('id','desc')
+                    ->first();
 
-            }else{
+                    if(!empty($productprice->pricevalue)){
 
+                        $price_spc = $productprice->pricevalue;
+                        $once_time = $productprice->once_time;
+                        $typeprice = $productprice->typeprice;
+                        $pricetime = $productprice->pricetime;
+                        $memonumber =$productprice->memonumber;
 
+                    }else{
 
-                /// 4. ราคาเฉพาะลูกค้านี้ เปลี่ยนตลอด
-$productprice= PriceSpecific::where('productcode',$request->productcode)
-->where('custype','2')
-->where('cuscode',$request->cuscode)
-->where('pricetime','1')
-->orderBy('id','desc')
-->first();
-if(!empty($productprice->pricevalue)){
+                        /// 4. ราคาเฉพาะลูกค้านี้ เปลี่ยนตลอด
+                        $productprice= PriceSpecific::where('productcode',$request->productcode)
+                        ->where('custype','2')
+                        ->where('cuscode',$request->cuscode)
+                        ->where('pricetime','1')
+                        ->orderBy('id','desc')
+                        ->first();
+                        if(!empty($productprice->pricevalue)){
 
-    $priceorder = $productprice->pricevalue;
-    $cuscode = $productprice->cuscode;
-    $pricetime = $productprice->pricetime;
-    $pricetime = $productprice->pricetime;
-    $memonumber =$productprice->memonumber;
+                            $price_spc = $productprice->pricevalue;
+                            $cuscode = $productprice->cuscode;
+                            $pricetime = $productprice->pricetime;
+                            $pricetime = $productprice->pricetime;
+                            $memonumber =$productprice->memonumber;
 
-            }else{
+                        }else{
 
+                            // // 6. ประเภทราคา
+                            // $productprice = productModel::on('report')
+                            // ->where('stkcod',$request->productcode)
+                            // ->selectRaw('stkdes AS name, stkcod AS code, sellpr1, sellpr2, sellpr3, sellpr4')
+                            // ->first();  
 
+                            // if($typeprice =="A"){
+                            //     $priceorder =  $productprice->sellpr3;
+                            // }else if($typeprice =="B"){
+                            //     $priceorder =  $productprice->sellpr4;
+                            // }else if($typeprice =="C"){
+                            //     $priceorder =  $productprice->sellpr1;
+                            // }else{
+                            //     $priceorder =  $productprice->sellpr2;
+                            // }
 
-            /// 6. ประเภททราคา
+                            // $typeprice = $request->typeprice;
+                        }
 
-
-            $productprice = productModel::on('report')
-            ->where('stkcod',$request->productcode)
-            ->selectRaw('stkdes AS name, stkcod AS code, sellpr1 AS price_a, sellpr2 AS price_b, sellpr3 AS price_c, sellpr1 AS price_d')
-            ->first();  
-
-            if($request->typeprice=="A"){
-                $priceorder =  $productprice->price_a;
-                
-            }else if($request->typeprice=="B"){
-                $priceorder =  $productprice->price_b;
-            }else if($request->typeprice=="C"){
-                $priceorder =  $productprice->price_c;
-            }else if($request->typeprice=="D"){
-                $priceorder =  $productprice->price_d;
+                    }
+                }
             }
+        }
+        
+        // if(empty($priceorder)){
+        //     $productprice = productModel::on('report')
+        //     ->where('stkcod',$request->productcode)
+        //     ->selectRaw('stkdes AS name, stkcod AS code, sellpr1, sellpr2, sellpr3, sellpr4')
+        //     ->first();  
+        //     $priceorder =  $productprice->sellpr2;
 
-            $typeprice = $request->typeprice;
-            }
+        // }
+
+
+
+
+        // 6. ประเภทราคา
+        $productprice = productModel::on('report')
+        ->where('stkcod',$request->productcode)
+        ->selectRaw('stkdes AS name, stkcod AS code, sellpr1, sellpr2, sellpr3, sellpr4')
+        ->first();  
+
+        if($typeprice =="A"){
+            $price_bygroup =  $productprice->sellpr3;
+        }else if($typeprice =="B"){
+            $price_bygroup =  $productprice->sellpr4;
+        }else if($typeprice =="C"){
+            $price_bygroup =  $productprice->sellpr1;
+        }
+
+        $price_retail = $productprice->sellpr2; // ราคาปลีก
+
+        // ราคาขาย
+        if($price_spc){
+            $priceorder  = $price_spc;
+
+        }else if($price_bygroup){
+            $priceorder  = $price_bygroup;
+
+        }else if($price_retail){
+            $priceorder  = $price_retail;
 
         }
-    }
-}
 
-}
-        
-if(empty($priceorder)){
-    $productprice = productModel::on('report')
-    ->where('stkcod',$request->productcode)
-    ->selectRaw('stkdes AS name, stkcod AS code, sellpr1 AS price_a, sellpr2 AS price_b, sellpr3 AS price_c, sellpr1 AS price_d')
-    ->first();  
-    $priceorder =  $productprice->price_a;
-
-}
-
-return response()->json(    [
-    'cuscode' =>  $cuscode,
-    'productcode' => $request->productcode,
-    'priceorder' => $priceorder,
-    'typeprice' => $typeprice,
-    'daterange' => $daterange,
-    'once_time' => $once_time,
-    'pricetime' => $pricetime,
-    'memonumber' => $memonumber,
-    
-
-    ]);
+        return response()->json(    [
+            'cuscode' =>  $cuscode,
+            'productcode' => $request->productcode,
+            'priceorder' => $priceorder,
+            'typeprice' => $typeprice,
+            'daterange' => $daterange,
+            'once_time' => $once_time,
+            'pricetime' => $pricetime,
+            'memonumber' => $memonumber,
+            'price_spc' => $price_spc,
+            'price_bygroup' => $price_bygroup,
+            'price_retail' => $price_retail,
+            
+        ]);
 
     }
 

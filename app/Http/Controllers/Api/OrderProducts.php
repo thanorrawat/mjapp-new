@@ -34,8 +34,6 @@ class OrderProducts extends Controller
     public function search(Request $request)
     {
 
-
-       
         $customercode =  $request->customer;
 
 
@@ -114,6 +112,7 @@ $offset = ($request->page-1)*$limitnumber;
                 $products = productModel::on('report')
                 ->selectRaw('*, (SELECT locbal FROM mj_stloc  WHERE loccod = "01" AND stkcod = mj_stmas.stkcod ) AS qty')
                 ->whereRaw($wheresearch)
+                ->where('stktyp','0')
                 ->offset($offset)
                 ->limit($limitnumber)
                 ->get();
@@ -152,6 +151,7 @@ $offset = ($request->page-1)*$limitnumber;
 
                 $products = productModel::on('report')
                 ->selectRaw('*, (SELECT locbal FROM mj_stloc  WHERE loccod = "01" AND stkcod = mj_stmas.stkcod ) AS qty')
+                ->where('stktyp','0')
                 ->limit($limitnumber)
                 ->offset($offset)
                 ->get();
@@ -303,8 +303,10 @@ $offset = ($request->page-1)*$limitnumber;
     public function addproducttoorder(Request $request)
     {
 
-        if(!empty($request->productid) && !empty($request->orderid) && !empty($request->addqty)  && !empty($request->userfullname) && !empty($request->userid) ){
-
+        if(( !empty($request->productid) || $request->productid === 0  ) && !empty($request->orderid) && !empty($request->addqty)  && !empty($request->userfullname) && !empty($request->userid) ){
+            if($request->productid === 0 ){
+                $request->productid ='0'  ;
+            }
             //check สินค้าซ้ำ
             $alertstatus = (object)[]; 
             $alertstatus->icon ="error";
