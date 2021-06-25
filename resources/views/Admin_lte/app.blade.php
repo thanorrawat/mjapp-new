@@ -130,7 +130,7 @@
 </script>
 @include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9"])
 @yield('pagejs')
-<script src="{{ url('public/js/app.js') }}"></script>
+<script src="{{ url('public/js/app.js') }}?date={{ date('YmdHi')}}"></script>
 </body>
 </html>
 

@@ -56,7 +56,7 @@
 @if(
 (Auth::user()->role_id==6 && ($cartDetails->order_status==12|| $cartDetails->order_status==22) ) //admin รับ ORDER /ใบจอง
 ||
-((Auth::user()->role_id==2||Auth::user()->role_id==7)  && ($cartDetails->order_status==11|| $cartDetails->order_status==21) ) //Manager อนุมัติใบจอง
+((Auth::user()->role_id==1 || Auth::user()->role_id==2||Auth::user()->role_id==7)  && ($cartDetails->order_status==11|| $cartDetails->order_status==21) ) //Manager อนุมัติใบจอง
 )
           <form action="{{ url('confirmform') }}" method="post">
             <div class="text-center">
@@ -151,13 +151,7 @@
   )
   ( {{ __('file.Waiting_for_Approve_by_Manager') }} )
   @endif
- </div>
-     
-    
-      
-
-     
-   
+</div>
       <!-- /.info-box-content -->
     </div>
     <!-- /.card -->

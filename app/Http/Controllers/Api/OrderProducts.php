@@ -18,6 +18,7 @@ use App\express\customerModel;
 use App\express\productModel;
 use Auth;
 use App\express\stockModel;
+use App\express\istab;
 class OrderProducts extends Controller
 {
     /**
@@ -89,7 +90,9 @@ $offset = ($request->page-1)*$limitnumber;
             if($request->showsearchtype==1){  // ค้นหา + ประวัติการสั่งซื้อ
 
                 $products = productModel::on('report')
-                ->selectRaw('*, (SELECT locbal FROM mj_stloc  WHERE loccod = "01" AND stkcod = mj_stmas.stkcod ) AS qty')
+                ->selectRaw('*, (SELECT locbal FROM mj_stloc  WHERE loccod = "01" AND stkcod = mj_stmas.stkcod ) AS qty
+                , (SELECT typdes FROM mj_istab  WHERE tabtyp = "20" AND typcod = mj_stmas.qucod ) AS unitname
+                , (SELECT typdes2 FROM mj_istab  WHERE tabtyp = "20" AND typcod = mj_stmas.qucod ) AS unitname_en')
                 ->whereRaw($wheresearch)
                 ->offset($offset)
                 ->limit($limitnumber)
@@ -110,7 +113,10 @@ $offset = ($request->page-1)*$limitnumber;
 
                 $salehistory=[];
                 $products = productModel::on('report')
-                ->selectRaw('*, (SELECT locbal FROM mj_stloc  WHERE loccod = "01" AND stkcod = mj_stmas.stkcod ) AS qty')
+                ->selectRaw('*, (SELECT locbal FROM mj_stloc  WHERE loccod = "01" AND stkcod = mj_stmas.stkcod ) AS qty
+                , (SELECT typdes FROM mj_istab  WHERE tabtyp = "20" AND typcod = mj_stmas.qucod ) AS unitname
+                , (SELECT typdes2 FROM mj_istab  WHERE tabtyp = "20" AND typcod = mj_stmas.qucod ) AS unitname_en
+                ')
                 ->whereRaw($wheresearch)
                 ->where('stktyp','0')
                 ->offset($offset)
@@ -150,7 +156,9 @@ $offset = ($request->page-1)*$limitnumber;
                 $salehistory=[];
 
                 $products = productModel::on('report')
-                ->selectRaw('*, (SELECT locbal FROM mj_stloc  WHERE loccod = "01" AND stkcod = mj_stmas.stkcod ) AS qty')
+                ->selectRaw('*, (SELECT locbal FROM mj_stloc  WHERE loccod = "01" AND stkcod = mj_stmas.stkcod ) AS qty
+                , (SELECT typdes FROM mj_istab  WHERE tabtyp = "20" AND typcod = mj_stmas.qucod ) AS unitname
+                , (SELECT typdes2 FROM mj_istab  WHERE tabtyp = "20" AND typcod = mj_stmas.qucod ) AS unitname_en')
                 ->where('stktyp','0')
                 ->limit($limitnumber)
                 ->offset($offset)
@@ -175,7 +183,22 @@ $offset = ($request->page-1)*$limitnumber;
 
 
 
+    public function unitname()
+    {
+        $unitlist = istab::on('report')
+        ->where('tabtyp','20')
+        ->get();
 
+        $nitnamearr = [];
+        foreach($unitlist as $unit){
+            $unitcode = $unit->typcod;
+            $nitnamearr[$unitcode]['name_th'] = $unit->typdes;
+            $nitnamearr[$unitcode]['name_en'] = $unit->typdes2;
+
+        }
+
+        return response()->json($nitnamearr);
+    }
     
 
     public function customerlist(Request $request)
@@ -350,8 +373,15 @@ $offset = ($request->page-1)*$limitnumber;
                 $MjOrderProducts->userid= $request->userid;
                 $MjOrderProducts->memonumber= $request->memonumber;
                 $MjOrderProducts->priceoncetime= $once_time;
-                
+
+
+                $MjOrderProducts->unit_name_th= $request->unitname_th;
+                $MjOrderProducts->unit_name_en= $request->unitname_en;
+                $MjOrderProducts->unit_code= $request->unitcode;
+
                 $MjOrderProducts->save();
+
+                //return $MjOrderProducts;
 
                 $orderdetails = $request->orderdetails;
                 $docfullname ="";
@@ -378,7 +408,7 @@ $offset = ($request->page-1)*$limitnumber;
         $productlistinorder = MjOrderProducts::where('order_id',$request->orderid)
         ->where('canclepd','<>','1')
         ->leftjoin('products','mj_order_products.productscode','products.code' )
-        ->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount,canclepd')
+        ->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount,canclepd,unit_name_en')
         ->orderBy('pdorderid','asc')
         ->get();
             //response สถานะ
@@ -466,32 +496,32 @@ return response()->json(    [
         ;
         $amountrow = $request->price * $request->addqty;
         $MjOrderProducts->price = $request->price;
-$MjOrderProducts->qty= $request->addqty;
-$MjOrderProducts->amount= $amountrow;
+        $MjOrderProducts->qty= $request->addqty;
+        $MjOrderProducts->amount= $amountrow;
         $MjOrderProducts->stocknow= $request->stocknow;
         $MjOrderProducts->userid= $request->userid;
         $MjOrderProducts->memonumber= $request->memonumber;
         $MjOrderProducts->priceoncetime= $request->once_time;
         $MjOrderProducts->save();
-$orderdetails = $request->orderdetails;
-$docfullname ="";
-            if($request->doctype==1){
-                $docfullname = $orderdetails['ordernumberfull'];
-                $timelinestatus =  '113' ;//แก้ไขจำนวนสินค้า
-            }elseif($request->doctype==2){
-                $docfullname = $orderdetails['bookingnumber'];
-                $timelinestatus =  '213' ;//แก้ไขจำนวนสินค้า
-            
-            }
-                    //addtracking
-                    
-                    trackingadd($request->productid,$request->productscode,$request->diffqty,$request->doctype,$request->orderid,$docfullname,$timelinestatus,$request->userid,$request->userfullname);
-                    //update จำนวน
-                    updateproductstockforsale($request->productscode,$request->productid);
-                    $alertstatus = (object)[]; 
-                    $alertstatus->icon ="success";
-                    $alertstatus->title ="Completed";
-                    $alertstatus->text ="แกไขสินค้าเรียบร้อย";
+        $orderdetails = $request->orderdetails;
+        $docfullname ="";
+        if($request->doctype==1){
+            $docfullname = $orderdetails['ordernumberfull'];
+            $timelinestatus =  '113' ;//แก้ไขจำนวนสินค้า
+        }elseif($request->doctype==2){
+            $docfullname = $orderdetails['bookingnumber'];
+            $timelinestatus =  '213' ;//แก้ไขจำนวนสินค้า
+        
+        }
+        //addtracking
+        
+        trackingadd($request->productid,$request->productscode,$request->diffqty,$request->doctype,$request->orderid,$docfullname,$timelinestatus,$request->userid,$request->userfullname);
+        //update จำนวน
+        updateproductstockforsale($request->productscode,$request->productid);
+        $alertstatus = (object)[]; 
+        $alertstatus->icon ="success";
+        $alertstatus->title ="Completed";
+        $alertstatus->text ="แกไขสินค้าเรียบร้อย";
 
 
 
@@ -698,10 +728,10 @@ $pricetop3 = "";
 
     $productlistinorder = MjOrderProducts::where('order_id',$id)
     ->where('canclepd','<>','1')
-->leftjoin('products','mj_order_products.productscode','products.code' )
-->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount,canclepd,qtyso')
-->orderBy('pdorderid','asc')
-->get();
+    ->leftjoin('products','mj_order_products.productscode','products.code' )
+    ->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount,canclepd,qtyso')
+    ->orderBy('pdorderid','asc')
+    ->get();
 
 return response()->json($productlistinorder);
     }
@@ -712,10 +742,10 @@ return response()->json($productlistinorder);
 
     $productlistinorder = MjOrderProducts::where('order_id',$id)
     ->where('canclepd','=','1')
-->leftjoin('products','mj_order_products.productscode','products.code' )
-->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount,canclepd')
-->orderBy('pdorderid','asc')
-->get();
+    ->leftjoin('products','mj_order_products.productscode','products.code' )
+    ->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount,canclepd')
+    ->orderBy('pdorderid','asc')
+    ->get();
 
 return response()->json($productlistinorder);
     }

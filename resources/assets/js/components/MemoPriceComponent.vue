@@ -1,258 +1,205 @@
 <template>
   <div class="content is-small">
-        <div class="row  ">
-            <div class="col-md-8">
-
-  <div class="card card-default">
-              <div class="card-header"> <h4> รายการ Memo ขอปรับราคา (รอตรวจสอบ) </h4></div>
-
-                    <div class="card-body">
-<div >
-   <b-table :data="memopriceListnoapprove" 
-   
-         paginated
-            backend-pagination
-            :total="total"
-            :per-page="perPage"
-            @page-change="onPageChange"
-            aria-next-label="Next page"
-            aria-previous-label="Previous page"
-            aria-page-label="Page"
-            aria-current-label="Current page"
-
-  
-   
-   >
-    <b-table-column field="rownumber" label="#" sortable  v-slot="props">
-                {{ props.row.rownumber }}
-  </b-table-column>
-     <b-table-column field="memonumber" label="Number" sortable  v-slot="props">
-                {{ props.row.memonumber }}
-            </b-table-column>
-             <b-table-column field="mmp_productcode" label="Product Code" sortable  v-slot="props">
-                {{ props.row.mmp_productcode }}
-            </b-table-column>
-            <b-table-column field="price_now" label="ราคาเดิม" sortable  v-slot="props">
-                {{ props.row.price_now }}
-            </b-table-column>
+    <div class="row  ">
+        <div class="col-md-8">
+          <div class="card card-default">
+            <div class="card-header"> 
+              <h4> รายการ Memo ขอปรับราคา (รอตรวจสอบ) </h4>
+            </div>
+            <div class="card-body">
+              <div>
+                <b-table :data="memopriceListnoapprove" 
+                  paginated
+                  backend-pagination
+                  :total="total"
+                  :per-page="perPage"
+                  @page-change="onPageChange"
+                  aria-next-label="Next page"
+                  aria-previous-label="Previous page"
+                  aria-page-label="Page"
+                  aria-current-label="Current page"
+                  >
+                  <b-table-column field="rownumber" label="#" sortable  v-slot="props">
+                    {{ props.row.rownumber }}
+                  </b-table-column>
+                  <b-table-column field="memonumber" label="Number" sortable  v-slot="props">
+                    {{ props.row.memonumber }}
+                  </b-table-column>
+                  <b-table-column field="mmp_productcode" label="Product Code" sortable  v-slot="props">
+                    {{ props.row.mmp_productcode }}
+                  </b-table-column>
+                  <b-table-column field="price_now" label="ราคาเดิม" sortable  v-slot="props">
+                    {{ props.row.price_now }}
+                  </b-table-column>
                   <b-table-column field="price_new" label="ราคาใหม่"  sortable  v-slot="props">
-                {{ props.row.price_new }}
-            </b-table-column>
-           
+                    {{ props.row.price_new }}
+                  </b-table-column>
                   <b-table-column field="fullname" label="ผู้ทำรายการ"    v-slot="props">
-                {{ props.row.fullname}}
-            </b-table-column>
-
-               <b-table-column label="สถานะ" field="status"   sortable  v-slot="props">
-                <span v-if="props.row.status==1" class="badge badge-primary"> รออนุมัติ </span>
-                <span v-if="props.row.status==2" class="badge badge-success"> อนุมัติแล้ว </span>
-                <span v-if="props.row.status==3" class="badge badge-danger"> ไม่อนุมัติ </span>
-            </b-table-column>
-  <b-table-column label="#" field="id" v-slot="props">
-            <button class="btn btn-sm btn-primary" @click="viewmemo(props.row.id)"  data-toggle="modal" data-target="#exampleModal">
-       view 
-        </button>
-            </b-table-column>
-   </b-table>
-
-</div>
-
-                    </div>
-                </div>
-
-
-
-
-
-                <div v-if="!homepage" class="card card-default">
-              <div class="card-header"> <h4> รายการ Memo ขอปรับราคา (ตรวจสอบแล้ว)</h4></div>
-
-                    <div class="card-body">
-<div >
-   <b-table :data="memopriceListapprove" 
-   
-         paginated
-            backend-pagination
-            :total="total2"
-            :per-page="perPage"
-            @page-change="onPageChange"
-            aria-next-label="Next page"
-            aria-previous-label="Previous page"
-            aria-page-label="Page"
-            aria-current-label="Current page"
-
-  
-   
-   >
-       <b-table-column field="rownumber" label="#" sortable  v-slot="props">
-                {{ props.row.rownumber }}
-  </b-table-column>
-     <b-table-column field="memonumber" label="Number" sortable  v-slot="props">
-                {{ props.row.memonumber }}
-            </b-table-column>
-             <b-table-column field="mmp_productcode" label="Product Code" sortable  v-slot="props">
-                {{ props.row.mmp_productcode }}
-            </b-table-column>
-            <b-table-column field="price_now" label="ราคาเดิม" sortable  v-slot="props">
-                {{ props.row.price_now }}
-            </b-table-column>
+                    {{ props.row.fullname}}
+                  </b-table-column>
+                  <b-table-column label="สถานะ" field="status"   sortable  v-slot="props">
+                    <span v-if="props.row.status==1" class="badge badge-primary"> รออนุมัติ </span>
+                    <span v-if="props.row.status==2" class="badge badge-success"> อนุมัติแล้ว </span>
+                    <span v-if="props.row.status==3" class="badge badge-danger"> ไม่อนุมัติ </span>
+                  </b-table-column>
+                  <b-table-column label="#" field="id" v-slot="props">
+                    <!-- <button class="btn btn-sm btn-primary" @click="viewmemo(props.row.id)"  data-toggle="modal" data-target="#exampleModal"> -->
+                    <button class="btn btn-sm btn-primary" @click="viewmemo(props.row.id)">
+                      view 
+                    </button>
+                  </b-table-column>
+                </b-table>
+              </div>
+            </div>
+          </div>
+          <div v-if="!homepage" class="card card-default">
+            <div class="card-header"> <h4> รายการ Memo ขอปรับราคา (ตรวจสอบแล้ว)</h4></div>
+              <div class="card-body">
+                <div >
+                  <b-table :data="memopriceListapprove" 
+                    paginated
+                    backend-pagination
+                    :total="total2"
+                    :per-page="perPage"
+                    @page-change="onPageChange"
+                    aria-next-label="Next page"
+                    aria-previous-label="Previous page"
+                    aria-page-label="Page"
+                    aria-current-label="Current page"
+                  >
+                  <b-table-column field="rownumber" label="#" sortable  v-slot="props">
+                    {{ props.row.rownumber }}
+                  </b-table-column>
+                  <b-table-column field="memonumber" label="Number" sortable  v-slot="props">
+                    {{ props.row.memonumber }}
+                  </b-table-column>
+                  <b-table-column field="mmp_productcode" label="Product Code" sortable  v-slot="props">
+                    {{ props.row.mmp_productcode }}
+                  </b-table-column>
+                  <b-table-column field="price_now" label="ราคาเดิม" sortable  v-slot="props">
+                    {{ props.row.price_now }}
+                  </b-table-column>
                   <b-table-column field="price_new" label="ราคาใหม่"  sortable  v-slot="props">
-                {{ props.row.price_new }}
-            </b-table-column>
-
-               <b-table-column label="สถานะ" field="status"   sortable  v-slot="props">
-                <span v-if="props.row.status==1" class="badge badge-primary"> รออนุมัติ </span>
-                <span v-if="props.row.status==2" class="badge badge-success"> อนุมัติแล้ว </span>
-                <span v-if="props.row.status==3" class="badge badge-danger"> ไม่อนุมัติ </span>
-            </b-table-column>
-  <b-table-column label="#" field="id" v-slot="props">
-            <button class="btn btn-sm btn-primary" @click="viewmemo(props.row.id)"  data-toggle="modal" data-target="#exampleModal">
-       view 
-        </button>
-            </b-table-column>
-   </b-table>
-
-
-
-                    </div>
-                    </div>
-                </div>
+                    {{ props.row.price_new }}
+                  </b-table-column>
+                  <b-table-column label="สถานะ" field="status"   sortable  v-slot="props">
+                    <span v-if="props.row.status==1" class="badge badge-primary"> รออนุมัติ </span>
+                    <span v-if="props.row.status==2" class="badge badge-success"> อนุมัติแล้ว </span>
+                    <span v-if="props.row.status==3" class="badge badge-danger"> ไม่อนุมัติ </span>
+                  </b-table-column>
+                  <b-table-column label="#" field="id" v-slot="props">
+                    <button class="btn btn-sm btn-primary" @click="viewmemo(props.row.id)"  data-toggle="modal" data-target="#exampleModal">
+                      view 
+                    </button>
+                  </b-table-column>
+                </b-table>
+              </div>
             </div>
-    
-
-               <div class="col-md-4">
-                <div class="card card-default">
-                    <div class="card-header"> <h4>สร้าง Memo ขอปรับราคา</h4>
-                        </div>
-
-                    <div class="card-body">
-  <div class="row mb-1">
-                        <label class="col-md-4">สินค้า :</label>
-<div class="col-md-8">
-    <v-select  v-model="selected"  :options="options"></v-select>
-
-</div>  
-                    </div>
-                        <div class="row mb-1">
-
-                            <label class="col-md-4">เหตุผลการปรับราคา :</label>
-                            <div class="col-md-8">
-                              
-                              <select v-model="resonselected" class="form-control" name="" id="" >
-                                <option v-for=" reason in reasons" :value="reason.value">{{ reason.name }}</option>
-                                </select></div>
-                                </div>
-                      
-  <div class="row mb-1">
-                        <label class="col-md-4">ลูกค้า :</label>
-<div class="col-md-8">
-
-
-    <div class="custom-control custom-radio"> 
-                          <input v-model="cutomertype" class="custom-control-input" type="radio" id="customerRadio1" name="customerRadio" value="1">
-                          <label for="customerRadio1" class="custom-control-label">ลูกค้าทั้งหมด</label>
-                        </div>
-
-                        
-    <div class="custom-control custom-radio">
-                          <input v-model="cutomertype"  class="custom-control-input" type="radio" id="customerRadio2" name="customerRadio" value="2"> 
-                          <label for="customerRadio2" class="custom-control-label">เลือกลูกค้า</label>
-                        </div>
-
-     <select v-if="cutomertype==1" v-model="pricetype" class="form-control mt-1" name="pricetype" id="pricetype" required>
- <option value="">ประเภทราคา</option>
- <option value="A">Standard A</option>
- <option value="B">Standard B</option>
- <option value="C">Standard C</option>
- <option value="D">Standard D</option>
-
-  </select>
-  <div v-show="cutomertype==2" id="customerlistbox"  class=" mt-1 ">
-    <v-select  v-model="selectedCustomer"  :options="optionsCustomer"></v-select>
-
-
-  </div>
-
-</div>  
-                    </div>
-
-                      <div class="row mb-1">
-                        <label class="col-md-4">ช่วงเวลาที่มีผล :</label>
-<div class="col-md-8">
-
-       <div class="custom-control custom-radio"> 
-                          <input v-model="changepricetime" class="custom-control-input" type="radio" id="changepricetime1" name="changepricetime" value="1">
-                          <label for="changepricetime1" class="custom-control-label">ถาวร</label>
-                        </div>
-
-                        
-    <div class="custom-control custom-radio">
-                          <input v-model="changepricetime"  class="custom-control-input" type="radio" id="changepricetime2" name="changepricetime" value="2"> 
-                          <label for="changepricetime2" class="custom-control-label">เฉพาะครั้งนี้</label>
-                        </div>
-
-                            <div class="custom-control custom-radio">
-                          <input v-model="changepricetime"  class="custom-control-input" type="radio" id="changepricetime3" name="changepricetime" value="3"> 
-                          <label for="changepricetime3" class="custom-control-label">เฉพาะช่วงเวลา</label>
-                        </div>
-
-    <!-- Date range -->
-    <div v-show="changepricetime==3" class="form-group">
-      <label>Date range:</label>
-
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span class="input-group-text">
-            <i class="far fa-calendar-alt"></i>
-          </span>
+          </div>
         </div>
-        <input v-model="pricerangedateinput" type="text" class="form-control float-right" id="pricerangedate">
+        <div class="col-md-4">
+            <div class="card card-default">
+              <div class="card-header"> 
+                <h4>สร้าง Memo ขอปรับราคา</h4>
+              </div>
+            <div class="card-body">
+          <div class="row mb-1">
+            <label class="col-md-4">สินค้า :</label>
+            <div class="col-md-8">
+              <v-select  v-model="selected"  :options="options"></v-select>
+            </div>  
+          </div>
+          <div class="row mb-1">
+            <label class="col-md-4">เหตุผลการปรับราคา :</label>
+            <div class="col-md-8">
+              <select v-model="resonselected" class="form-control" name="" id="" >
+                <option v-for=" reason in reasons" :value="reason.value">{{ reason.name }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="row mb-1">
+            <label class="col-md-4">ลูกค้า :</label>
+          <div class="col-md-8">
+          <div v-if="role_id==2" class="custom-control custom-radio"> 
+            <input v-model="cutomertype" class="custom-control-input" type="radio" id="customerRadio1" name="customerRadio" value="1">
+            <label for="customerRadio1" class="custom-control-label">ลูกค้าทั้งหมด</label>
+          </div>
+          <div class="custom-control custom-radio">
+            <input v-model="cutomertype"  class="custom-control-input" type="radio" id="customerRadio2" name="customerRadio" value="2"> 
+            <label for="customerRadio2" class="custom-control-label">เลือกลูกค้า</label>
+          </div>
+          <select v-if="cutomertype==1" v-model="pricetype" class="form-control mt-1" name="pricetype" id="pricetype" required>
+            <option value="">ประเภทราคา</option>
+            <option value="A">Standard A</option>
+            <option value="B">Standard B</option>
+            <option value="C">Standard C</option>
+            <option value="D">Standard D</option>
+          </select>
+          <div v-show="cutomertype==2" id="customerlistbox"  class=" mt-1 ">
+            <v-select  v-model="selectedCustomer"  :options="optionsCustomer"></v-select>
+          </div>
+        </div>  
       </div>
-      <!-- /.input group -->
-    </div>
-    
-
-
-</div>  
-                    </div> 
-
-<div v-if="nowpricevalue && selected" id="chamgepricebox" >
-                    <div class="row mb-1" >
-
-                      
-                        <label class="col-md-3 text-right">ราคาปัจจุบัน :</label>
-                        <div class="col-md-3">
-                          <input v-model="nowpricevalue" type="number" class="form-control text-right">
-                        </div>
-                        <label class="col-md-3 text-right">ราคาใหม่ :</label>
-                        <div class="col-md-3">
-    <input v-model="memonewpricre" type="number" class="form-control text-right">
-
-                        </div>
-              <div class="col-md-12 text-center alert alert-info mt-1">
-                  
-                  {{  nowpricename }}
-                
-                </div>    
-                        <b-table-column field="fullname" label="ผู้ทำรายการ"    v-slot="props">
-                {{ props.row.fullname}}
-            </b-table-column>      
-                </div>
-       <div class="row mb-1">
-                        <label class="col-md-4">หมายเหตุ :</label>
-<div class="col-md-8">
-<textarea v-model="memoremark"  class="form-control"></textarea>
-</div>
-</div>
-                <div class="text-center m-1">
-<button @click="addmemo" class="btn btn-primary">ส่ง Memo</button>
-
-                </div>
-                </div></div>
+      <div class="row mb-1">
+        <label class="col-md-4">ช่วงเวลาที่มีผล :</label>
+        <div class="col-md-8">
+          <div class="custom-control custom-radio"> 
+            <input v-model="changepricetime" class="custom-control-input" type="radio" id="changepricetime1" name="changepricetime" value="1">
+            <label for="changepricetime1" class="custom-control-label">ถาวร</label>
+          </div>
+          <div class="custom-control custom-radio">
+            <input v-model="changepricetime"  class="custom-control-input" type="radio" id="changepricetime2" name="changepricetime" value="2"> 
+            <label for="changepricetime2" class="custom-control-label">เฉพาะครั้งนี้</label>
+          </div>
+          <div class="custom-control custom-radio">
+            <input v-model="changepricetime"  class="custom-control-input" type="radio" id="changepricetime3" name="changepricetime" value="3"> 
+            <label for="changepricetime3" class="custom-control-label">เฉพาะช่วงเวลา</label>
+          </div>
+          <!-- Date range -->
+          <div v-show="changepricetime==3" class="form-group">
+            <label>Date range:</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="far fa-calendar-alt"></i>
+                </span>
+              </div>
+              <input v-model="pricerangedateinput" type="text" class="form-control float-right" id="pricerangedate">
             </div>
+            <!-- /.input group -->
+          </div>
+        </div>  
+      </div> 
+      <div v-if="nowpricevalue && selected" id="chamgepricebox" >
+        <div class="row mb-1" >
+          <label class="col-md-3 text-right">ราคาปัจจุบัน :</label>
+          <div class="col-md-3">
+            <input v-model="nowpricevalue" type="number" class="form-control text-right">
+          </div>
+          <label class="col-md-3 text-right">ราคาใหม่ :</label>
+          <div class="col-md-3">
+            <input v-model="memonewpricre" type="number" class="form-control text-right">
+          </div>
+          <div class="col-md-12 text-center alert alert-info mt-1">
+            {{  nowpricename }}
+          </div>    
+          <b-table-column field="fullname" label="ผู้ทำรายการ"    v-slot="props">
+            {{ props.row.fullname}}
+          </b-table-column>      
         </div>
-
-
+        <div class="row mb-1">
+          <label class="col-md-4">หมายเหตุ :</label>
+          <div class="col-md-8">
+            <textarea v-model="memoremark"  class="form-control"></textarea>
+          </div>
+        </div>
+        <div class="text-center m-1">
+          <button @click="addmemo" class="btn btn-primary">ส่ง Memo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -263,21 +210,27 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div v-if="memoviewdata.productdt" class="modal-body">
+      <div v-if="memoviewdata" class="modal-body">
        <div class="row">
         <label class="col-md-4">สินค้า :</label>
-        <div class="col-md-8">{{memoviewdata.productdt[0].code}} - {{memoviewdata.productdt[0].name}} </div>
+        <div class="col-md-8" v-if="memoviewdata_productdt[0]">
+          {{ memoviewdata_productdt[0].code}} - {{memoviewdata_productdt[0].name}} 
+        </div>
       </div>
 
         <div class="row mt-1">
         <label class="col-md-4">เหตุผลการปรับราคา :</label>
-        <div class="col-md-8">{{memoviewdata.reson[0].name}}</div>
+        <div class="col-md-8" v-if="memoviewdata_reson[0]">
+          {{memoviewdata_reson[0].name}}
+        </div>
       </div>
 
           <div class="row mt-1">
         <label class="col-md-4">ลูกค้า :</label>
         <div v-if="memoviewdata.mmp_customertype==1" class="col-md-8">ลูกค้าทั้งหมด ( Standard {{ memoviewdata.mmp_typeprice }})</div>
-        <div v-if="memoviewdata.mmp_customertype==2" class="col-md-8">{{memoviewdata.customerdt[0].customercode}} - {{memoviewdata.customerdt[0].name}} </div>
+        <div v-if="memoviewdata.mmp_customertype==2 && memoviewdata_customerdt[0]" class="col-md-8">
+          {{memoviewdata_customerdt[0].customercode}} - {{memoviewdata_customerdt[0].name}} 
+        </div>
       </div>
        <div class="row mt-1">
         <label class="col-md-4">ช่วงเวลาที่มีผล :</label>
@@ -350,6 +303,7 @@
     </div>
   </div>
 </div> 
+
 
     </div>
     </div>
@@ -432,6 +386,9 @@ Vue.use(Buefy)
             memopriceListapprove:[],
             userlist:[],
             userlistnewindex:[],
+            memoviewdata_productdt :[],
+            memoviewdata_customerdt:[],
+            memoviewdata_reson:[]
         }},
             methods: {
        customerData(){
@@ -602,12 +559,12 @@ viewmemo(id){
     .then((response)=>{
       this.memoviewdata = response.data;   
       let pdcode= this.memoviewdata.mmp_productcode;
-      this.memoviewdata.productdt = this.productslist.filter(a=>a.code==pdcode);
+      this.memoviewdata_productdt = this.productslist.filter(a=>a.code==pdcode);
       let cuscode= this.memoviewdata.mmp_customer;
-     // this.memoviewdata.customerdt = this.customerlist.filter(b=>b.customercode==cuscode);
+      this.memoviewdata_customerdt = this.customerlist.filter(b=>b.customercode==cuscode);
       let resonid= this.memoviewdata.mmp_reson;
-      this.memoviewdata.reson = this.reasons.filter(b=>b.value==resonid);
-
+      this.memoviewdata_reson = this.reasons.filter(b=>b.value==resonid);
+      $('#exampleModal').modal('toggle');
     })
 
 },getuserlist(){
@@ -632,7 +589,7 @@ aprovesubmit(type){
  
   Vue.swal({
   title: 'ยืนยันการอนุมัติราคา ?',
-  text: "อนุมัติการปรับราคา Memo No. : "+this.memoviewdata.memonumber+" สินค้า "+this.memoviewdata.productdt[0].code+" - "+this.memoviewdata.productdt[0].name+" เป็น "+parseFloat(this.memoviewdata.price_new).toLocaleString()+" บาท ใช่หรือไม่",
+  text: "อนุมัติการปรับราคา Memo No. : "+this.memoviewdata.memonumber+" สินค้า "+this.memoviewdata_productdt[0].code+" - "+this.memoviewdata_productdt[0].name+" เป็น "+parseFloat(this.memoviewdata.price_new).toLocaleString()+" บาท ใช่หรือไม่",
   icon: 'warning',
   showCancelButton: true,
   confirmButtonColor: '#3085d6',
@@ -673,7 +630,7 @@ this.getmemolist();
 
   Vue.swal({
  title: 'ยืนยันการ ไม่อนุมัติราคา ?',
-  text: "ไม่อนุมัติการปรับราคา Memo No. : "+this.memoviewdata.memonumber+" สินค้า "+this.memoviewdata.productdt[0].code+" - "+this.memoviewdata.productdt[0].name+" เป็น "+parseFloat(this.memoviewdata.price_new).toLocaleString()+" บาท ใช่หรือไม่",
+  text: "ไม่อนุมัติการปรับราคา Memo No. : "+this.memoviewdata.memonumber+" สินค้า "+this.memoviewdata_productdt[0].code+" - "+this.memoviewdata_productdt[0].name+" เป็น "+parseFloat(this.memoviewdata.price_new).toLocaleString()+" บาท ใช่หรือไม่",
   icon: 'warning',
   showCancelButton: true,
   confirmButtonColor: '#3085d6',

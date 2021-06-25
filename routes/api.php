@@ -24,6 +24,7 @@ Route::get('LanguageTraslate','Api\LanguageTraslate@index');
 Route::resource('orderproducts','Api\OrderProducts');
 //Route::resource('orderproducts-search/','Api\OrderProducts');
 Route::get('orderproducts-search','Api\OrderProducts@search');
+Route::get('orderproducts-unit','Api\OrderProducts@unitname');
 Route::get('orderdt/{id}','Api\OrderProducts@orderdt');
 
 Route::get('order_customerlist','Api\OrderProducts@customerlist');

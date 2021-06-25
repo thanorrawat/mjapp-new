@@ -43,10 +43,7 @@
                     <th>{{trans('file.Product Details')}}</th>
                     <th class="not-exported">{{trans('file.action')}}</th> --}}
             </thead>
-            
         </table>
-
-
     </div>
 </section>
 
@@ -54,16 +51,15 @@
 
 <div id="product-details" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
     <div role="document" class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 id="exampleModalLabel" class="modal-title">{{trans('Product Details')}}</h5>
-          <button id="print-btn" type="button" class="btn btn-default btn-sm ml-3"><i class="dripicons-print"></i> {{trans('file.Print')}}</button>
-          <button type="button" id="close-btn" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
-        </div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="exampleModalLabel" class="modal-title">{{trans('Product Details')}}</h5>
+                <button id="print-btn" type="button" class="btn btn-default btn-sm ml-3"><i class="dripicons-print"></i> {{trans('file.Print')}}</button>
+                <button type="button" id="close-btn" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
+            </div>
         <div class="modal-body">
-
         </div>
-      </div>
+        </div>
     </div>
 </div>
 
@@ -123,20 +119,21 @@
 
         },
         columns: [
-            {{--  @if($_COOKIE['language']=='th' )  --}}
+            @if($_COOKIE['language']=='th' )
+
                 { data: 'stkcod', name: 'stkcod' },
                 { data: 'stkdes', name: 'stkdes' },
                 { data: 'unitname', name: 'unitname' },
                 { data: 'stcatgory', name: 'stcatgory' },
                 { data: 'stock_new', name: 'stock' },
                 
-            {{--  @else
+            @else
                 { data: 'stkcod', name: 'stkcod' },
                 { data: 'stkdes2', name: 'stkdes2' },
                 { data: 'unitname_en', name: 'unitname_en' },
                 { data: 'stcatgory2', name: 'stcatgory2' },
                 { data: 'stock_new', name: 'stock' },
-            @endif  --}}
+            @endif
 
         ],
         dom: 'Blfrtip',

@@ -88,6 +88,7 @@
                   <strong>{{  productshow.stkdes }} </strong>
                   <div> <strong>Code : </strong>  {{  productshow.stkcod }}  </div>
                   <div> <strong>หมวดสินค้า : </strong>  {{categorynamelist[productshow.stkgrp] }} </div>
+                  <div> <strong>หน่วย : </strong>{{  productshow.unitname }} ( {{  productshow.unitname_en }} ) </div>
                   <p id="productsdetails">
                     <!-- <strong>Product Details : </strong> -->
                     {{  productshow['product_details'] }}
@@ -262,7 +263,7 @@
           <td   class="text-right">
             {{productorder.orderprice| numeral('0,0') }}
           </td>
-          <td   class="text-right">{{productorder.orderqty | numeral('0,0') }}
+          <td   class="text-right">{{productorder.orderqty | numeral('0,0') }} {{ productorder.unit_name_en }}
             <i style="font-size:90%" data-toggle="modal" data-target="#editqty" class="fas fa-pencil-alt" @click="editqtyorder(index)"></i>
           </td>
           <td   class="text-right">
@@ -612,6 +613,9 @@
             userid:this.userid,
             memonumber:this.productprice.memonumber,
             once_time:this.productprice.once_time,
+            unitname_th: this.productshow.unitname,
+            unitname_en: this.productshow.unitname_en,
+            unitcode: this.productshow.qucod,
           }
         )
         .then((response)=>{
@@ -648,20 +652,7 @@
   .then((response)=>{
   this.productlistinorder=response.data; 
   })
-
-  this.ordertotalamountget();
-    /*
-    .then(
-  (response)=>{ 
-      for(let i = 0; i < this.productlistinorder.length; i++){
-        let pdcode =  this.productlistinorder[i].productscode;
-        // this.addproductpricecode(pdcode,i)
-        }
-
-      
-  })
-  */
-  
+  this.ordertotalamountget()
   },removepd(index){
 
     Vue.swal({
@@ -792,7 +783,7 @@ this.checkstock();
      sendforapprove(){
 Vue.swal({
   title: 'ยืนยันการส่งเอกสารเพื่อขออนุมัติ',
-  text: "ท่านต้องการส่ง "+this.doctypename+" เพื่อขออนุมัติจากผู้จัดการ ใช่หรือไม่?",
+  text: "ท่านต้องการส่ง "+this.doctypename+" เพื่อขออนุมัติ ใช่หรือไม่?",
   icon: 'warning',
   showCancelButton: true,
   confirmButtonColor: '#3085d6',
@@ -811,7 +802,7 @@ $('#modalloder').modal('show');
   order_id : this.orderdt.id,
   remark : this.orderdt.remark,
   bookingnumber : this.orderdt.bookingnumber,
- userid:this.userid,
+  userid:this.userid,
   
 
     

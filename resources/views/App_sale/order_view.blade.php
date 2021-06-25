@@ -109,7 +109,7 @@ line-height: 1.8
 <td align="center">{{ $number }}</td>
 <td>{{ $product->productscode }}</td>
 <td>{{ $product->name }}</td>
-<td align="center">{{ $product->orderqty }} </td>
+<td align="center">{{ $product->orderqty }} {{ $product->unit_name_en }}</td>
 <td >{{ $product->remarkrow }}</td>
 
 </tr>

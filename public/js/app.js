@@ -49798,6 +49798,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 //
 //
 //
+//
 
 
 
@@ -50067,7 +50068,10 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
           userfullname: this.userfullname,
           userid: this.userid,
           memonumber: this.productprice.memonumber,
-          once_time: this.productprice.once_time
+          once_time: this.productprice.once_time,
+          unitname_th: this.productshow.unitname,
+          unitname_en: this.productshow.unitname_en,
+          unitcode: this.productshow.qucod
         }).then(function (response) {
           _this6.alertstatus = response.data.alertstatus;
           _this6.productlistinorder = response.data.productlistinorder;
@@ -50105,18 +50109,7 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
                 axios.get(this.baseurl + '/api/showproductinorder/' + this.orderid).then(function (response) {
                   _this7.productlistinorder = response.data;
                 });
-
                 this.ordertotalamountget();
-                /*
-                .then(
-                (response)=>{ 
-                  for(let i = 0; i < this.productlistinorder.length; i++){
-                    let pdcode =  this.productlistinorder[i].productscode;
-                    // this.addproductpricecode(pdcode,i)
-                    }
-                   
-                })
-                */
 
               case 2:
               case 'end':
@@ -50248,7 +50241,7 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
 
       __WEBPACK_IMPORTED_MODULE_1_vue___default.a.swal({
         title: 'ยืนยันการส่งเอกสารเพื่อขออนุมัติ',
-        text: "ท่านต้องการส่ง " + this.doctypename + " เพื่อขออนุมัติจากผู้จัดการ ใช่หรือไม่?",
+        text: "ท่านต้องการส่ง " + this.doctypename + " เพื่อขออนุมัติ ใช่หรือไม่?",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -64691,6 +64684,16 @@ var render = function() {
                             )
                           ]),
                           _vm._v(" "),
+                          _c("div", [
+                            _c("strong", [_vm._v("หน่วย : ")]),
+                            _vm._v(
+                              _vm._s(_vm.productshow.unitname) +
+                                " ( " +
+                                _vm._s(_vm.productshow.unitname_en) +
+                                " ) "
+                            )
+                          ]),
+                          _vm._v(" "),
                           _c("p", { attrs: { id: "productsdetails" } }, [
                             _vm._v(
                               "\n                    " +
@@ -65210,7 +65213,10 @@ var render = function() {
                                       productorder.orderqty,
                                       "0,0"
                                     )
-                                  ) + "\n            "
+                                  ) +
+                                    " " +
+                                    _vm._s(productorder.unit_name_en) +
+                                    "\n            "
                                 ),
                                 _c("i", {
                                   staticClass: "fas fa-pencil-alt",
@@ -69667,51 +69673,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -69773,7 +69734,10 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_6_buef
       memopriceListnoapprove: [],
       memopriceListapprove: [],
       userlist: [],
-      userlistnewindex: []
+      userlistnewindex: [],
+      memoviewdata_productdt: [],
+      memoviewdata_customerdt: [],
+      memoviewdata_reson: []
     };
   },
 
@@ -69933,15 +69897,18 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_6_buef
       }).then(function (response) {
         _this6.memoviewdata = response.data;
         var pdcode = _this6.memoviewdata.mmp_productcode;
-        _this6.memoviewdata.productdt = _this6.productslist.filter(function (a) {
+        _this6.memoviewdata_productdt = _this6.productslist.filter(function (a) {
           return a.code == pdcode;
         });
         var cuscode = _this6.memoviewdata.mmp_customer;
-        // this.memoviewdata.customerdt = this.customerlist.filter(b=>b.customercode==cuscode);
+        _this6.memoviewdata_customerdt = _this6.customerlist.filter(function (b) {
+          return b.customercode == cuscode;
+        });
         var resonid = _this6.memoviewdata.mmp_reson;
-        _this6.memoviewdata.reson = _this6.reasons.filter(function (b) {
+        _this6.memoviewdata_reson = _this6.reasons.filter(function (b) {
           return b.value == resonid;
         });
+        $('#exampleModal').modal('toggle');
       });
     },
     getuserlist: function getuserlist() {
@@ -69965,7 +69932,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_6_buef
 
         __WEBPACK_IMPORTED_MODULE_0_vue___default.a.swal({
           title: 'ยืนยันการอนุมัติราคา ?',
-          text: "อนุมัติการปรับราคา Memo No. : " + this.memoviewdata.memonumber + " สินค้า " + this.memoviewdata.productdt[0].code + " - " + this.memoviewdata.productdt[0].name + " เป็น " + parseFloat(this.memoviewdata.price_new).toLocaleString() + " บาท ใช่หรือไม่",
+          text: "อนุมัติการปรับราคา Memo No. : " + this.memoviewdata.memonumber + " สินค้า " + this.memoviewdata_productdt[0].code + " - " + this.memoviewdata_productdt[0].name + " เป็น " + parseFloat(this.memoviewdata.price_new).toLocaleString() + " บาท ใช่หรือไม่",
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
@@ -70001,7 +69968,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_6_buef
 
         __WEBPACK_IMPORTED_MODULE_0_vue___default.a.swal({
           title: 'ยืนยันการ ไม่อนุมัติราคา ?',
-          text: "ไม่อนุมัติการปรับราคา Memo No. : " + this.memoviewdata.memonumber + " สินค้า " + this.memoviewdata.productdt[0].code + " - " + this.memoviewdata.productdt[0].name + " เป็น " + parseFloat(this.memoviewdata.price_new).toLocaleString() + " บาท ใช่หรือไม่",
+          text: "ไม่อนุมัติการปรับราคา Memo No. : " + this.memoviewdata.memonumber + " สินค้า " + this.memoviewdata_productdt[0].code + " - " + this.memoviewdata_productdt[0].name + " เป็น " + parseFloat(this.memoviewdata.price_new).toLocaleString() + " บาท ใช่หรือไม่",
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
@@ -70167,6 +70134,11 @@ var render = function() {
           _vm._m(0),
           _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
+            _vm._v(
+              "\n                " +
+                _vm._s(_vm.memoviewdata) +
+                "\n              "
+            ),
             _c(
               "div",
               [
@@ -70195,9 +70167,9 @@ var render = function() {
                           fn: function(props) {
                             return [
                               _vm._v(
-                                "\n                " +
+                                "\n                    " +
                                   _vm._s(props.row.rownumber) +
-                                  "\n  "
+                                  "\n                  "
                               )
                             ]
                           }
@@ -70217,9 +70189,9 @@ var render = function() {
                           fn: function(props) {
                             return [
                               _vm._v(
-                                "\n                " +
+                                "\n                    " +
                                   _vm._s(props.row.memonumber) +
-                                  "\n            "
+                                  "\n                  "
                               )
                             ]
                           }
@@ -70239,9 +70211,9 @@ var render = function() {
                           fn: function(props) {
                             return [
                               _vm._v(
-                                "\n                " +
+                                "\n                    " +
                                   _vm._s(props.row.mmp_productcode) +
-                                  "\n            "
+                                  "\n                  "
                               )
                             ]
                           }
@@ -70261,9 +70233,9 @@ var render = function() {
                           fn: function(props) {
                             return [
                               _vm._v(
-                                "\n                " +
+                                "\n                    " +
                                   _vm._s(props.row.price_now) +
-                                  "\n            "
+                                  "\n                  "
                               )
                             ]
                           }
@@ -70283,9 +70255,9 @@ var render = function() {
                           fn: function(props) {
                             return [
                               _vm._v(
-                                "\n                " +
+                                "\n                    " +
                                   _vm._s(props.row.price_new) +
-                                  "\n            "
+                                  "\n                  "
                               )
                             ]
                           }
@@ -70301,9 +70273,9 @@ var render = function() {
                           fn: function(props) {
                             return [
                               _vm._v(
-                                "\n                " +
+                                "\n                    " +
                                   _vm._s(props.row.fullname) +
-                                  "\n            "
+                                  "\n                  "
                               )
                             ]
                           }
@@ -70358,17 +70330,17 @@ var render = function() {
                                 "button",
                                 {
                                   staticClass: "btn btn-sm btn-primary",
-                                  attrs: {
-                                    "data-toggle": "modal",
-                                    "data-target": "#exampleModal"
-                                  },
                                   on: {
                                     click: function($event) {
                                       return _vm.viewmemo(props.row.id)
                                     }
                                   }
                                 },
-                                [_vm._v("\n       view \n        ")]
+                                [
+                                  _vm._v(
+                                    "\n                      view \n                    "
+                                  )
+                                ]
                               )
                             ]
                           }
@@ -70422,9 +70394,9 @@ var render = function() {
                                 fn: function(props) {
                                   return [
                                     _vm._v(
-                                      "\n                " +
+                                      "\n                    " +
                                         _vm._s(props.row.rownumber) +
-                                        "\n  "
+                                        "\n                  "
                                     )
                                   ]
                                 }
@@ -70432,7 +70404,7 @@ var render = function() {
                             ],
                             null,
                             false,
-                            879490804
+                            2119770100
                           )
                         }),
                         _vm._v(" "),
@@ -70449,9 +70421,9 @@ var render = function() {
                                 fn: function(props) {
                                   return [
                                     _vm._v(
-                                      "\n                " +
+                                      "\n                    " +
                                         _vm._s(props.row.memonumber) +
-                                        "\n            "
+                                        "\n                  "
                                     )
                                   ]
                                 }
@@ -70459,7 +70431,7 @@ var render = function() {
                             ],
                             null,
                             false,
-                            498498676
+                            3784262772
                           )
                         }),
                         _vm._v(" "),
@@ -70476,9 +70448,9 @@ var render = function() {
                                 fn: function(props) {
                                   return [
                                     _vm._v(
-                                      "\n                " +
+                                      "\n                    " +
                                         _vm._s(props.row.mmp_productcode) +
-                                        "\n            "
+                                        "\n                  "
                                     )
                                   ]
                                 }
@@ -70486,7 +70458,7 @@ var render = function() {
                             ],
                             null,
                             false,
-                            527038836
+                            775790964
                           )
                         }),
                         _vm._v(" "),
@@ -70503,9 +70475,9 @@ var render = function() {
                                 fn: function(props) {
                                   return [
                                     _vm._v(
-                                      "\n                " +
+                                      "\n                    " +
                                         _vm._s(props.row.price_now) +
-                                        "\n            "
+                                        "\n                  "
                                     )
                                   ]
                                 }
@@ -70513,7 +70485,7 @@ var render = function() {
                             ],
                             null,
                             false,
-                            2888919353
+                            2619825721
                           )
                         }),
                         _vm._v(" "),
@@ -70530,9 +70502,9 @@ var render = function() {
                                 fn: function(props) {
                                   return [
                                     _vm._v(
-                                      "\n                " +
+                                      "\n                    " +
                                         _vm._s(props.row.price_new) +
-                                        "\n            "
+                                        "\n                  "
                                     )
                                   ]
                                 }
@@ -70540,7 +70512,7 @@ var render = function() {
                             ],
                             null,
                             false,
-                            2800131507
+                            4195614643
                           )
                         }),
                         _vm._v(" "),
@@ -70615,7 +70587,11 @@ var render = function() {
                                           }
                                         }
                                       },
-                                      [_vm._v("\n       view \n        ")]
+                                      [
+                                        _vm._v(
+                                          "\n                      view \n                    "
+                                        )
+                                      ]
                                     )
                                   ]
                                 }
@@ -70623,7 +70599,7 @@ var render = function() {
                             ],
                             null,
                             false,
-                            3473987725
+                            2948477421
                           )
                         })
                       ],
@@ -70713,40 +70689,42 @@ var render = function() {
               _c("label", { staticClass: "col-md-4" }, [_vm._v("ลูกค้า :")]),
               _vm._v(" "),
               _c("div", { staticClass: "col-md-8" }, [
-                _c("div", { staticClass: "custom-control custom-radio" }, [
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.cutomertype,
-                        expression: "cutomertype"
-                      }
-                    ],
-                    staticClass: "custom-control-input",
-                    attrs: {
-                      type: "radio",
-                      id: "customerRadio1",
-                      name: "customerRadio",
-                      value: "1"
-                    },
-                    domProps: { checked: _vm._q(_vm.cutomertype, "1") },
-                    on: {
-                      change: function($event) {
-                        _vm.cutomertype = "1"
-                      }
-                    }
-                  }),
-                  _vm._v(" "),
-                  _c(
-                    "label",
-                    {
-                      staticClass: "custom-control-label",
-                      attrs: { for: "customerRadio1" }
-                    },
-                    [_vm._v("ลูกค้าทั้งหมด")]
-                  )
-                ]),
+                _vm.role_id == 2
+                  ? _c("div", { staticClass: "custom-control custom-radio" }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.cutomertype,
+                            expression: "cutomertype"
+                          }
+                        ],
+                        staticClass: "custom-control-input",
+                        attrs: {
+                          type: "radio",
+                          id: "customerRadio1",
+                          name: "customerRadio",
+                          value: "1"
+                        },
+                        domProps: { checked: _vm._q(_vm.cutomertype, "1") },
+                        on: {
+                          change: function($event) {
+                            _vm.cutomertype = "1"
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "label",
+                        {
+                          staticClass: "custom-control-label",
+                          attrs: { for: "customerRadio1" }
+                        },
+                        [_vm._v("ลูกค้าทั้งหมด")]
+                      )
+                    ])
+                  : _vm._e(),
                 _vm._v(" "),
                 _c("div", { staticClass: "custom-control custom-radio" }, [
                   _c("input", {
@@ -71099,9 +71077,9 @@ var render = function() {
                         },
                         [
                           _vm._v(
-                            "\n                  \n                  " +
+                            "\n            " +
                               _vm._s(_vm.nowpricename) +
-                              "\n                \n                "
+                              "\n          "
                           )
                         ]
                       ),
@@ -71115,9 +71093,9 @@ var render = function() {
                               fn: function(props) {
                                 return [
                                   _vm._v(
-                                    "\n                " +
+                                    "\n            " +
                                       _vm._s(props.row.fullname) +
-                                      "\n            "
+                                      "\n          "
                                   )
                                 ]
                               }
@@ -71125,7 +71103,7 @@ var render = function() {
                           ],
                           null,
                           false,
-                          504603401
+                          187826185
                         )
                       })
                     ],
@@ -71204,21 +71182,24 @@ var render = function() {
                 _vm._m(4)
               ]),
               _vm._v(" "),
-              _vm.memoviewdata.productdt
+              _vm.memoviewdata
                 ? _c("div", { staticClass: "modal-body" }, [
                     _c("div", { staticClass: "row" }, [
                       _c("label", { staticClass: "col-md-4" }, [
                         _vm._v("สินค้า :")
                       ]),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-8" }, [
-                        _vm._v(
-                          _vm._s(_vm.memoviewdata.productdt[0].code) +
-                            " - " +
-                            _vm._s(_vm.memoviewdata.productdt[0].name) +
-                            " "
-                        )
-                      ])
+                      _vm.memoviewdata_productdt[0]
+                        ? _c("div", { staticClass: "col-md-8" }, [
+                            _vm._v(
+                              "\n          " +
+                                _vm._s(_vm.memoviewdata_productdt[0].code) +
+                                " - " +
+                                _vm._s(_vm.memoviewdata_productdt[0].name) +
+                                " \n        "
+                            )
+                          ])
+                        : _vm._e()
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "row mt-1" }, [
@@ -71226,9 +71207,15 @@ var render = function() {
                         _vm._v("เหตุผลการปรับราคา :")
                       ]),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-8" }, [
-                        _vm._v(_vm._s(_vm.memoviewdata.reson[0].name))
-                      ])
+                      _vm.memoviewdata_reson[0]
+                        ? _c("div", { staticClass: "col-md-8" }, [
+                            _vm._v(
+                              "\n          " +
+                                _vm._s(_vm.memoviewdata_reson[0].name) +
+                                "\n        "
+                            )
+                          ])
+                        : _vm._e()
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "row mt-1" }, [
@@ -71246,15 +71233,17 @@ var render = function() {
                           ])
                         : _vm._e(),
                       _vm._v(" "),
-                      _vm.memoviewdata.mmp_customertype == 2
+                      _vm.memoviewdata.mmp_customertype == 2 &&
+                      _vm.memoviewdata_customerdt[0]
                         ? _c("div", { staticClass: "col-md-8" }, [
                             _vm._v(
-                              _vm._s(
-                                _vm.memoviewdata.customerdt[0].customercode
-                              ) +
+                              "\n          " +
+                                _vm._s(
+                                  _vm.memoviewdata_customerdt[0].customercode
+                                ) +
                                 " - " +
-                                _vm._s(_vm.memoviewdata.customerdt[0].name) +
-                                " "
+                                _vm._s(_vm.memoviewdata_customerdt[0].name) +
+                                " \n        "
                             )
                           ])
                         : _vm._e()

@@ -54,9 +54,10 @@ $MjOrderDetailsupdate->save();
    
      if($doctype==1){
         if(url('/')!='http://localhost/mj-app_onweb'){ ///ถ้าไม่ใช่ localhost
-     $sMessage = "มีการส่งรายการ Order สินค้า เลขที่ : ".$request->ordernumberfull."  ท่านสามารถตรวจสอบและดำเนินการทำรายการต่อได้ที่ ".url('order/'.$request->ordernumberfull.'/edit');
-     lineNotifysend(2,$sMessage ,'');
-     $orderid = $request->order_id;
+        $sMessage = "มีการส่งรายการ Order สินค้า เลขที่ : ".$request->ordernumberfull."  ท่านสามารถตรวจสอบและดำเนินการทำรายการต่อได้ที่ ".url('order/'.$request->ordernumberfull.'/edit');
+        lineNotifysend(1,$sMessage ,'');
+        lineNotifysend(2,$sMessage ,'');
+        $orderid = $request->order_id;
         }
      ////----------บันทึกTimeline
      
