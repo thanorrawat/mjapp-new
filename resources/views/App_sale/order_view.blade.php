@@ -98,6 +98,7 @@ line-height: 1.8
 <th style="text-align: center">รหัส</th>
 <th style="text-align: center">รายละเอียดสินค้า</th>
 <th style="text-align: center">จำนวน</th>
+<th style="text-align: center">{{ __('file.Unit') }}</th>
 <th style="text-align: center">หมายเหตุ</th>
     </tr>
     <tbody>
@@ -109,7 +110,12 @@ line-height: 1.8
 <td align="center">{{ $number }}</td>
 <td>{{ $product->productscode }}</td>
 <td>{{ $product->name }}</td>
-<td align="center">{{ $product->orderqty }} {{ $product->unit_name_en }}</td>
+<td align="center">{{ $product->orderqty }}</td>
+<td align="center">{{ $product->unit_name_th }} 
+    @if($product->unit_name_en)
+    / {{ $product->unit_name_en }}
+    @endif
+</td>
 <td >{{ $product->remarkrow }}</td>
 
 </tr>
@@ -122,6 +128,7 @@ line-height: 1.8
     <td></td>
     <td></td>
     <td align="center"></td>
+    <td ></td>
     <td ></td>
     
     </tr>

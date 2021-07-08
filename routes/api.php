@@ -25,6 +25,7 @@ Route::resource('orderproducts','Api\OrderProducts');
 //Route::resource('orderproducts-search/','Api\OrderProducts');
 Route::get('orderproducts-search','Api\OrderProducts@search');
 Route::get('orderproducts-unit','Api\OrderProducts@unitname');
+Route::get('productdt/{id}','Api\OrderProducts@productdt');
 Route::get('orderdt/{id}','Api\OrderProducts@orderdt');
 
 Route::get('order_customerlist','Api\OrderProducts@customerlist');
@@ -47,6 +48,7 @@ Route::post('cancleproducttoorder','Api\OrderProducts@cancleproducttoorder'); //
 Route::post('readdcancleproducttoorder','Api\OrderProducts@readdcancleproducttoorder'); //เพิ่มสินค้าที่ถูกยกเลิกกลับ Order
 
 Route::post('editqtyproducttoorder','Api\OrderProducts@editqtyorder'); //แก้ไขจำนวนสินค้าจาก Order
+
 
 //SO
 Route::post('createso','Api\Socontroller@create'); //เพิ่มสินค้าใน Order

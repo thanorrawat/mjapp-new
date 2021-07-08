@@ -49799,6 +49799,32 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -49883,7 +49909,9 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
       productprice: [],
       productlistpriceobj: [],
       ordertotalamount: 0,
-      pricetype_select: 0
+      pricetype_select: 0,
+      edit_unit_th: '',
+      edit_unit_en: ''
 
     };
   },
@@ -50022,35 +50050,42 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
       this.productshow = this.relate_products[index];
     },
     showProductinorderdt: function showProductinorderdt(index) {
+      var _this4 = this;
+
       this.productshow = this.productlistinorder[index];
-      this.productshow['name'] = this.productlistinorder[index].name;
+
       this.productshow['stkcod'] = this.productlistinorder[index].productscode;
-      this.productshow['category_code'] = this.productlistinorder[index].category_code;
-      this.productshow['product_details'] = this.productlistinorder[index].product_details;
-      this.productshow['id'] = this.productlistinorder[index].indexrow;
+
+      axios.get(this.baseurl + '/api/productdt/' + encodeURIComponent(this.productshow.stkcod)).then(function (response) {
+        _this4.productshow = response.data;
+      });
+      // this.productshow['name']  =this.productlistinorder[index].name;
+      // this.productshow['category_code']=this.productlistinorder[index].category_code;
+      // this.productshow['product_details']=this.productlistinorder[index].product_details;
+      // this.productshow['id']=this.productlistinorder[index].indexrow;
       var productname = this.productlistinorder[index].name;
       this.changrelatekey(productname);
     },
 
     checkstock: function checkstock() {
-      var _this4 = this;
+      var _this5 = this;
 
       //ฟังก์ชั่น
       axios.get(this.baseurl + '/api/checkstock/' + encodeURIComponent(this.productshow.stkcod)).then(function (response) {
-        _this4.stocklist = response.data.stocklist;
+        _this5.stocklist = response.data.stocklist;
       });
       this.checkthisprice();
     },
     categoryname: function categoryname() {
-      var _this5 = this;
+      var _this6 = this;
 
       //ฟังก์ชั่น
       axios.get(this.baseurl + '/api/categorynamelist').then(function (response) {
-        _this5.categorynamelist = response.data;
+        _this6.categorynamelist = response.data;
       });
     },
     addtodorder: function addtodorder(productid) {
-      var _this6 = this;
+      var _this7 = this;
 
       //ฟังก์ชั่นเพิ่มสินค้า
       //console.log(this.addqty+'/'+this.userid+'/'+this.orderid+'/'+productid)
@@ -50073,8 +50108,8 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
           unitname_en: this.productshow.unitname_en,
           unitcode: this.productshow.qucod
         }).then(function (response) {
-          _this6.alertstatus = response.data.alertstatus;
-          _this6.productlistinorder = response.data.productlistinorder;
+          _this7.alertstatus = response.data.alertstatus;
+          _this7.productlistinorder = response.data.productlistinorder;
 
           __WEBPACK_IMPORTED_MODULE_1_vue___default.a.swal({
             icon: response.data.alertstatus.icon,
@@ -50099,7 +50134,7 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
     },
     showproductsinoreder: function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.mark(function _callee() {
-        var _this7 = this;
+        var _this8 = this;
 
         return __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.wrap(function _callee$(_context) {
           while (1) {
@@ -50107,7 +50142,7 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
               case 0:
 
                 axios.get(this.baseurl + '/api/showproductinorder/' + this.orderid).then(function (response) {
-                  _this7.productlistinorder = response.data;
+                  _this8.productlistinorder = response.data;
                 });
                 this.ordertotalamountget();
 
@@ -50126,7 +50161,7 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
       return showproductsinoreder;
     }(),
     removepd: function removepd(index) {
-      var _this8 = this;
+      var _this9 = this;
 
       __WEBPACK_IMPORTED_MODULE_1_vue___default.a.swal({
         title: 'ยืนยันการลบสินค้า?',
@@ -50141,19 +50176,19 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
         if (result.value) {
           //<--------------
 
-          axios.post(_this8.baseurl + '/api/removeproducttoorder', {
-            productid: _this8.productlistinorder[index].indexrow,
-            orderid: _this8.orderid,
-            orderproductid: _this8.productlistinorder[index].pdorderid,
-            addqty: _this8.productlistinorder[index].orderqty,
-            productscode: _this8.productlistinorder[index].stkcod,
-            doctype: _this8.orderdt.doctype,
-            orderdetails: _this8.orderdt,
-            userfullname: _this8.userfullname,
-            userid: _this8.userid
+          axios.post(_this9.baseurl + '/api/removeproducttoorder', {
+            productid: _this9.productlistinorder[index].indexrow,
+            orderid: _this9.orderid,
+            orderproductid: _this9.productlistinorder[index].pdorderid,
+            addqty: _this9.productlistinorder[index].orderqty,
+            productscode: _this9.productlistinorder[index].stkcod,
+            doctype: _this9.orderdt.doctype,
+            orderdetails: _this9.orderdt,
+            userfullname: _this9.userfullname,
+            userid: _this9.userid
           }).then(function (response) {
-            _this8.alertstatus = response.data.alertstatus;
-            _this8.productlistinorder = response.data.productlistinorder;
+            _this9.alertstatus = response.data.alertstatus;
+            _this9.productlistinorder = response.data.productlistinorder;
 
             __WEBPACK_IMPORTED_MODULE_1_vue___default.a.swal({
               icon: response.data.alertstatus.icon,
@@ -50164,8 +50199,8 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
               timerProgressBar: true
 
             });
-            _this8.showproductsinoreder();
-            _this8.checkstock();
+            _this9.showproductsinoreder();
+            _this9.checkstock();
           });
 
           //-------------->
@@ -50176,68 +50211,73 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
 
       this.editqtyorderdetail = this.productlistinorder[index];
       this.editqtynew = this.productlistinorder[index].orderqty;
+      this.edit_unit_th = this.productlistinorder[index].unit_name_th;
+      this.edit_unit_en = this.productlistinorder[index].unit_name_en;
       this.editqtyorderdetail.indexorder = index;
 
       this.showProductinorderdt(index);
     },
     editqtysumit: function editqtysumit() {
-      var _this9 = this;
+      var _this10 = this;
 
-      if (this.newtracking_qty === 0) {
+      //   if(this.newtracking_qty===0){
+      //       Vue.swal({
+      //   icon: "error",
+      //   title: "ไม่มีการเปลี่ยนแปลง",
+      //   text: "กรูณาเปลี่ยนจำนวนก่อนการบันทึก",
+      //   toast: true,
+      //   timer: 2000,
+      //   timerProgressBar: true,
+
+      // });
+      //   }else{
+
+      ///////แก้ไขจำนวน
+
+
+      axios.post(this.baseurl + '/api/editqtyproducttoorder', {
+        orderproductid: this.editqtyorderdetail.pdorderid,
+        productid: this.editqtyorderdetail.pdid,
+        orderid: this.orderid,
+        addqty: this.editqtynew,
+        diffqty: this.newtracking_qty,
+        productscode: this.editqtyorderdetail.productscode,
+        doctype: this.orderdt.doctype,
+        orderdetails: this.orderdt,
+        stocknow: this.editqtyorderdetail.stocknow,
+        userfullname: this.userfullname,
+        userid: this.userid,
+        price: this.productprice.priceorder,
+        memonumber: this.productprice.memonumber,
+        once_time: this.productprice.once_time,
+        unit_name_th: this.edit_unit_th,
+        unit_name_en: this.edit_unit_en
+      }).then(function (response) {
+        _this10.alertstatus = response.data.alertstatus;
+        _this10.productlistinorder = response.data.productlistinorder;
+
         __WEBPACK_IMPORTED_MODULE_1_vue___default.a.swal({
-          icon: "error",
-          title: "ไม่มีการเปลี่ยนแปลง",
-          text: "กรูณาเปลี่ยนจำนวนก่อนการบันทึก",
+          icon: response.data.alertstatus.icon,
+          title: response.data.title,
+          text: response.data.alertstatus.text,
           toast: true,
           timer: 2000,
           timerProgressBar: true
 
         });
-      } else {
 
-        ///////แก้ไขจำนวน
+        $('#editqty').modal('hide');
+        _this10.checkstock();
+        _this10.showproductsinoreder();
+      });
+
+      /////////
 
 
-        axios.post(this.baseurl + '/api/editqtyproducttoorder', {
-          orderproductid: this.editqtyorderdetail.pdorderid,
-          productid: this.editqtyorderdetail.pdid,
-          orderid: this.orderid,
-          addqty: this.editqtynew,
-          diffqty: this.newtracking_qty,
-          productscode: this.editqtyorderdetail.productscode,
-          doctype: this.orderdt.doctype,
-          orderdetails: this.orderdt,
-          stocknow: this.editqtyorderdetail.stocknow,
-          userfullname: this.userfullname,
-          userid: this.userid,
-          price: this.productprice.priceorder,
-          memonumber: this.productprice.memonumber,
-          once_time: this.productprice.once_time
-        }).then(function (response) {
-          _this9.alertstatus = response.data.alertstatus;
-          _this9.productlistinorder = response.data.productlistinorder;
-
-          __WEBPACK_IMPORTED_MODULE_1_vue___default.a.swal({
-            icon: response.data.alertstatus.icon,
-            title: response.data.title,
-            text: response.data.alertstatus.text,
-            toast: true,
-            timer: 2000,
-            timerProgressBar: true
-
-          });
-
-          $('#editqty').modal('hide');
-          _this9.checkstock();
-          _this9.showproductsinoreder();
-        });
-
-        /////////
-
-      }
+      //}
     },
     sendforapprove: function sendforapprove() {
-      var _this10 = this;
+      var _this11 = this;
 
       __WEBPACK_IMPORTED_MODULE_1_vue___default.a.swal({
         title: 'ยืนยันการส่งเอกสารเพื่อขออนุมัติ',
@@ -50253,18 +50293,18 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
           //---
           $('#modalloder').modal('show');
 
-          axios.post(_this10.baseurl + '/api/notify/ordersendmanager', {
+          axios.post(_this11.baseurl + '/api/notify/ordersendmanager', {
             confirm: 1,
-            doctype: _this10.orderdt.doctype,
-            ordernumberfull: _this10.orderdt.ordernumberfull,
-            order_id: _this10.orderdt.id,
-            remark: _this10.orderdt.remark,
-            bookingnumber: _this10.orderdt.bookingnumber,
-            userid: _this10.userid
+            doctype: _this11.orderdt.doctype,
+            ordernumberfull: _this11.orderdt.ordernumberfull,
+            order_id: _this11.orderdt.id,
+            remark: _this11.orderdt.remark,
+            bookingnumber: _this11.orderdt.bookingnumber,
+            userid: _this11.userid
 
           }).then(function (response) {
-            _this10.alertstatus = response.data.alertstatus;
-            _this10.orderdt = response.data.orderdt;
+            _this11.alertstatus = response.data.alertstatus;
+            _this11.orderdt = response.data.orderdt;
 
             $('#modalloder').modal('hide');
 
@@ -50281,7 +50321,7 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
       });
     },
     checkthisprice: function checkthisprice() {
-      var _this11 = this;
+      var _this12 = this;
 
       axios.post(this.baseurl + '/api/order_checkprice', {
         productcode: this.productshow.stkcod,
@@ -50289,7 +50329,7 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
         typeprice: this.customerdt.tabpr
       }).then(function (response) {
 
-        _this11.productprice = response.data;
+        _this12.productprice = response.data;
       });
     }
 
@@ -50325,7 +50365,7 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
     ,
     addproductpricecode: function () {
       var _ref2 = _asyncToGenerator( /*#__PURE__*/__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.mark(function _callee2(pdcode, idexorder) {
-        var _this12 = this;
+        var _this13 = this;
 
         var pdpriceindex, oderindex;
         return __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.wrap(function _callee2$(_context2) {
@@ -50357,10 +50397,10 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
 
                   }).then(function (response) {
 
-                    _this12.productlistpriceobj.push(response.data);
+                    _this13.productlistpriceobj.push(response.data);
                     if (oderindex != "-1") {
-                      _this12.productlistinorder[oderindex].price = response.data.priceorder;
-                      _this12.productlistinorder[oderindex].amountrow = +response.data.priceorder * +_this12.productlistinorder[oderindex].orderqty;
+                      _this13.productlistinorder[oderindex].price = response.data.priceorder;
+                      _this13.productlistinorder[oderindex].amountrow = +response.data.priceorder * +_this13.productlistinorder[oderindex].orderqty;
                       //this.ordertotalamount = +this.ordertotalamount +(+this.productlistinorder[oderindex].amountrow);
                     }
                   });
@@ -50387,10 +50427,10 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_
       return addproductpricecode;
     }(),
     ordertotalamountget: function ordertotalamountget() {
-      var _this13 = this;
+      var _this14 = this;
 
       axios.get(this.baseurl + '/api/showordertotalamount/' + this.orderid).then(function (response) {
-        _this13.ordertotalamount = response.data[0].totalamount;
+        _this14.ordertotalamount = response.data[0].totalamount;
       });
     }
   } ///////////////////////////////////////-------------------   method
@@ -65213,10 +65253,7 @@ var render = function() {
                                       productorder.orderqty,
                                       "0,0"
                                     )
-                                  ) +
-                                    " " +
-                                    _vm._s(productorder.unit_name_en) +
-                                    "\n            "
+                                  ) + "\n            "
                                 ),
                                 _c("i", {
                                   staticClass: "fas fa-pencil-alt",
@@ -65231,6 +65268,21 @@ var render = function() {
                                     }
                                   }
                                 })
+                              ]),
+                              _vm._v(" "),
+                              _c("td", { staticClass: "text-right" }, [
+                                _vm._v(
+                                  "\n            " +
+                                    _vm._s(productorder.unit_name_th) +
+                                    " "
+                                ),
+                                productorder.unit_name_en
+                                  ? _c("span", [
+                                      _vm._v(
+                                        "/ " + _vm._s(productorder.unit_name_en)
+                                      )
+                                    ])
+                                  : _vm._e()
                               ]),
                               _vm._v(" "),
                               _c("td", { staticClass: "text-right" }, [
@@ -65286,6 +65338,8 @@ var render = function() {
                                 )
                               )
                             ]),
+                            _vm._v(" "),
+                            _c("td"),
                             _vm._v(" "),
                             _c("td", { staticClass: "text-right" }, [
                               _vm._v(
@@ -65413,9 +65467,9 @@ var render = function() {
                 _vm._v(" "),
                 _c("div", { staticClass: "modal-body" }, [
                   _vm._v(
-                    "\n\n              " +
+                    "\n        " +
                       _vm._s(_vm.editqtyorderdetail.name) +
-                      "\n         "
+                      "\n        "
                   ),
                   _c("div", { staticClass: "row mt-2" }, [
                     _vm._m(6),
@@ -65442,9 +65496,67 @@ var render = function() {
                           }
                         }
                       })
-                    ]),
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "row mt-2" }, [
+                    _vm._m(7),
                     _vm._v(" "),
-                    _c("div", { staticClass: "col" }, [
+                    _c("div", { staticClass: "col-4" }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.edit_unit_th,
+                            expression: "edit_unit_th"
+                          }
+                        ],
+                        staticClass: "form-control text-right",
+                        attrs: { type: "text" },
+                        domProps: { value: _vm.edit_unit_th },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.edit_unit_th = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "row mt-2" }, [
+                    _vm._m(8),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-4" }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.edit_unit_en,
+                            expression: "edit_unit_en"
+                          }
+                        ],
+                        staticClass: "form-control text-right",
+                        attrs: { type: "text" },
+                        domProps: { value: _vm.edit_unit_en },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.edit_unit_en = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "row mt-2" }, [
+                    _c("div", { staticClass: "col text-center" }, [
                       _c(
                         "button",
                         {
@@ -65463,7 +65575,7 @@ var render = function() {
                   )
                 ]),
                 _vm._v(" "),
-                _vm._m(7)
+                _vm._m(9)
               ])
             ]
           )
@@ -65478,7 +65590,7 @@ var render = function() {
               attrs: { role: "alert" }
             },
             [
-              _vm._m(8),
+              _vm._m(10),
               _vm._v(" "),
               _c("h4", [_vm._v("อยู่ระหว่างการรอนุมัติจาก ผู้จัดการ")])
             ]
@@ -65543,6 +65655,8 @@ var staticRenderFns = [
       _vm._v(" "),
       _c("th", [_vm._v("จำนวน")]),
       _vm._v(" "),
+      _c("th", [_vm._v("หน่วยนับ")]),
+      _vm._v(" "),
       _c("th", [_vm._v("รวม")]),
       _vm._v(" "),
       _c("th", [_vm._v("#")])
@@ -65587,6 +65701,22 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "col-4 text-right" }, [
       _c("strong", [_vm._v("จำนวน : ")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-4 text-right" }, [
+      _c("strong", [_vm._v("หน่วยนับไทย : ")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-4 text-right" }, [
+      _c("strong", [_vm._v("หน่วยนับภาษาอังกฤษ : ")])
     ])
   },
   function() {
@@ -69672,7 +69802,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 
 
@@ -70134,11 +70263,6 @@ var render = function() {
           _vm._m(0),
           _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
-            _vm._v(
-              "\n                " +
-                _vm._s(_vm.memoviewdata) +
-                "\n              "
-            ),
             _c(
               "div",
               [

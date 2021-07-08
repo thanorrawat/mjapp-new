@@ -243,6 +243,7 @@
         <th>รายละเอียดสินค้า</th>
         <th>ราคา</th>
         <th>จำนวน</th>
+        <th>หน่วยนับ</th>
         <th>รวม</th>
         <th>#</th>
       </thead>
@@ -263,8 +264,11 @@
           <td   class="text-right">
             {{productorder.orderprice| numeral('0,0') }}
           </td>
-          <td   class="text-right">{{productorder.orderqty | numeral('0,0') }} {{ productorder.unit_name_en }}
+          <td   class="text-right">{{productorder.orderqty | numeral('0,0') }}
             <i style="font-size:90%" data-toggle="modal" data-target="#editqty" class="fas fa-pencil-alt" @click="editqtyorder(index)"></i>
+          </td>
+          <td   class="text-right">
+            {{ productorder.unit_name_th }} <span v-if="productorder.unit_name_en">/ {{ productorder.unit_name_en }}</span>
           </td>
           <td   class="text-right">
             {{productorder.amount| numeral('0,0') }} 
@@ -279,6 +283,8 @@
   <td></td>
   <td class="text-right"><strong>รวม</strong></td>
   <td class="text-right">{{ totalorderqty | numeral('0,0')  }}</td>
+  <td></td>
+
   <td class="text-right">{{ ordertotalamount | numeral('0,0')  }}</td>
 
   <td></td>
@@ -323,17 +329,37 @@
         </button>
       </div>
       <div class="modal-body">
+        {{ editqtyorderdetail.name }}
+        <div class="row mt-2">
+          <div class="col-4 text-right">
+            <strong>จำนวน : </strong>
+          </div>
+          <div class="col-4">
+            <input min="1"  class="form-control text-right" type="number" v-model="editqtynew">
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-4 text-right">
+            <strong>หน่วยนับไทย : </strong>
+          </div>
+          <div class="col-4">
+            <input  class="form-control text-right" type="text" v-model="edit_unit_th">
+          </div>
+        </div>
 
-              {{ editqtyorderdetail.name }}
-         <div class="row mt-2">
-           <div class="col-4 text-right">
-             <strong>จำนวน : </strong>
-              </div>
-          
-           <div class="col-4">
-             <input min="1"  class="form-control text-right" type="number" v-model="editqtynew"></div>
-           <div class="col"> <button @click="editqtysumit" type="button" class="btn btn-primary">Save changes</button></div>
-         </div>
+        <div class="row mt-2">
+          <div class="col-4 text-right">
+            <strong>หน่วยนับภาษาอังกฤษ : </strong>
+          </div>
+          <div class="col-4">
+            <input  class="form-control text-right" type="text" v-model="edit_unit_en">
+          </div>
+        </div>
+
+
+        <div class="row mt-2">
+          <div class="col text-center"> <button @click="editqtysumit" type="button" class="btn btn-primary">Save changes</button></div>
+        </div>
 เปลี่ยนแปลง : {{newtracking_qty }}
       </div>
       <div class="modal-footer">
@@ -442,7 +468,9 @@
         productprice:[],
         productlistpriceobj:[],
         ordertotalamount:0,
-        pricetype_select:0
+        pricetype_select:0,
+        edit_unit_th:'',
+        edit_unit_en:''
 
     }
 },
@@ -575,11 +603,17 @@
     },
     showProductinorderdt(index){
       this.productshow = this.productlistinorder[index]
-      this.productshow['name']  =this.productlistinorder[index].name;
+   
       this.productshow['stkcod'] = this.productlistinorder[index].productscode;
-      this.productshow['category_code']=this.productlistinorder[index].category_code;
-      this.productshow['product_details']=this.productlistinorder[index].product_details;
-      this.productshow['id']=this.productlistinorder[index].indexrow;
+
+      axios.get(this.baseurl+'/api/productdt/'+encodeURIComponent(this.productshow.stkcod))
+      .then((response)=>{
+        this.productshow=response.data;
+      })
+      // this.productshow['name']  =this.productlistinorder[index].name;
+      // this.productshow['category_code']=this.productlistinorder[index].category_code;
+      // this.productshow['product_details']=this.productlistinorder[index].product_details;
+      // this.productshow['id']=this.productlistinorder[index].indexrow;
       let productname = this.productlistinorder[index].name;
       this.changrelatekey(productname);
     },
@@ -710,6 +744,8 @@
 
     this.editqtyorderdetail = this.productlistinorder[index]
     this.editqtynew=this.productlistinorder[index].orderqty
+    this.edit_unit_th=this.productlistinorder[index].unit_name_th
+    this.edit_unit_en=this.productlistinorder[index].unit_name_en
     this.editqtyorderdetail.indexorder = index
 
     this.showProductinorderdt(index);
@@ -717,17 +753,17 @@
 
 ,editqtysumit(){
 
-  if(this.newtracking_qty===0){
-      Vue.swal({
-  icon: "error",
-  title: "ไม่มีการเปลี่ยนแปลง",
-  text: "กรูณาเปลี่ยนจำนวนก่อนการบันทึก",
-  toast: true,
-  timer: 2000,
-  timerProgressBar: true,
+//   if(this.newtracking_qty===0){
+//       Vue.swal({
+//   icon: "error",
+//   title: "ไม่มีการเปลี่ยนแปลง",
+//   text: "กรูณาเปลี่ยนจำนวนก่อนการบันทึก",
+//   toast: true,
+//   timer: 2000,
+//   timerProgressBar: true,
   
-});
-  }else{
+// });
+//   }else{
 
 ///////แก้ไขจำนวน
 
@@ -747,27 +783,29 @@
     price:this.productprice.priceorder ,
     memonumber:this.productprice.memonumber,
     once_time:this.productprice.once_time,
+    unit_name_th : this.edit_unit_th ,
+    unit_name_en : this.edit_unit_en
   }
   )
   .then((response)=>{
-  this.alertstatus=response.data.alertstatus; 
-  this.productlistinorder=response.data.productlistinorder; 
+    this.alertstatus=response.data.alertstatus; 
+    this.productlistinorder=response.data.productlistinorder; 
 
- 
-  Vue.swal({
-  icon: response.data.alertstatus.icon,
-  title: response.data.title,
-  text: response.data.alertstatus.text,
-  toast: true,
-  timer: 2000,
-  timerProgressBar: true,
+  
+    Vue.swal({
+      icon: response.data.alertstatus.icon,
+      title: response.data.title,
+      text: response.data.alertstatus.text,
+      toast: true,
+      timer: 2000,
+      timerProgressBar: true,
 
-});
+    });
 
-  $('#editqty').modal('hide')
-this.checkstock();   
- this.showproductsinoreder();
- })
+    $('#editqty').modal('hide')
+    this.checkstock();   
+    this.showproductsinoreder();
+  })
 
 
 /////////
@@ -777,7 +815,7 @@ this.checkstock();
 
 
    
-}
+//}
      },
      
      sendforapprove(){

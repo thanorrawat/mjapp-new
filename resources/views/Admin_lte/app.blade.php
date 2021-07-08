@@ -8,28 +8,29 @@
   <meta name="user-id" content="{{ Auth::user()->id }}">
   <title>@yield('title') : {{$general_setting->site_title}}</title>
   <link rel="icon" type="image/png" href="{{url('public/logo', $general_setting->site_logo)}}" />
-  <link rel="stylesheet" href="{{ asset('node_modules/buefy/dist/buefy.min.css') }}"">
+  <link rel="stylesheet" href="{{ asset('node_modules/buefy/dist/buefy.min.css') }}">
   <!-- Font Awesome Icons -->
- <link rel="stylesheet" href="{{ asset('AdminLTE-3/plugins/fontawesome-free/css/all.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('AdminLTE-3/plugins/fontawesome-free/css/all.min.css') }}">
   <link rel="stylesheet" href="{{ asset('AdminLTE-3/plugins/font-awesome/css/font-awesome.min.css') }}"> 
 
- 
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('AdminLTE-3/dist/css/adminlte.min.css') }}">
   <link rel="stylesheet" href="{{ asset('AdminLTE-3/dist/css/custom.css') }}">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet">
 
-<style>
- body, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6{
-  font-family: 'Sarabun', sans-serif;
-  }
-</style>
+  <style>
+    html{
+      font-size: 14px;
+    }
+    body, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6{
+      font-family: 'Sarabun', sans-serif;
+    }
+  </style>
   @yield('pagecss')
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
 <div class="wrapper">
-
   <!-- Navbar -->
   @include("Admin_lte.topnav")
    <!-- /.navbar -->

@@ -199,6 +199,19 @@ $offset = ($request->page-1)*$limitnumber;
 
         return response()->json($nitnamearr);
     }
+
+    
+    public function productdt($stkcod)
+    {
+        $product = productModel::on('report')
+        ->selectRaw('*, (SELECT locbal FROM mj_stloc  WHERE loccod = "01" AND stkcod = mj_stmas.stkcod ) AS qty
+        , (SELECT typdes FROM mj_istab  WHERE tabtyp = "20" AND typcod = mj_stmas.qucod ) AS unitname
+        , (SELECT typdes2 FROM mj_istab  WHERE tabtyp = "20" AND typcod = mj_stmas.qucod ) AS unitname_en')
+        ->where('stkcod',$stkcod)
+        ->first();
+        
+        return response()->json($product);
+    }
     
 
     public function customerlist(Request $request)
@@ -488,7 +501,7 @@ return response()->json(    [
     {
 
 
-        if(!empty($request->orderproductid) && !empty($request->productid) && !empty($request->orderid) && !empty($request->addqty)  && !empty($request->diffqty) && !empty($request->userfullname) && !empty($request->userid) ){
+        if(!empty($request->orderproductid) && !empty($request->productid) && !empty($request->orderid) && !empty($request->addqty)  && !empty($request->userfullname) && !empty($request->userid) ){
 
 //edit    
         $MjOrderProducts= MjOrderProducts::where('id',$request->orderproductid)
@@ -502,6 +515,12 @@ return response()->json(    [
         $MjOrderProducts->userid= $request->userid;
         $MjOrderProducts->memonumber= $request->memonumber;
         $MjOrderProducts->priceoncetime= $request->once_time;
+
+        //แก้ไขหน่วย
+        $MjOrderProducts->unit_name_th= $request->unit_name_th;
+        $MjOrderProducts->unit_name_en= $request->unit_name_en;
+
+
         $MjOrderProducts->save();
         $orderdetails = $request->orderdetails;
         $docfullname ="";
@@ -729,7 +748,7 @@ $pricetop3 = "";
     $productlistinorder = MjOrderProducts::where('order_id',$id)
     ->where('canclepd','<>','1')
     ->leftjoin('products','mj_order_products.productscode','products.code' )
-    ->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount,canclepd,qtyso')
+    ->selectRaw('productscode,image,name,mj_order_products.qty AS orderqty,remarkrow,products.id as pdid,category_code,product_details,mj_order_products.id as pdorderid,products.qty as stocknow,mj_order_products.price as orderprice,amount,canclepd,qtyso,unit_name_th,unit_name_en')
     ->orderBy('pdorderid','asc')
     ->get();
 

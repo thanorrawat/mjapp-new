@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Artisan;
 // Route::get('datatable/data', 'DatatablesController@anyData');
 
 
+Route::get('order_view/{token}', 'OrderController@orderview');
 
 
 Auth::routes();
@@ -54,7 +55,6 @@ Route::get('/clear-cache', function() {
 });
 
 
-Route::get('order_view/{token}', 'OrderController@orderview');
 Route::get('so_view/{id}','Api\Socontroller@soview'); //แสดงรายการสินค้า จาก orderid
 
 
@@ -127,6 +127,11 @@ Route::get('so_view/{id}','Api\Socontroller@soview'); //แสดงรายก
 
 	Route::get('/', 'AppHomeController@index');
 	Route::get('/orderdata', 'AppHomeController@orderData');
+	Route::post('checkSelectOrder','AppHomeController@select');//เลือก order ทำรายการต่อ
+	Route::post('checkSelectShow','AppHomeController@selectShow');//แสดงรายการที่เลือก
+	Route::post('checkSelectSubmit','AppHomeController@selectSubmit');//เมื่อ submit
+	Route::get('print2Store/{id}/{token}','AppHomeController@selectPrint2store');// หน้า  print 
+	
 
 	//usepage
 

@@ -32,7 +32,7 @@ class ProductController extends Controller
     public function index()
     {
         $role = Role::find(Auth::user()->role_id);
-        if($role->hasPermissionTo('products-index')){            
+       // if($role->hasPermissionTo('products-index')){            
             $permissions = Role::findByName($role->name)->permissions;
             foreach ($permissions as $permission)
                 $all_permission[] = $permission->name;
@@ -48,9 +48,11 @@ class ProductController extends Controller
             $stock_sale_name_en = $stock_name->typdes2;
 
             return view('App_product.index', compact(['all_permission','stock_sale_name','stock_sale_name_en']));
-        }
-        else
-            return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+      //  }
+        // else
+        //     return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+
+
     }
 
 
