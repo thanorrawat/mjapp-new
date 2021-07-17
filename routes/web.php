@@ -20,17 +20,11 @@ use Illuminate\Support\Facades\Artisan;
 
 
 Route::get('order_view/{token}', 'OrderController@orderview');
-
-
 Auth::routes();
-
 Route::group(['middleware' => 'auth'], function() {
 	Route::get('/dashboard', 'HomeController@dashboard');
 
 });
-
-
-
 Route::group(['middleware' => ['auth', 'active']], function() {
 
 

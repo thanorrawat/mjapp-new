@@ -57,7 +57,13 @@ line-height: 1.8
 
         <tr>
             <td><img src="{{ asset('public/logo/mj-new.png') }}"  height="50"></td>
-            <td align="center"><h3>ใบ Order สินค้า</h3></td>
+            <td align="center">
+                <h3>ใบ Order สินค้า
+                    @if(isset($_GET['forwho']))
+                    ( สำหรับ {{ $_GET['forwho']}} )
+                    @endif
+                </h3>
+            </td>
             <td style="font-size: 13px;line-height: 1; text-align:right"> FM-SL-13<br>
             <span style="font-size: 10px">Rev.01</span> </td>
         </tr>
@@ -97,8 +103,15 @@ line-height: 1.8
 <th  style="text-align: center">ที่</th>
 <th style="text-align: center">รหัส</th>
 <th style="text-align: center">รายละเอียดสินค้า</th>
+@if(isset($_GET['showprice']))
+    <th style="text-align: center">ราคา</th>
+@endif
 <th style="text-align: center">จำนวน</th>
 <th style="text-align: center">{{ __('file.Unit') }}</th>
+@if(isset($_GET['showprice']))
+    <th style="text-align: center">รวม</th>
+@endif
+
 <th style="text-align: center">หมายเหตุ</th>
     </tr>
     <tbody>
@@ -110,19 +123,25 @@ line-height: 1.8
 <td align="center">{{ $number }}</td>
 <td>{{ $product->productscode }}</td>
 <td>{{ $product->name }}</td>
+@if(isset($_GET['showprice']))
+<td align="right">{{ $product->orderprice }}</td>
+@endif
 <td align="center">{{ $product->orderqty }}</td>
 <td align="center">{{ $product->unit_name_th }} 
     @if($product->unit_name_en)
     / {{ $product->unit_name_en }}
     @endif
 </td>
+@if(isset($_GET['showprice']))
+    <td align="right">{{ $product->amount }}</td>
+@endif
 <td >{{ $product->remarkrow }}</td>
 
 </tr>
 <?php $number++;?>
 @endforeach
 @if($number<=6)
-@for($i=$number;$i<=6;$i++)
+@for($i=$number;$i<=5;$i++)
 <tr>
     <td align="center">&nbsp;</td>
     <td></td>
@@ -130,9 +149,34 @@ line-height: 1.8
     <td align="center"></td>
     <td ></td>
     <td ></td>
-    
-    </tr>
+    @if(isset($_GET['showprice']))
+        <td ></td>
+        <td ></td>
+    @endif   
+</tr>
 @endfor
+    @if(isset($_GET['showprice']))
+    <tr>
+        <td align="center">&nbsp;</td>
+        <td></td>
+        <td></td>
+        <td align="center"><strong>รวม</strong></td>
+        <td align="center">{{ $sumqty }}</td>
+        <td ></td>
+        <td align="right">{{ number_format($sumamount,2) }}</td>
+        <td ></td>
+    </tr>
+    @else
+    <tr>
+        <td align="center">&nbsp;</td>
+        <td></td>
+        <td></td>
+        <td align="center"></td>
+        <td ></td>
+        <td ></td>
+
+    </tr>
+    @endif  
 @endif
     </tbody>
 </table>

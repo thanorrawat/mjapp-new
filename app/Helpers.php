@@ -31,7 +31,7 @@ if($group ==1){ //Admin
     $sToken = "HFt3CMh1tmnQ4BKxXpmTXZMWaIJXUk0F6KXlzKyaI2C";
 }elseif($group ==2){ //Manager
     $sToken = "8vQBtdwD8Q2pyjYHK8OpndeejuNAoGcgEdKzdaKcAjk";
-}else{
+}else{//sale
     $sToken = "HFt3CMh1tmnQ4BKxXpmTXZMWaIJXUk0F6KXlzKyaI2C";
 }
 

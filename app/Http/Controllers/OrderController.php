@@ -481,7 +481,7 @@ if(!empty($request->orderid)){
         
         $MjOrderProducts= MjOrderProducts::where('order_id',$orderdt->id)
         ->leftjoin('products', 'mj_order_products.product_id', '=', 'products.id')
-        ->select(['*','mj_order_products.qty AS orderqty'])
+        ->select(['*','mj_order_products.qty AS orderqty','mj_order_products.price AS orderprice'])
         ->where('canclepd','<>','1')
         ->get();
 
@@ -503,6 +503,8 @@ if(!empty($request->orderid)){
             ->with('products', $MjOrderProducts)
             ->with('user_sign2', $user_sign2)
             ->with('user_sign3', $user_sign3)
+            ->with('sumqty', $MjOrderProducts->sum('orderqty'))
+            ->with('sumamount', $MjOrderProducts->sum('amount'))
             ;
         }else{
             return view('App_sale.order_view')
@@ -510,6 +512,8 @@ if(!empty($request->orderid)){
             ->with('products', $MjOrderProducts)
             ->with('user_sign2', $user_sign2)
             ->with('user_sign3', $user_sign3)
+            ->with('sumqty', $MjOrderProducts->sum('orderqty'))
+            ->with('sumamount', $MjOrderProducts->sum('amount'))
             ;
         }
     
